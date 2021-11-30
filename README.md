@@ -1,1 +1,59 @@
 # docs
+
+Draft Table of Contents from Nov 30, 2021
+
+- Introduction
+    - Use Cases
+    - Who uses Automerge?
+    - Key concepts
+        - CRDT Mental Models
+            - Eventual consistency
+        - Documents
+        - Types
+        - Changes
+        - Persistence
+        - Synchronization
+            - Peer-to-peer
+            - Client-server
+        - Deletion
+        - Compaction
+        - Authentication
+- Tutorial
+    - Step-by-step to build a Todo list. Should include error handling & copy-pastable pieces. More than one todo list.
+        - JavaScript
+        - Swift
+        - Rust
+- Cookbook
+    - Modeling your data
+        - Schemas
+        - Normalization
+        - Performance
+        - Versioning
+        - Authors
+        - Permissions
+    - Real-time Collaboration
+        - WebSocket
+        - WebRTC
+    - Frameworks
+        - React
+        - Prosemirror
+    - Persistence
+        - Introduction to Save & Load
+        - HTTP server
+        - Amazon S3
+    - Authentication & Security
+        - JWT
+        - Encryption
+- API
+    - Auto-generated?
+    - Languages
+        - Rust
+        - Javascript
+        - Python
+        - Swift/iOS
+- How Automerge works
+    - Frontend
+    - Backend
+    - Binary format
+    - Sync protocol
+- Glossary
