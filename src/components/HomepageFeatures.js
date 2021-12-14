@@ -4,32 +4,33 @@ import styles from './HomepageFeatures.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
-    ),
-  },
-  {
-    title: 'Focus on What Matters',
+    title: 'Automatic merging',
     Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
+        Automerge is a Conflict-Free Replicated Data Type (CRDT), which allows
+        concurrent changes on different devices to be merged automatically
+        without requiring any central server.  
+        </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Network Agnostic',
+    Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
+    description: (
+      <>
+       Use any connection-oriented network protocol: client-server,
+       peer-to-peer, or local. Or use unidirectional messaging:
+       send an Automerge file as an email attachment or store it on a file server.
+       </>
+    ),
+  },
+  {
+    title: 'Fairly portable',
     Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+      Implemented in Node.js and Rust, with FFI bindings across platforms including iOS, Electron, Chrome, Safari, Edge, Firefox, and more. 
       </>
     ),
   },

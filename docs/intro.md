@@ -4,24 +4,9 @@ sidebar_position: 1
 
 # Introduction
 
-Automerge is a library of data structures for building collaborative applications in JavaScript.
+Automerge is a library of data structures for building collaborative applications.
 
-A common approach to building JavaScript apps involves keeping the state of your application in
-model objects, such as a JSON document. For example, imagine you are developing a task-tracking app
-in which each task is represented by a card. In vanilla JavaScript you might write the following:
-
-```js
-const doc = { cards: [] }
-
-// User adds a card
-doc.cards.push({ title: 'Reticulate splines', done: false })
-
-// User marks a task as done
-doc.cards[0].done = true
-```
-
-Automerge is used in a similar way, but the big difference is that it supports **automatic syncing
-and merging**:
+## Key features
 
 - You can have a copy of the application state locally on several devices (which may belong to the
   same user, or to different users). Each user can independently update the application state on
@@ -45,7 +30,7 @@ and merging**:
 
   (Similar to git, which allows diffing, branching, merging, and pull request workflows.)
 
-## Features and design principles
+## Design principles
 
 - **Network-agnostic**. Automerge is a pure data structure library that does not care about what
   kind of network you use. It works with any connection-oriented network protocol, which could be
