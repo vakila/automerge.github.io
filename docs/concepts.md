@@ -28,33 +28,44 @@ Applications built with Automerge are assumed to be *eventually consistent.* Use
 
 If you're used to building applications with a database in the Cloud, such as PostgreSQL, you'll encounter new and exciting challenges. Building an eventually consistent application will require you to rethink how you typically handle data. It flips scaling on it's head, and challenges some of the fundamental properties about Cloud databases.  
 
-
-## Changes
-
-One fundamental concept that is new is that of a change, which is a piece of data that  describes an update to a data structure. For example, a insertion of an element to a list is an example of a change. All changes are commutative, which means that the order in which they are applied does not matter. In other words, as long as all of the same set of changes have been applied, all replicas of that data structure should see the same state.
-
-To do this, typically each change depends upon a previous change. Automerge creates a graph of changes that are modeled as a tree. This internal data structure is convienent as we are able to walk the tree efficiently to compute the application state at any given time. To learn more about how automerge works internally, see the [Internals](how-it-works/backend) section.
-
-## History
-
-Each change that is made to a database builds upon other changes to create a shared, materialized view of a particular database state. Each change is dependent on a previous change, which means that all replicas are able to construct a history of the data structure. This is a powerful propery in multi-user applications, and can be implemented in a way that is storage and space efficient.
-
-## Deletion
-
-Deletion is another instance of a change. Unlike what you might expect from a typical database, a deletion doesn't actually delete the content. Instead, we add a deletion operation, which tells replicas to hide that data from view. Thus, user-generated content may be available forever on some devices. However, we can 
-
-## Compaction
-## Authentication
-
-## Syncronization
-### Peer to peer/Serverless
-### Client server
-
 ## Documents
 
 A document is a collection of data that holds the current state of the application. A document in Automerge is represented as an object. Each document has a set of keys which can be used to hold variables that are one of the Automerge datatypes.
 
 ## Types
 
-All collaborative data structures conform to certain rules. They must be , 
-## Persistence
+All collaborative data structures conform to certain rules. Each variable in the document must be of one of the implemented types. Each type mmust conform to the rules of CRDTs. Automerge comes with a set of pre-defined types such as `Map`, `Array`, `Counter`, `number`, `Text`, and so on.
+
+## Changes
+
+A change is a small set of metadata that describes an update to a data structure within the document. For example, a insertion of an element to a list is an example of a change. All changes are commutative, which means that the order in which they are applied does not matter. In other words, as long as all of the same set of changes have been applied, all replicas of that data structure should see the same state.
+
+To do this, typically each change depends upon a previous change. Automerge creates a graph of changes that are modeled as a tree. This internal data structure is convienent as we are able to walk the tree efficiently to compute the application state at any given time. To learn more about how automerge works internally, see the [Internals](how-it-works/backend) section.
+
+## History
+
+Each change that is made to a data structure builds upon other changes to create a shared, materialized view of a document. Each change is dependent on a previous change, which means that all replicas are able to construct a history of the data structure. This is a powerful propery in multi-user applications, and can be implemented in a way that is storage and space efficient.
+
+## Deletion
+
+Deletion is another instance of a change. Unlike what you might expect from a typical database, a deletion doesn't actually delete the data. For example, in a list, we mark the element as deleted. This marker tells replicas to hide that element from view. Thus, user-generated content may be available forever on some devices. 
+
+## Compaction
+
+Compaction is a way to serialize the current state of the document without the history. You might want to do this when:
+
+* You don't want to replicate the entire history because of bandwidth or resource concerns on the target device. This might be useful in embedded systems or mobile phones.
+* A deleted element contains some sensitive information that you would like to be purged from the history.
+
+The downsides of compacting the history of a document include not being able to syncronize that compacted document with another document that doesn't have a common ancestor. 
+
+## Synchronization
+
+When two or more  devices make changes to a document, and then decide to exchange those changes to come to a consistent state, we call that *synchronization*. Syncronization can be in the form of sending all changes in history to each device. Alternatively, devices could negotiate which changes are missing on either end and exchange only those changes which are missing, rather than the entire change history. In some cases, this could be more efficient, but also increases complexity of the resulting networking code. 
+
+### Peer to peer/Serverless
+### Client server
+
+
+## Authentication
+
