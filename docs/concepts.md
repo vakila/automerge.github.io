@@ -63,9 +63,3 @@ The downsides of compacting the history of a document include not being able to 
 
 When two or more  devices make changes to a document, and then decide to exchange those changes to come to a consistent state, we call that *synchronization*. Syncronization can be in the form of sending all changes in history to each device. Alternatively, devices could negotiate which changes are missing on either end and exchange only those changes which are missing, rather than the entire change history. In some cases, this could be more efficient, but also increases complexity of the resulting networking code. 
 
-### Peer to peer/Serverless
-### Client server
-
-
-## Authentication
-
