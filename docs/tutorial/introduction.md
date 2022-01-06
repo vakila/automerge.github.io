@@ -1,10 +1,12 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 # Introduction
 
 Before getting into the code, we suggest that you sit down for a few minutes to understand some core concepts. If you've used CRDTs before and know how they work, you can safely skip this step. Although we may use terms that are specific to Automerge, these properties are fundamental to building any application using CRDTs.  
+
+## With or without the internet
 
 > Philosophically, if I modify a google doc my computer is asking Google for permission to edit the file. (You can tell because if google’s servers say no, I lose my changes.) In comparison, if I git push to github, I’m only notifying github about the change to my code. My repository is mine. I own all the bits, and all the hardware that houses them. This is how I want all my software to work.
 >

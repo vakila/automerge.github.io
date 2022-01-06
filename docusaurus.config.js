@@ -45,13 +45,13 @@ const config = {
       navbar: {
         title: 'Automerge',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'Automerge logo',
           src: 'img/automerge.png',
         },
         items: [
           {
             type: 'doc',
-            docId: 'introduction',
+            docId: 'hello',
             position: 'left',
             label: 'Docs',
           },
@@ -70,7 +70,7 @@ const config = {
             items: [
               {
                 label: 'Tutorial',
-                to: '/docs/introduction',
+                to: '/docs/tutorial/introduction',
               },
             ],
           },
@@ -96,7 +96,7 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/automerge/automerge',
               },
             ],
           },

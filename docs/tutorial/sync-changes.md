@@ -1,4 +1,4 @@
 ---
 sidebar_position: 5
 ---
-# Synchronize
+# Real-time collaboration
