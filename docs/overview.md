@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Introduction
+# Overview
 
 Automerge is a library of data structures for building collaborative applications.
 
