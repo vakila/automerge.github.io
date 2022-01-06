@@ -4,6 +4,52 @@ sidebar_position: 2
 
 # Real-time Collaboration
 
+The Automerge library itself is agnostic to the network layer — that is, you can use whatever
+communication mechanism you like to get changes from one node to another. There are currently a few
+options, with more under development:
+
+- Use `Automerge.getChanges()` and `Automerge.applyChanges()` to manually capture changes on one
+  node and apply them on another. These changes are encoded as byte arrays (`Uint8Array`). You can
+  also store a log of these changes on disk in order to persist them.
+- Use `Automerge.generateSyncMessage()` to generate messages, send them over any transport protocol
+  (e.g. WebSocket), and call `Automerge.receiveSyncMessage()` on the recipient to process the
+  messages. 
+
+## Changes interface
+
+The `getChanges()/applyChanges()` API works as follows:
+
+```js
+// On one node
+let newDoc = Automerge.change(currentDoc, doc => {
+  // make arbitrary change to the document
+})
+let changes = Automerge.getChanges(currentDoc, newDoc)
+// broadcast changes as a byte array
+network.broadcast(changes)
+// On another node, receive the byte array
+let changes = network.receive()
+let [newDoc, patch] = Automerge.applyChanges(currentDoc, changes)
+// `patch` is a description of the changes that were applied (a kind of diff)
+```
+
+Note that `Automerge.getChanges(oldDoc, newDoc)` takes two documents as arguments: an old state and
+a new state. It then returns a list of all the changes that were made in `newDoc` since `oldDoc`. If
+you want a list of all the changes ever made in `doc`, you can call `Automerge.getAllChanges(doc)`.
+
+The counterpart, `Automerge.applyChanges(oldDoc, changes)` applies the list of `changes` to the
+given document, and returns a new document with those changes applied. Automerge guarantees that
+whenever any two documents have applied the same set of changes — even if the changes were applied
+in a different order — then those two documents are equal. That property is called _convergence_,
+and it is the essence of what Automerge is all about.
+
+`Automerge.merge(doc1, doc2)` is a related function that is useful for testing. It looks for any
+changes that appear in `doc2` but not in `doc1`, and applies them to `doc1`, returning an updated
+version of `doc1`. This function requires that `doc1` and `doc2` have different actor IDs (that is,
+they originated from different calls to `Automerge.init()`).
+
+## Sync protocol
+
 In the case that document history is quite large, and two devices are online at the same time, we want to only send the subset of changes that are relevant. The Automerge sync protocol is designed to help with this process. The Automerge sync protocol brings two documents into sync by exchanging messages between peers until both documents have the same contents. The protocol can run on top of any connection-based network link that supports bidirectional messages, including WebSocket, WebRTC, or plain TCP. It can be used in any network topology: client/server, peer-to-peer, or server-to-server sync are all supported.
 
 The protocol works by exchanging rounds of sync messages. These sync messages contain two parts: 
@@ -14,7 +60,7 @@ On connection, each peer should start the exchange with an initial message via `
 
 From then on, a peer should continue to call these functions until `generateSyncMessage()` returns a `null` value, indicating both peers are synchronized and no further communication is necessary.
 
-## Example
+**Example**
 
 Automerge synchronization occurs at a per-document level. Most Automerge-based applications will be built around more than one document, so in our example code here we will assume these documents are identified by a string `docId`.
 
