@@ -37,3 +37,12 @@ newDoc.text.get(0) // returns 'H', the 0th character in the text
 newDoc.text.toString() // returns 'Hello', the concatenation of all characters
 for (let char of newDoc.text) console.log(char) // iterates over all characters
 ```
+
+To figure out which regions were inserted by which users, you can use the elementId. The ElementID gives is a string of the form `${actorId}@${counter}`. Here, actorId is the ID of the actor who inserted that character.
+
+```js
+let elementId = newDoc.text.getElemId(index)
+// '2@369125d35a934292b6acb580e31f3613'
+```  
+
+Note that the actorId changes with each call to `Automerge.init()`, so if you want more persistent user-actorId relationships over the course of the text document, see the [Authentication section in the Cookbook](/docs/cookbook/authentication).

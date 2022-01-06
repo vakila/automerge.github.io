@@ -3,6 +3,8 @@ sidebar_position: 4
 ---
 # Make a Change
 
+seq always increases by 1 for each change produced by a particular actor, whereas startOp behaves like a Lamport clock (the value should be one greater than the greatest operation ID seen from any actor).
+
 ## Gotcha
 
 The following will not work, for example, as you're passing the same beforeDoc into applyChanges more than once (the second time you do that will throw an exception):

@@ -58,9 +58,6 @@ Often, there comes a time in the production lifecycle where you will need to cha
 
 However, we strongly recommend versioning your documents from the beginning. This allows you to detect older document versions and migrate those documents to newer versions on the fly. 
 
-The following will not work, for example, because you're passing the same beforeDoc into applyChanges more than once (the second time you do that will throw an exception).
-
-
 ## Normalization
 
 ??

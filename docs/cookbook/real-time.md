@@ -60,6 +60,15 @@ On connection, each peer should start the exchange with an initial message via `
 
 From then on, a peer should continue to call these functions until `generateSyncMessage()` returns a `null` value, indicating both peers are synchronized and no further communication is necessary.
 
+Here are a few demos that you can use if you'd prefer to see a full working implementation. 
+
+* https://github.com/pvh/automerge-demo/ uses Svelte and BroadcastChannel for the network.
+* https://github.com/okdistribute/automerge-chat-demo uses React and Websockets for the network.
+
+
+Read below for a step-by-step walkthrough.
+
+
 **Example**
 
 Automerge synchronization occurs at a per-document level. Most Automerge-based applications will be built around more than one document, so in our example code here we will assume these documents are identified by a string `docId`.

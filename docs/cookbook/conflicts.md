@@ -9,6 +9,8 @@ of a document. In most cases, those changes can be combined without any trouble.
 users modify two different objects, or two different properties in the same object, then it is
 straightforward to combine those changes.
 
+## What is a Conflict?
+
 If users concurrently insert or delete items in a list (or characters in a text document), Automerge
 preserves all the insertions and deletions. If two users concurrently insert at the same position,
 Automerge will arbitrarily place one of the insertions first and the other second, while ensuring
@@ -45,6 +47,7 @@ Automerge.getConflicts(doc1, 'x') // {'1@01234567': 1, '1@89abcdef': 2}
 Automerge.getConflicts(doc2, 'x') // {'1@01234567': 1, '1@89abcdef': 2}
 ```
 
+
 Here, we've recorded a conflict on property `x`. The object returned by `getConflicts` contains the
 conflicting values, both the "winner" and the "loser". You might use the information in the
 conflicts object to show the conflict in the user interface. The keys in the conflicts object are
@@ -53,4 +56,6 @@ the internal IDs of the operations that updated the property `x`.
 The next time you assign to a conflicting property, the conflict is automatically considered to be
 resolved, and the conflict disappears from the object returned by `Automerge.getConflicts()`.
 
+Automerge uses a combination of LWW (last writer wins) and multi-value register. By default, if you read from `doc.foo` you will get the LWW semantics, but you can also see the conflicts by calling `Automerge.getConflicts(doc, 'foo')` which has multi-value semantics.
 
+Every operation has a unique operation ID that is the combination of a counter and the actorId that generated it. Conflicts are ordered based on the counter first (using the actorId only to break ties when operations have the same counter value).
