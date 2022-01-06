@@ -2,7 +2,7 @@
 sidebar_position: 10
 ---
 
-# Observables
+# Observable
 
 An observable is an object that can be initialized to watch the state of a
 document. When a document changes, the callback will fire with the diff and
