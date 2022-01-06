@@ -44,4 +44,9 @@ by `Automerge.save()`.
 
 ## HTTP Server
 
-You can serialize these to files
+There are two ways you can store documents on the server:
+
+* as a log of changes: after every change you make, call `Automerge.getLastLocalChange(doc)` and store the byte array that is returned; to load the document, pass all those byte arrays to `Automerge.applyChanges()`
+* as a whole document: use `Automerge.save(doc)` to encode the whole document as a byte array; store that on the server; and use `Automerge.load()` to load it again.
+
+Storing one change at a time is good for small updates to a document, since it will be more compact than storing the whole document over and over again. But storing the whole document will be more compact (and faster) than storing the whole log of changes since the document was created.
