@@ -64,7 +64,7 @@ Here are a few demos that you can use if you'd prefer to see a full working impl
 
 * https://github.com/pvh/automerge-demo/ uses Svelte and BroadcastChannel for the network.
 * https://github.com/okdistribute/automerge-chat-demo uses React and Websockets for the network.
-
+* https://github.com/okdistribute/automerge-sync is a utility library for managing peer states.
 
 Read below for a step-by-step walkthrough.
 
