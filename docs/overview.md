@@ -18,17 +18,23 @@ doc = Automerge.change(doc => {
 })
 ```
 
-You can have a copy of the application state locally on several devices (which
-may belong to the same user, or to different users). Each user can independently
+You can have a copy of the application state locally on several devices which
+may belong to the same user, or to different users. Each user can independently
 update the application state on their local device, even while offline, and save
-the state to local disk. (Similar to git, which allows you to edit files and commit changes offline.)
+the state to local disk. This is similar to git, which allows you to edit files and commit changes offline.
 
-When a network connection is available, Automerge figures out which changes need
-to be synced from one device to another, and brings them into the same state. (Similar to git, which lets you push your own changes, and pull changes from other developers, when you are online.)
+* When a network connection is available, Automerge figures out which changes need
+to be synced from one device to another, and brings them into the same state. 
 
-If the state was changed concurrently on different devices, Automerge automatically merges the changes together cleanly, so that everybody ends up in the same state, and no changes are lost. (Different from git: **no merge conflicts to resolve!**)
+  (Similar to git, which lets you push your own changes, and pull changes from other developers, when you are online.)
 
-Automerge keeps track of the changes you make to the state, so that you can view old versions, compare versions, create branches, and choose when to merge them.(Similar to git, which allows diffing, branching, merging, and pull request workflows.)
+* If the state was changed concurrently on different devices, Automerge automatically merges the changes together cleanly, so that everybody ends up in the same state, and no changes are lost. 
+
+  (Different from git: **no merge conflicts to resolve!**)
+
+* Automerge keeps track of the changes you make to the state, so that you can view old versions, compare versions, create branches, and choose when to merge them. 
+
+  (Similar to git, which allows diffing, branching, merging, and pull request workflows.)
 
 ## Design principles
 
