@@ -10,9 +10,10 @@ In this section, we will discuss how to model data within a particular document,
 
 ## How many documents?
 
-A first question you might ask is how granular a document should be. One major automerge project, https://github.com/automerge/pushpin, was built around very granular documents. This had a lot of benefits, but the overhead of syncing many thousands of documents was high. One of the first challenges in synchronizing large numbers of documents is that nodes are likely to have overlapping but disjoint documents and neither side wants to disclose things the other doesn't know about (at least in our last system, knowing the ID of a document was evidence a client should have access to it.) 
+You can decide which things to group together as one Automerge document (more fine grained or more coarse grained) based on what makes sense in your app. Having hundreds of docs should be fine — we've built prototypes of that scale. One major automerge project, [PushPin](https://github.com/automerge/pushpin), was built around very granular documents. This had a lot of benefits, but the overhead of syncing many thousands of documents was high. One of the first challenges in synchronizing large numbers of documents is that nodes are likely to have overlapping but disjoint documents and neither side wants to disclose things the other doesn't know about (at least in our last system, knowing the ID of a document was evidence a client should have access to it.)  
 
-We believe on the whole there's an art to the granularity of data that is universal. When should you have two JSON documents or two SQLite databases or two rows? We suspet that an automerge document is best suited to being a unit of collaboration between two people or a small group. For more about how these UUIDs can be used intelligently for authentication and document access as a unit of collaboration, see [Authentication](authentication).
+We believe on the whole there's an art to the granularity of data that is universal. When should you have two JSON documents or two SQLite databases or two rows? We suspect that an Automerge document is best suited to being a unit of collaboration between two people or a small group. For more about how these UUIDs can be used intelligently for authentication and document access as a unit of collaboration, see [Authentication](authentication).
+
 
 ## Schemas
 
@@ -58,17 +59,15 @@ Often, there comes a time in the production lifecycle where you will need to cha
 
 However, we strongly recommend versioning your documents from the beginning. This allows you to detect older document versions and migrate those documents to newer versions on the fly. 
 
-## Normalization
-
-??
-
 ## Performance
 
 Automerge documents hold their entire change histories. It is fairly performant, and can handle a significant amount of data in a single document's history.  Performance depends very much on your workload, so we strongly suggest you do your own measurements with the type and quantity of data that you will have in your app. 
 
-Some developers have proposed “garbage collecting” large documents. If a document gets to a certain size, a central authority could emit a message to each peer that it would like to reduce it in size and only save the history from a specific change (hash). Martin Kleppman did some experiments with a benchmark document to see how much space would be saved by discarding history, with and without preserving tombstones. See [this video at 55 minutes in][(https://youtu.be/x7drE24geUw?t=3289)]. The savings are not all that great, which is why we haven't prioritised history truncation so far.
+Some developers have proposed “garbage collecting” large documents. If a document gets to a certain size, a central authority could emit a message to each peer that it would like to reduce it in size and only save the history from a specific change (hash). Martin Kleppman did some experiments with a benchmark document to see how much space would be saved by discarding history, with and without preserving tombstones. See [this video at 55 minutes in](https://youtu.be/x7drE24geUw?t=3289). The savings are not all that great, which is why we haven't prioritised history truncation so far. 
 
-Typically, performance considerations can come at the storage or the networking level. In general, having fewer documents that a client must load into memory at any given time will reduce the amount of memory usage and startup time for your application. Automerge's binary format is very efficient, and uses the same data representation in memory as on disk. In general, storing any data you get from the network into the local filesystem, and loading documents from the filesystem first will improve the perceived performance of your program.
+Typically, performance improvements can come at the networking level. You can set up a single connection (between peers or client-server) and sync many docs over a single connection. The basic idea is to tag each message with the ID of the document it belongs to. There are possible ways of optimising this if necessary. In general, having fewer documents that a client must load over the network or into memory at any given time will reduce the syncronization and startup time for your application. 
+
+
 
 
 BENCHMARKS>?

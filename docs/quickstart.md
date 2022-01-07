@@ -30,7 +30,7 @@ const Automerge = require('automerge')
 Let's say doc1 is the application state on device 1. Further down we'll simulate a second device. We initialize the document to initially contain an empty list of cards.
 
 ```js
-let doc1 = Automerge.from({ cards: [] })
+const doc1 = Automerge.init()
 ```
 
 Automerge follows good functional programming practice. The `doc1` object is treated as immutable -- you  never change it directly. To change it, you need to call `Automerge.change()` with a callback in which you can mutate the state. 
@@ -40,6 +40,7 @@ Automerge follows good functional programming practice. The `doc1` object is tre
 
 ```js
 doc1 = Automerge.change(doc1, 'Add card', doc => {
+  doc.cards = []
   doc.cards.push({ title: 'Rewrite everything in Clojure', done: false })
   doc.cards.push({ title: 'Rewrite everything in Haskell', done: false })
 })
@@ -74,6 +75,12 @@ let doc2 = Automerge.init()
 doc2 = Automerge.merge(doc2, doc1)
 ```
 
+You can also load the document as a binary, if you want to send the document over the network in a compact format.
+
+```js
+let binary = Automerge.save(doc1)
+let doc2 = Automerge.load(binary)
+```
 
 Now, when both documents, we make separate (non-conflicting) changes. For handling conflicting changes, read below in [Conflicts](#conflicts).
 ```js
