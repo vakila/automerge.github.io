@@ -1,59 +1,33 @@
-# docs
+# Automerge docs
 
-Draft Table of Contents from Nov 30, 2021
+This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
-- Introduction
-    - Use Cases
-    - Who uses Automerge?
-    - Key concepts
-        - CRDT Mental Models
-            - Eventual consistency
-        - Documents
-        - Types
-        - Changes
-        - Persistence
-        - Synchronization
-            - Peer-to-peer
-            - Client-server
-        - Deletion
-        - Compaction
-        - Authentication
-- Tutorial
-    - Step-by-step to build a Todo list. Should include error handling & copy-pastable pieces. More than one todo list.
-        - JavaScript
-        - Swift
-        - Rust
-- Cookbook
-    - Modeling your data
-        - Schemas
-        - Normalization
-        - Performance
-        - Versioning
-        - Authors
-        - Permissions
-    - Real-time Collaboration
-        - WebSocket
-        - WebRTC
-    - Frameworks
-        - React
-        - Prosemirror
-    - Persistence
-        - Introduction to Save & Load
-        - HTTP server
-        - Amazon S3
-    - Authentication & Security
-        - JWT
-        - Encryption
-- API
-    - Auto-generated?
-    - Languages
-        - Rust
-        - Javascript
-        - Python
-        - Swift/iOS
-- How Automerge works
-    - Frontend
-    - Backend
-    - Binary format
-    - Sync protocol
-- Glossary
+### Installation
+
+```
+$ yarn
+```
+
+### Local Development
+
+```
+$ yarn start
+```
+
+This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+
+### Build
+
+```
+$ yarn build
+```
+
+This command generates static content into the `build` directory and can be served using any static contents hosting service.
+
+### Deployment
+
+```
+$ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
+```
+
+If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
