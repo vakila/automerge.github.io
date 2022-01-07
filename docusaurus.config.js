@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Build local-first software',
   tagline: 'Automerge is a library of data structures for building collaborative applications that work offline.',
-  url: 'https://automerge.com',
-  baseUrl: '/',
+  url: 'https://automerge.github.io',
+  baseUrl: '/docs',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
