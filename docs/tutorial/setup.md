@@ -3,7 +3,7 @@ sidebar_position: 2
 ---
 # Before we start
 
-We will build a small web app during this tutorial. This tutorial is designed to walk you through the basic concepts of Automerge so that you can use it in your own apps. For a deeper understanding and common patterns that you would likely need in a production application, see the [Cookbook](/docs/cookbook). You will find that these two resources are complementary.
+We will build a small web app during this tutorial. This tutorial is designed to walk you through the basic concepts of Automerge so that you can use it in your own apps. For a deeper understanding and common patterns that you would likely need in a production application, see the [Cookbook](/docs/cookbook/modeling-data). You will find that these two resources are complementary.
  
 ## What you need to know
 

@@ -63,7 +63,7 @@ unmodified. The only special things about it are:
  - Every object has a unique ID, which you can get by passing the object to the
     `Automerge.getObjectId()` function. This ID is used by Automerge to track which object is which.
   - Objects also have information about _conflicts_, which is used when several users make changes to
-    the same property concurrently (see [conflicts](/docs/overview/conflicts)). 
+    the same property concurrently (see [conflicts](/docs/cookbook/conflicts)). 
 
 ## Merging documents
 

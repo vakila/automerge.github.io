@@ -3,7 +3,28 @@ sidebar_position: 4
 ---
 # Make a Change
 
-seq always increases by 1 for each change produced by a particular actor, whereas startOp behaves like a Lamport clock (the value should be one greater than the greatest operation ID seen from any actor).
+```js
+let doc = Automerge.change(Automerge.init(), doc => {
+  doc.count = new Automerge.Counter()
+})
+let doc2 = Automerge.merge(doc, Automerge.init())
+```
+
+```js
+function increment (doc) {
+  return Automerge.change(doc, (doc) => {
+    doc.count.increment();
+  });
+}
+
+doc = increment(doc)
+doc2 = increment(doc2)
+
+let changes = Automerge.getChanges(doc2, doc)
+let [newDoc, ] = Automerge.applyChanges(doc2, changes);
+
+console.log(newDoc.count); // <== SHOULD BE: 2
+```
 
 ## Gotcha
 

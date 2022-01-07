@@ -11,7 +11,7 @@ This makes the format very suitable for storing durably due to its compact size.
 | Checksum                | 4               | First 4 bytes of the SHA256 of the encoded chunk     |
 | Block Type              | 1               | A marker byte to distinguish the bytes as a document |
 | Chunk length            | Variable (uLEB) | The length of the following chunk bytes              |
-| [Chunk](.#chunk-format) | Variable        | The actual bytes for the chunk                       |
+| [Chunk](#chunk-format) | Variable        | The actual bytes for the chunk                       |
 
 ## Chunk format
 
@@ -21,10 +21,10 @@ This makes the format very suitable for storing durably due to its compact size.
 | Actors                                      | Variable        | The actor IDs in sorted order                     |
 | Heads length                                | Variable (uLEB) | The number of following heads hashes              |
 | Heads                                       | 32 \* number    | The head hashes of the hash graph in sorted order |
-| [Change Info](.#change-information)         | Variable        | The change columns information                    |
-| [Operations Info](.#operations-information) | Variable        | The operations columns information                |
-| [Change bytes](.#change-bytes)              | Variable        | The actual bytes for the changes                  |
-| [Operations bytes](.#operations-bytes)      | Variable        | The actual bytes for the operations               |
+| [Change Info](#change-information)         | Variable        | The change columns information                    |
+| [Operations Info](#operations-information) | Variable        | The operations columns information                |
+| [Change bytes](#change-bytes)              | Variable        | The actual bytes for the changes                  |
+| [Operations bytes](#operations-bytes)      | Variable        | The actual bytes for the operations               |
 
 ## Change information
 
@@ -40,7 +40,7 @@ For each included column the following is encoded:
 | Column ID   | Variable (uLEB) | The ID of the column this data represents |
 | Data length | Variable (uLEB) | The length of the data in this column     |
 
-See [Change columns](.#change-columns) for the columns that may be included here.
+See [Change columns](#change-columns) for the columns that may be included here.
 
 ## Change bytes
 
@@ -73,7 +73,7 @@ For each included column the following is encoded:
 | Column ID   | Variable (uLEB) | The ID of the column this data represents |
 | Data length | Variable (uLEB) | The length of the data in this column     |
 
-See [Operations columns](.#operations-columns) for the columns that may be included here.
+See [Operations columns](#operations-columns) for the columns that may be included here.
 
 ## Operations bytes
 

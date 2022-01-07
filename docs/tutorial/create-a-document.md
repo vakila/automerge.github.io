@@ -24,3 +24,12 @@ However, you can't just set properties on an Automerge document. With a typical 
 ```
 
 In contrast, Automerge documents are immutable and follow a **functional** pattern. This means that you can retrieve properties from a document, but you can't change them like you would in a typical JavaScript object. 
+
+
+## Modeling our data
+
+We want to build a todo list, which will have the following requirements:
+
+* A list of todo items 
+* Each item has: a text box, boolean checkmark
+* An input box to add another item 
