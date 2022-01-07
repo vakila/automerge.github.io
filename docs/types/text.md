@@ -45,4 +45,4 @@ let elementId = newDoc.text.getElemId(index)
 // '2@369125d35a934292b6acb580e31f3613'
 ```  
 
-Note that the actorId changes with each call to `Automerge.init()`, so if you want more persistent user-actorId relationships over the course of the text document, see the [Authentication section in the Cookbook](/docs/cookbook/authentication).
+Note that the actorId changes with each call to `Automerge.init()`, so if you want more persistent user-actorId relationships over the course of the text document, see the [Authentication section in the Cookbook](docs/cookbook/authentication).

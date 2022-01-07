@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Build local-first software',
   tagline: 'Automerge is a library of data structures for building collaborative applications that work offline.',
-  url: 'https://automerge.github.io',
+  url: 'https://automerge.github.io/',
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -70,7 +70,7 @@ const config = {
             items: [
               {
                 label: 'Tutorial',
-                to: '/docs/tutorial/introduction',
+                to: 'docs/tutorial/introduction',
               },
             ],
           },
@@ -92,7 +92,7 @@ const config = {
             items: [
               {
                 label: 'Blog',
-                to: '/blog',
+                to: 'blog',
               },
               {
                 label: 'GitHub',

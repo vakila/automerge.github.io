@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # 5 minute quick start
 
-This guide will get you up and running with Automerge in your own application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](/docs/tutorial/introduction) section.
+This guide will get you up and running with Automerge in your own application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](docs/tutorial/introduction) section.
 
 
 ## Setup
@@ -63,7 +63,7 @@ unmodified. The only special things about it are:
  - Every object has a unique ID, which you can get by passing the object to the
     `Automerge.getObjectId()` function. This ID is used by Automerge to track which object is which.
   - Objects also have information about _conflicts_, which is used when several users make changes to
-    the same property concurrently (see [conflicts](/docs/cookbook/conflicts)). 
+    the same property concurrently (see [conflicts](docs/cookbook/conflicts)). 
 
 ## Merging documents
 
@@ -120,4 +120,4 @@ Automerge.getHistory(finalDoc).map(state => [state.change.message, state.snapsho
 
 ## More
 
-If you're hungry for more, look in the [Cookbook](cookbook/modeling-data) setion.
+If you're hungry for more, look in the [Cookbook](docs/cookbook/modeling-data) setion.
