@@ -11,32 +11,49 @@ To complete this tutorial, we assume you have a working knowledge of HTML and Ja
 
 ## What are we building?
 
-Today, you will build a simple todo list app.
+Today, you will build a simple todo list app with plain JavaScript. The resulting code from the tutorial will be less than 100 lines, and cover:
+
+* Modeling a document's data model
+* Making changes to documents
+* Persisting state in IndexedDb to preserve the document after restarting the browser tab
+* Supporting real-time collaboration in the same browser using `BroadcastChannel`
 
 ## Setup
 
-1. Install [Node](https://nodejs.org/en/download/).
-2. Install npm `npm install -g npm`
-3. Clone this repository: https://github.com/automerge/tutorial
+Create an `index.html` file that includes `automerge.min.js` and `index.js`. 
 
-```
-git clone https://github.com/automerge/tutorial
-``` 
-
-4. Move into that directory
-
-```
-cd tutorial
+```html
+<html>
+    <body>
+        <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/automerge@1.0.1-preview.0/dist/automerge.min.js"></script>
+        <script type="module" src="./index.js"></script>
+    </body>
+</html>
 ```
 
-5. Install dependencies
+Create an `index.js` file. In this file, we will create our first document:
 
-```
-npm install
+```js
+let doc = Automerge.init()
+console.log(doc)
 ```
 
-6. Try it out
+Once you've saved index.js, open index.html in your browser. You can use your favorite http-server, for example, `npx http-server .` in Node or `python -m SimpleHTTPServer`.
 
+With both of these files, you should be able to see some representation of the Automerge document in the console.
+
+## React, vue, or package managers 
+
+This tutorial uses vanilla JavaScript, but you can also use a package manager or framework if you'd like. 
+
+Use `npm i automerge` and import Automerge like so:
+
+```js
+import * as Automerge from 'automerge'
+
+let doc = Automerge.init()
+console.log(doc)
 ```
-npm start
-```
+
+
+
