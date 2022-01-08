@@ -1,8 +1,8 @@
 ---
 sidebar_position: 10
 ---
-# 
+# Extra Credit
 
 You did it! Now, you should have a general understanding about how to create an interactive, multi-user app that saves data to the local machine using Automerge. 
 
-Now, we will throw an extra credit task at you. We want to simulate a situation where two users are
+Modify this [tutorial on GitHUb](https://github.com/automerge/docs) to improve it!
