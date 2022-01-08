@@ -27,6 +27,9 @@ function render (doc) {
 
 But there's a problem: every time you add an item to the list, it doesn't update the list dynamically. So, we need to *observe* or *subsribe* to changes, so that we can re-render the user interface every time a change is made to the document. For this, we use an `Automerge.Observer`.
 
+
+## Automerge.Observer
+
 An observer is created separate from the document, and is passed to `Automerge.init`. 
 
 ```js
@@ -37,30 +40,50 @@ let doc = Automerge.init({ observer })
 We can then use the observer to watch for changes, and re-render the user interface with the new document state.
 
 ```js
-observer.observe((diff, before, after, local, changes) => {
+observer.observe(doc, (diff, before, after, local, changes) => {
     // after is the new document state!
     render(after)
 })
 ```
 
-Now, every time you add an item, the list should refresh and add it to the list. However, there's one more problem -- unless you're using a framework. We need to give each item an id and check to see if the item is already rendered before rendering it again.
+The observer callback is called before the `doc` is changed. Use `after` for rendering the new state of the app.
 
-To do this, we use `Automerge.getObjectId`. Every property, or object, on the Automerge document is given it's own unique identifier which can be helpful for reducing the rendering time for large numbers of items.
+You can also apply observables to properties on the Automerge document.
+
+```js
+observable.observe(doc.items, (diff, before, after, local, changes) => {
+  // before == '[]'
+  // after == '['Cat food']'
+})
+
+doc = Automerge.change(doc, doc => doc.items.push('Cat food'))
+```
+
+
+## Object ids
+
+Now, every time you add an item, the list should refresh and add it to the list. To do this, we use `Automerge.getObjectId`. Every property, or object, on the Automerge document is given it's own unique identifier which can be helpful for making sure we only render each object once.
 
 ```js
 let list = document.querySelector("#todo-list")
 
 function render (doc) {
     doc.items && doc.items.forEach((item, index) => {
+
+        // the object id is unique
         let objId = Automerge.getObjectId(item)
         let itemEl = document.getElementById(objId)
+
         if (!itemEl) {
             itemEl = document.createElement('li')
             itemEl.innerHTML = item.value
+
+            // give the item the object id so we only add it to the DOM once
             itemEl.setAttribute("id", objId)
             itemsDiv.appendChild(itemEl)
         }
 
+        // if the item is marked done, show it with a strikethrough
         itemEl.style = item.done ? 'text-decoration: line-through' : ''
     })
 }
@@ -85,10 +108,10 @@ Then, attach this function to the DOM `itemEl.onclick` event.
 
 You can use `doc.items[index]` to get the value of the item in the list. This value can be manipulated.
 
-You cannot use `...` to create changes to Automerge documents. For example, the following won't work:
+You cannot use `...` to create changes to Automerge documents. For example, the following **will not work**:
 
 ```js
 Automerge.change(doc, doc => {
-  doc.cards = [...doc.cards, newItem],
-}
+  doc.items = [...doc.items, toggeledItem]
+})
 ```

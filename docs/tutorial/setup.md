@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
 ---
-# Before we start
+# Setup
 
 We will build a small web app during this tutorial. This tutorial is designed to walk you through the basic concepts of Automerge so that you can use it in your own apps. For a deeper understanding and common patterns that you would likely need in a production application, see the [Cookbook](docs/cookbook/modeling-data). You will find that these two resources are complementary.
  
@@ -15,12 +15,12 @@ Today, you will build a simple todo list app with plain JavaScript. The resultin
 
 * Modeling a document's data model
 * Making changes to documents
-* Persisting state in IndexedDb to preserve the document after restarting the browser tab
+* Persisting state in IndexedDb to preserve the document after restarting the browser tab using [localforage](https://localforage.github.io/localForage/).
 * Supporting real-time collaboration in the same browser using `BroadcastChannel`
 
 ## Setup
 
-Create an `index.html` file that includes `automerge.min.js` and `index.js`. 
+Create an `index.html` file that includes `automerge.min.js` and `index.js`.  
 
 ```html
 <html>
@@ -38,15 +38,16 @@ let doc = Automerge.init()
 console.log(doc)
 ```
 
-Once you've saved index.js, open index.html in your browser. You can use your favorite http-server, for example, `npx http-server .` in Node or `python -m SimpleHTTPServer`.
+Once you've saved index.js, open index.html in your browser. You can use your favorite http-server, for example: 
+
+* `npx http-server` for Node, or 
+* `python -m SimpleHTTPServer` for Python
 
 With both of these files, you should be able to see some representation of the Automerge document in the console.
 
 ## React, vue, or package managers 
 
-This tutorial uses vanilla JavaScript, but you can also use a package manager or framework if you'd like. 
-
-Use `npm i automerge` and import Automerge like so:
+This tutorial uses vanilla JavaScript, but you can also use a package manager or framework if you'd like. For example, use `npm i automerge` and import Automerge like so:
 
 ```js
 import * as Automerge from 'automerge'
