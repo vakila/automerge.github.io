@@ -5,33 +5,43 @@ sidebar_position: 7
 
 Until now, you've built an Automerge application for a single user only. Are you ready to add multi-user collaboration?
 
-
-
-
-
+In this tutorial, we will use a BroadcastChannel, which allows you to simulate a local area network. All tabs and windows on the same domain in the browser will be able to send and receive messages from each other. In a production application, you could use a WebSocket server or WebRTC server. 
 
 ```js
-let changes = Automerge.getChanges(doc2, doc)
-let [newDoc, ] = Automerge.applyChanges(doc2, changes);
-
-console.log(newDoc.count); // <== SHOULD BE: 2
+let docId = window.location.hash
+let channel = new BroadcastChannel(docId)
 ```
-
-## Gotcha
-
-The following will not work, for example, as you're passing the same beforeDoc into applyChanges more than once (the second time you do that will throw an exception):
 
 ```js
-const beforeDoc = ...
-const after1 = Automerge.applyChanges(beforeDoc, [change1])
-const after2 = Automerge.applyChanges(beforeDoc, [change2])
+channel.onmessage = function (ev) {
+    let payload = ev.data
+
+    // this message is from the same actor, ignore it
+    if (payload.actorId === Automerge.getActorId(doc)) return 
+    let [ newDoc, newSyncState,  ] = Automerge.receiveSyncMessage(doc, syncState, payload.msg)
+    doc = newDoc
+    syncState = newSyncState
+    updatePeers(doc)
+    save(doc)
+}
+
+// typically, you'd have one sync state for each peer
+let syncState = Automerge.initSyncState()
+
+function updatePeers (doc) {
+    let actorId = Automerge.getActorId(doc)
+    let [nextSyncState, msg] = Automerge.generateSyncMessage(
+        doc, 
+        syncState
+    )
+    syncState = nextSyncState
+    if (msg) {
+        channel.postMessage({
+            actorId,
+            msg: msg
+        })
+    }
+}
 ```
 
-But if you've got a linear chain of changes, you can still refer to old document versions:
-
-```js
-const beforeDoc = ...
-const after1 = Automerge.applyChanges(beforeDoc, [change1])
-const after2 = Automerge.applyChanges(after1, [change2])
-// beforeDoc, after1, and after2 are all valid documents
-```
+For more information about the sync protocol, and a more advanced example for multiple peers, see the [Cookbook](docs/cookbook/real-time).
