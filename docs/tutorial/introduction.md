@@ -18,8 +18,6 @@ With Automerge, you can build software that works with or without the Internet. 
 
 To change an Automerge document, you create a *change*. This *change* is a small set of metadata that describes an update to a data structure within the document. For example, an insertion of an element to a list or deletion of an element from a list are both examples of separate changes. Every change is put in to a local append-only log of changes. 
 
-EXAMPLE WITH VISUALS
-
 This list of changes is stored locally on the device. When other devices come online, all sides send their changes to each other. Automerge guarantees that any device with the same set of changes will converge to the same state. Additionally, changes are commutative, which means that the order in which they are applied does not matter.
 
 Applications built with Automerge are assumed to be *eventually consistent.* Users should expect to see the same application state as all other devices, **eventually**. This is a radical shift from how most multi-user applications work today, which require systems to be highly available. 
@@ -27,6 +25,3 @@ Applications built with Automerge are assumed to be *eventually consistent.* Use
 If you're used to building applications with a database in the Cloud, such as PostgreSQL, you'll encounter new and exciting challenges. Building an eventually consistent application will require you to rethink how you typically handle data.
 
 Deletion is another instance of a change. Unlike what you might expect from a typical database, a deletion doesn't actually delete the data. For example, in a list, we create a change that marks the element in the list as deleted. This marker makes that element be hidden from view. Thus, user-generated content may be available forever on some devices. 
-
-What happens when one user modifies an element and another user deletes that same element? 
--- CONFLICTS
