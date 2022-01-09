@@ -34,8 +34,7 @@ let [newDoc, patch] = Automerge.applyChanges(currentDoc, changes)
 ```
 
 Note that `Automerge.getChanges(oldDoc, newDoc)` takes two documents as arguments: an old state and
-a new state. It then returns a list of all the changes that were made in `newDoc` since `oldDoc`. If
-you want a list of all the changes ever made in `doc`, you can call `Automerge.getAllChanges(doc)`.
+a new state. It then returns a list of all the changes that were made in `newDoc` since `oldDoc`.
 
 The counterpart, `Automerge.applyChanges(oldDoc, changes)` applies the list of `changes` to the
 given document, and returns a new document with those changes applied. Automerge guarantees that
@@ -64,7 +63,6 @@ Here are a few demos that you can use if you'd prefer to see a full working impl
 
 * https://github.com/pvh/automerge-demo/ uses Svelte and BroadcastChannel for the network.
 * https://github.com/okdistribute/automerge-chat-demo uses React and Websockets for the network.
-* https://github.com/okdistribute/automerge-sync is a utility library for managing peer states.
 
 Read below for a step-by-step walkthrough.
 
@@ -89,9 +87,9 @@ Every peer need it's own sync state. You can initialize a new sync state using `
 syncStates[peerId][docId] = Automerge.Backend.initSyncState()
 ```
 
-Automerge keeps track of ongoing exchanges with another peer using a `syncState` data structure. During synchronization, Automerge uses a probabilistic structure known as a Bloom filter to avoid having to send the full descriptions of every local change to peers. To reduce the size and cost of this structure, it is only built for changes the other peer has not already told us they have. This is described in more detail later in the [Internals section](http://localhost:3000/docs/how-it-works/sync). 
+Automerge keeps track of ongoing exchanges with another peer using a `syncState` data structure. During synchronization, Automerge uses a probabilistic structure known as a Bloom filter to avoid having to send the full descriptions of every local change to peers. To reduce the size and cost of this structure, it is only built for changes the other peer has not already told us they have. This is described in more detail later in the [Internals section](docs/how-it-works/sync). 
 
-To maintain this structure, when a peer is discovered, first create a new `syncState` via `initSyncState()` and store the result somewhere associated with that peer. These `syncState` objects can be persisted between program executions as an optimization, but it is not required. All subsequent sync operations with that peer will return a new `syncState` to replace the previous one.
+To maintain this structure, when a peer is discovered, first create a new `syncState` via `initSyncState()`. These `syncState` objects can be persisted between program executions as an optimization, but it is not required. All subsequent sync operations with that peer will return a new `syncState` to replace the previous one.
 
 If you've already seen a peer, you should load your old `syncState` for them via `decodeSyncState()`. This is not strictly necessary, but will reduce unnecessary computation and network traffic.
 
