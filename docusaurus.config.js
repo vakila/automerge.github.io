@@ -12,7 +12,7 @@ const config = {
   baseUrl: '/docs/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: '/docs/img/favicon.ico',
   organizationName: 'automerge', // Usually your GitHub org/user name.
   projectName: 'automerge', // Usually your repo name.
 
@@ -24,7 +24,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
+          editUrl: 'https://github.com/automerge/docs/edit/main/',
         },
         blog: {
           showReadingTime: true,
@@ -46,7 +46,7 @@ const config = {
         title: 'Automerge',
         logo: {
           alt: 'Automerge logo',
-          src: 'img/automerge.png',
+          src: '/docs/img/automerge.png',
         },
         items: [
           {

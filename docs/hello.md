@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Hello, World!
+# Welcome to Automerge
 
 Automerge is a library of data structures for building collaborative
 applications. You can have a copy of the application state locally on several

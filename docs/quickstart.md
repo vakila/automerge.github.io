@@ -54,16 +54,15 @@ returning an updated copy of the document.
 
 The `message` argument is optional. It allows you to attach an arbitrary string to the change, which is not interpreted by Automerge, but saved as part of the change history.
 
-
-the `doc1` returned by `Automerge.change()` is a regular JavaScript object containing all the
+The `doc1` returned by `Automerge.change()` is a regular JavaScript object containing all the
 edits you made in the callback. Any parts of the document that you didn't change are carried over
 unmodified. The only special things about it are:
 
   - It is treated as immutable, so all changes must go through `Automerge.change()`.
- - Every object has a unique ID, which you can get by passing the object to the
+  - Every object has a unique ID, which you can get by passing the object to the
     `Automerge.getObjectId()` function. This ID is used by Automerge to track which object is which.
   - Objects also have information about _conflicts_, which is used when several users make changes to
-    the same property concurrently (see [conflicts](docs/cookbook/conflicts)). 
+    the same property concurrently (see [conflicts](cookbook/conflicts)). 
 
 ## Merging documents
 
@@ -120,4 +119,4 @@ Automerge.getHistory(finalDoc).map(state => [state.change.message, state.snapsho
 
 ## More
 
-If you're hungry for more, look in the [Cookbook](docs/cookbook/modeling-data) setion.
+If you're hungry for more, look in the [Cookbook](cookbook/modeling-data) setion.

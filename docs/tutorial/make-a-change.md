@@ -3,44 +3,49 @@ sidebar_position: 4
 ---
 # Make a Change
 
-```js
-let doc = Automerge.change(Automerge.init(), doc => {
-  doc.count = new Automerge.Counter()
-})
-let doc2 = Automerge.merge(doc, Automerge.init())
-```
+In our MVP of the todo app, users will need two main interactions:
+
+* Add a todo item
+* Toggle a todo item as complete or not complete
+
+To add a todo item to the list, we will call `Automerge.change`. We will make
+sure `doc.items` exists, and then add a new item to the list with `done: false`.
 
 ```js
-function increment (doc) {
-  return Automerge.change(doc, (doc) => {
-    doc.count.increment();
-  });
+function addItem (doc, text) {
+  let newDoc = Automerge.change(doc, doc => {
+    if (!doc.items) doc.items = []
+    doc.items.push({
+      text, 
+      done: false
+    })
+  })
+  return newDoc
 }
-
-doc = increment(doc)
-doc2 = increment(doc2)
-
-let changes = Automerge.getChanges(doc2, doc)
-let [newDoc, ] = Automerge.applyChanges(doc2, changes);
-
-console.log(newDoc.count); // <== SHOULD BE: 2
 ```
 
-## Gotcha
+We return the new document from this function. Because Automerge is functional,
+each document is immutable. The `newDoc` is now the document that should be
+referenced after this change is made. The older document becomes stale and
+cannot be used anymore.
 
-The following will not work, for example, as you're passing the same beforeDoc into applyChanges more than once (the second time you do that will throw an exception):
+Now, let's create an input element in the HTML so that items can be added to the list.
+
+```html
+<form>
+  <input type="text" id="new-todo" />
+</form>
+```
 
 ```js
-const beforeDoc = ...
-const after1 = Automerge.applyChanges(beforeDoc, [change1])
-const after2 = Automerge.applyChanges(beforeDoc, [change2])
+let form = document.querySelector("form")
+let input = document.querySelector("#new-todo")
+form.onsubmit = (ev) => {
+  ev.preventDefault()
+  addItem(doc, value)
+  input.value = null
+}
 ```
 
-But if you've got a linear chain of changes, you can still refer to old document versions:
+Next, we have to render the items in the list every time an item is added.
 
-```js
-const beforeDoc = ...
-const after1 = Automerge.applyChanges(beforeDoc, [change1])
-const after2 = Automerge.applyChanges(after1, [change2])
-// beforeDoc, after1, and after2 are all valid documents
-```

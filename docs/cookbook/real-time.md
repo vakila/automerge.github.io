@@ -75,8 +75,8 @@ Throughout the example code below we're going to assume a couple of global varia
 
 ```js
 // global variables (but maybe don't use global variables)
-const syncStates = {} // a hash of [source][docId] containing in-memory sync states
-const backends = {} // a hash by [docId] of current backend values
+const syncStates = {} // a hash of [peerId][docId] containing in-memory sync states
+const docs = {} // a hash by [docId] of current documents 
 ```
 
 **Connecting**
@@ -84,7 +84,7 @@ const backends = {} // a hash by [docId] of current backend values
 Every peer need it's own sync state. You can initialize a new sync state using `initSyncState()`.
 
 ```js
-syncStates[peerId][docId] = Automerge.Backend.initSyncState()
+syncStates[peerId][docId] = Automerge.initSyncState()
 ```
 
 Automerge keeps track of ongoing exchanges with another peer using a `syncState` data structure. During synchronization, Automerge uses a probabilistic structure known as a Bloom filter to avoid having to send the full descriptions of every local change to peers. To reduce the size and cost of this structure, it is only built for changes the other peer has not already told us they have. This is described in more detail later in the [Internals section](docs/how-it-works/sync). 
@@ -95,10 +95,10 @@ If you've already seen a peer, you should load your old `syncState` for them via
 
 ```js
   if (data.type === 'HELLO') {
-    if (syncStates[source] === undefined) {
-      syncStates[source] = {}
-      syncStates[source][docId] = Automerge.Backend.decodeSyncState(db.getSyncState(docId, source))
-      sendMessage({ source: workerId, target: source, type: 'HELLO' })
+    if (syncStates[peerId] === undefined) {
+      syncStates[peerId] = {}
+      syncStates[peerId][docId] = Automerge.decodeSyncState(db.getSyncState(docId, peerId))
+      sendMessage({ peerId: workerId, target: peerId, type: 'HELLO' })
     }
     return
   }
@@ -114,14 +114,14 @@ Here is a simple example:
 ```js
 function updatePeers(docId: string) {
   Object.entries(syncStates).forEach(([peer, syncState]) => {
-    const [nextSyncState, syncMessage] = Automerge.Backend.generateSyncMessage(
-      backends[docId],
-      syncState[docId] || Automerge.Backend.initSyncState(),
+    const [nextSyncState, syncMessage] = Automerge.generateSyncMessage(
+      docs[docId],
+      syncState[docId] || Automerge.initSyncState(),
     )
     syncStates[peer] = { ...syncStates[peer], [docId]: nextSyncState }
     if (syncMessage) {
       sendMessage({
-        docId, source: workerId, target: peer, syncMessage,
+        docId, peerId: workerId, target: peer, syncMessage,
       })
     }
   })
@@ -130,30 +130,24 @@ function updatePeers(docId: string) {
 
 **Receiving sync messages**
 
-Receiving sync messages requires the document, syncState, and incoming message. Pass these arguments to `receiveSyncMessage()`, and keep the updated results. Calling `receiveSyncMessage` may also produce a `patch`, which you must forward to the frontend.
-
-After receiving a sync message, you should check if you need to send new sync messages to any connected peers using the code above. In our example code below this is represented by a call to `updatePeers()`:
+Receiving sync messages requires the document, syncState, and incoming message. Pass these arguments to `receiveSyncMessage()`, and keep the updated results. After receiving a sync message, you should check if you need to send new sync messages to any connected peers using the code above. In our example code below this is represented by a call to `updatePeers()`:
 
 ```js
-  const [nextBackend, nextSyncState, patch] = Automerge.Backend.receiveSyncMessage(
-    backends[docId],
-    syncStates[source][docId] || Automerge.Backend.initSyncState(),
+  const [nextDoc, nextSyncState, patch] = Automerge.receiveSyncMessage(
+    docs[docId],
+    syncStates[peerId][docId] || Automerge.initSyncState(),
     syncMessage,
   )
-  backends[docId] = nextBackend
-  syncStates[source] = { ...syncStates[source], [docId]: nextSyncState }
+  docs[docId] = nextDoc
+  syncStates[peerId] = { ...syncStates[peerId], [docId]: nextSyncState }
 
   updatePeers(docId)
-
-  if (patch) {
-    sendPatchToFrontend({ docId, patch })
-  }
 }
 ```
 
 **Applying and distributing local changes**
 
-When you create a local change to a document, simply call `generateSyncMessage()` for each peer to produce a message to send them. In general, you can use the same `updatePeers()` implementation for both receiving messages and creating local changes. You may want to rate limit or debounce these communications to reduce network traffic, but this isn't required. *Remember, after applying a local change to the backend you will need to forward the resulting patch to your frontend!*
+When you create a local change to a document, simply call `generateSyncMessage()` for each peer to produce a message to send them. In general, you can use the same `updatePeers()` implementation for both receiving messages and creating local changes. You may want to rate limit or debounce these communications to reduce network traffic, but this isn't required. *Remember, after applying a local change to the document you will need to forward the resulting patch to your frontend!*
 
 Here's a sample implementation:
 
@@ -171,12 +165,10 @@ self.addEventListener('message', (event: Event) => {
   const { docId } = data
 
   if (data.type === 'OPEN') {
-    backends[docId] = Automerge.Backend.init()
+    docs[docId] = Automerge.init()
   }
 
   if (data.type === 'LOCAL_CHANGE') {
-    const [newBackend, patch] = Automerge.Backend.applyLocalChange(backends[docId], data.payload)
-    backends[docId] = newBackend
     sendMessageToRenderer({ docId, patch })
   }
 
@@ -191,5 +183,5 @@ self.addEventListener('message', (event: Event) => {
 Remember to save your syncState object for a peer upon disconnection via `encodeSyncState()`. That might look like this:
 
 ```js
-db.storeSyncState(docId, source, encodeSyncState(syncStates[source]))
+db.storeSyncState(docId, peerId, encodeSyncState(syncStates[peerId]))
 ```
