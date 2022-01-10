@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'Build local-first software',
-    tagline: 'Automerge is a library of data structures for building collaborative applications that work offline.',
+    tagline: 'Automerge is a library of data structures for building collaborative applications.',
     url: 'https://automerge.github.io/',
     baseUrl: '/',
     onBrokenLinks: 'throw',
@@ -104,8 +104,9 @@ const config = {
                 copyright: `Copyright © ${new Date().getFullYear()} Automerge contributors. Built with Docusaurus.`
             },
             metadata: [
+                { name: 'title', content: 'Automerge'}, 
                 { name: 'keywords', content: 'documentation, local-first, crdt, offline-first, automerge' },
-                { name: 'description', content: 'Automerge is a library of data structures for building collaborative, local-first applications.' }
+                { name: 'description', content: 'Automerge is a library for building collaborative, local-first applications.' }
             ],
             prism: {
                 theme: lightCodeTheme,
