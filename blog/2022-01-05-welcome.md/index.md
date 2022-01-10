@@ -7,4 +7,4 @@ tags: [hello]
 
 You've reached the automerge docs! We're so happy to have you.
 
-We're using docasaurus. Please help edit the docs on [GitHub](https://github.com/automerge/docs)
+We're using docasaurus. Please help edit the docs on [GitHub](https://github.com/automerge/github.io).

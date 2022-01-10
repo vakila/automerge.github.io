@@ -20,4 +20,4 @@ Add todos on one side, and modify or delete them on the other side. What happene
 
 ## All done?
 
-Modify this [tutorial on GitHUb](https://github.com/automerge/docs) to improve it!
+Modify this [tutorial on GitHUb](https://github.com/automerge/automerge.github.io) to improve it!
