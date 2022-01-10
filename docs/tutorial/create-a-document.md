@@ -20,7 +20,7 @@ However, you can't just set properties on an Automerge document. With a typical 
 > obj.count = 0
 > obj.count++
 > obj
-{ count: 1}
+{ count: 1 }
 ```
 
 In contrast, Automerge documents are immutable and follow a **functional** pattern. This means that you can retrieve properties from a document, but you can't change them like you would in a typical JavaScript object. 
