@@ -116,7 +116,7 @@ function updatePeers (doc) {
 
 Now, you should be able to add and toggle todo items on both sides and see the changes!
 
-For more information about the sync protocol, and a more advanced example for multiple peers, see the [Cookbook](docs/cookbook/real-time).
+For more information about the sync protocol, and a more advanced example for multiple peers, see the [Cookbook](/docs/cookbook/real-time).
 
 ## Hints
 

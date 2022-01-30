@@ -87,7 +87,7 @@ Every peer need it's own sync state. You can initialize a new sync state using `
 syncStates[peerId][docId] = Automerge.initSyncState()
 ```
 
-Automerge keeps track of ongoing exchanges with another peer using a `syncState` data structure. During synchronization, Automerge uses a probabilistic structure known as a Bloom filter to avoid having to send the full descriptions of every local change to peers. To reduce the size and cost of this structure, it is only built for changes the other peer has not already told us they have. This is described in more detail later in the [Internals section](docs/how-it-works/sync). 
+Automerge keeps track of ongoing exchanges with another peer using a `syncState` data structure. During synchronization, Automerge uses a probabilistic structure known as a Bloom filter to avoid having to send the full descriptions of every local change to peers. To reduce the size and cost of this structure, it is only built for changes the other peer has not already told us they have. This is described in more detail later in the [Internals section](/docs/how-it-works/sync). 
 
 To maintain this structure, when a peer is discovered, first create a new `syncState` via `initSyncState()`. These `syncState` objects can be persisted between program executions as an optimization, but it is not required. All subsequent sync operations with that peer will return a new `syncState` to replace the previous one.
 
