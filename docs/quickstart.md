@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # 5 minute quick start
 
-This guide will get you up and running with Automerge in your own application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](docs/tutorial/introduction) section.
+This guide will get you up and running with Automerge in your own application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](/docs/tutorial/introduction) section.
 
 
 ## Setup
