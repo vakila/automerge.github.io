@@ -30,7 +30,7 @@ We can access the hash in the browser client as a unique identifier. For example
 
 `http://localhost:8080/#groceries` 
 
-In a production app, you will probably want to use randomly generated UUIDs, becuase it's more secure. However, having a user-generated id is fine for our prototype.
+In a production app, you will probably want to use randomly generated ids, because that would be harder to guess and more secure. However, having a user-generated id is fine for our prototype.
 
 ## Load
 
