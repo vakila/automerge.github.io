@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # Remote storage
 
-One of the key problems in local-first applications is how to save data on a remote device so it can be retrieved by collaborators. For example, if I add items to the todo list and shut my laptop, I want other people to be able to see my new items even though I went on a hike.
+One of the key problems in local-first applications is how to save data on a remote device so it can be retrieved by collaborators. For example, if I add items to the todo list and shut my laptop, I want other people to be able to see my new changes while I'm offline.
 
 There are many ways to do this. One option is to have a server peer which behaves similarly to a client peer, but is always online. This server peer can participate in the sync protocol over WebSockets, and you can use the Rust, Node.js, Python, or C Automerge libraries on the server side. It can even store these intermediate changesets in a database like MongoDB.
 
