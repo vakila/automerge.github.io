@@ -44,9 +44,9 @@ doc1 = Automerge.change(doc1, 'Add card', doc => {
   doc.cards.push({ title: 'Rewrite everything in Clojure', done: false })
   doc.cards.push({ title: 'Rewrite everything in Haskell', done: false })
 })
-// { cards: [ 
-//    { title: 'Rewrite everything in Haskell', done: false },
-//    { title: 'Rewrite everything in Clojure', done: false } ]} 
+// { cards: [
+//    { title: 'Rewrite everything in Clojure', done: false },
+//    { title: 'Rewrite everything in Haskell', done: false } ]}
 ```
 
 `Automerge.change(doc, [message], changeFn)` enables you to modify an Automerge document `doc`,
@@ -95,7 +95,7 @@ Now comes the moment of truth. Let's merge the changes again. You can also do th
 
 ```js
 let finalDoc = Automerge.merge(doc1, doc2)
-// { cards: [ { title: 'Rewrite everything in Haskell', done: true } ] }
+// { cards: [ { title: 'Rewrite everything in Clojure', done: true } ] }
 ```
 
 ## Get change history
@@ -110,13 +110,11 @@ example, we can count how many cards there were at each point:
 
 ```js
 Automerge.getHistory(finalDoc).map(state => [state.change.message, state.snapshot.cards.length])
-// [ [ 'Initialization', 0 ],
-//   [ 'Add card', 1 ],
-//   [ 'Add another card', 2 ],
+// [ [ 'Add card', 2 ],
 //   [ 'Mark card as done', 2 ],
 //   [ 'Delete card', 1 ] ]
 ```
 
 ## More
 
-If you're hungry for more, look in the [Cookbook](cookbook/modeling-data) setion.
+If you're hungry for more, look in the [Cookbook](cookbook/modeling-data) section.
