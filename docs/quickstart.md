@@ -2,27 +2,29 @@
 sidebar_position: 1
 ---
 
-# 5 minute quick start
+# 5-Minute Quick Start
 
-This guide will get you up and running with Automerge in your own application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](/docs/tutorial/introduction) section.
+This guide will get you up and running with Automerge in a JavaScript or TypeScript application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](/docs/tutorial/introduction) section.
 
 
 ## Setup
 
-Installation
+Installation from [npm](https://www.npmjs.com/package/automerge), using Node.js:
 
 ```bash
 npm install automerge ## or yarn add automerge
 ```
 
-
-## Creating a document
-
-This is how you load Automerge in Node.
-You can also use `import * as Automerge from 'automerge'` if you are using ES2015 or TypeScript.
+Then load the library as follows:
 
 ```js
 const Automerge = require('automerge')
+```
+
+If you are using ES2015 or TypeScript, import the library like this:
+
+```typescript
+import * as Automerge from 'automerge'
 ```
 
 In a browser-based app, you can load Automerge with a script tag, which will set up a global variable called `Automerge`:
@@ -31,10 +33,13 @@ In a browser-based app, you can load Automerge with a script tag, which will set
 <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/automerge@1.0.1-preview.7/dist/automerge.min.js"></script>
 ```
 
+
+## Creating a document
+
 Let's say doc1 is the application state on device 1. Further down we'll simulate a second device. We initialize the document to initially contain an empty list of cards.
 
 ```js
-const doc1 = Automerge.init()
+let doc1 = Automerge.init()
 ```
 
 Automerge follows good functional programming practice. The `doc1` object is treated as immutable -- you  never change it directly. To change it, you need to call `Automerge.change()` with a callback in which you can mutate the state. 
@@ -78,7 +83,7 @@ let doc2 = Automerge.init()
 doc2 = Automerge.merge(doc2, doc1)
 ```
 
-You can also load the document as a binary, if you want to send the document over the network in a compact format.
+You can also load the document as a binary, if you want to send the document over the network in a compact format, or if you want to save the document to disk.
 
 ```js
 let binary = Automerge.save(doc1)

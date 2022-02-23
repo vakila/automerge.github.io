@@ -12,13 +12,10 @@ To add a todo item to the list, we will call `Automerge.change`. We will make
 sure `doc.items` exists, and then add a new item to the list with `done: false`.
 
 ```js
-function addItem (doc, text) {
+function addItem(doc, text) {
   let newDoc = Automerge.change(doc, doc => {
     if (!doc.items) doc.items = []
-    doc.items.push({
-      text, 
-      done: false
-    })
+    doc.items.push({ text, done: false })
   })
   return newDoc
 }
@@ -42,10 +39,9 @@ let form = document.querySelector("form")
 let input = document.querySelector("#new-todo")
 form.onsubmit = (ev) => {
   ev.preventDefault()
-  addItem(doc, value)
+  doc = addItem(doc, input.value)
   input.value = null
 }
 ```
 
 Next, we have to render the items in the list every time an item is added.
-

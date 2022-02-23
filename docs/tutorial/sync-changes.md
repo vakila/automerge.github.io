@@ -3,7 +3,7 @@ sidebar_position: 7
 ---
 # Multi-user apps
 
-Until now, you've built an Automerge application for a single user only. But Automerge excels when there are multiple users editing a document over time, with our without the Internet or connection to each other.
+Until now, you've built an Automerge application for a single user only. But Automerge excels when there are multiple users editing a document over time, who may or may not be online at the same time.
 
 ## BroadcastChannel
 
@@ -11,10 +11,10 @@ In this tutorial, we will use a [BroadcastChannel](https://developer.mozilla.org
 
 > NOTE: BroadcastChannel is not available in IE or Safari. You must install the Safari Technical Preview or use another browser, such as Chrome, Brave, or Firefox.
 
-Each channel has it's own id. We use the `docId`, which allows us to send messages to any other browser tab or iframe that has the id.
+Each channel has its own ID. We use the `docId`, which allows us to send messages to any other browser tab or iframe that has the ID.
 
 ```js
-let docId = window.location.hash
+let docId = window.location.hash.replace(/^#/, '')
 let channel = new BroadcastChannel(docId)
 ```
 
