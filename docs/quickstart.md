@@ -18,13 +18,17 @@ npm install automerge ## or yarn add automerge
 
 ## Creating a document
 
-This is how you load Automerge in Node. In a browser, simply including the
-script tag will set up the Automerge object.
-
+This is how you load Automerge in Node.
 You can also use `import * as Automerge from 'automerge'` if you are using ES2015 or TypeScript.
 
 ```js
 const Automerge = require('automerge')
+```
+
+In a browser-based app, you can load Automerge with a script tag, which will set up a global variable called `Automerge`:
+
+```html
+<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/automerge@1.0.1-preview.7/dist/automerge.min.js"></script>
 ```
 
 Let's say doc1 is the application state on device 1. Further down we'll simulate a second device. We initialize the document to initially contain an empty list of cards.

@@ -25,7 +25,7 @@ Create an `index.html` file that includes `automerge.min.js` and `index.js`.
 ```html
 <html>
     <body>
-        <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/automerge@1.0.1-preview.0/dist/automerge.min.js"></script>
+        <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/automerge@1.0.1-preview.7/dist/automerge.min.js"></script>
         <script type="module" src="./index.js"></script>
     </body>
 </html>
