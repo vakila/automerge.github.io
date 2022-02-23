@@ -58,7 +58,7 @@ with the first example is that from Automerge's point of view, you are replacing
 concurrently update the document, Automerge will not be able to merge those changes (instead, you
 will just get a conflict on the `doc.cards` property).
 
-The second example avoids this problem by making the changes at a fine-grained level: adding one
+You can avoid this problem by making the changes at a fine-grained level: adding one
 item to the array of IDs with `ids.push(newItem.id)`, and adding one item to the map of entities
 with `entities[newItem.id] = newItem`. This code works much better, since it tells Automerge
 exactly which changes you are making to the state, and this information allows Automerge to deal

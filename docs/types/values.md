@@ -4,9 +4,9 @@ sidebar_position: 2
 
 # Values
 
-All JSON primitive datatypes are supported in an Automerge document.
+All JSON primitive datatypes are supported in an Automerge document. In addition, JavaScript [Date objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) are supported.
 
-*Remember, never modify `currentDoc` directly, only ever change `doc`!*
+*Remember, never modify `currentDoc` directly, only ever change `doc` inside the callback to `Automerge.change`!*
 
 ```js
 newDoc = Automerge.change(currentDoc, doc => {
