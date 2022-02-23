@@ -30,7 +30,7 @@ to be synced from one device to another, and brings them into the same state.
   kind of network you use. It works with any connection-oriented network protocol, which could be
   client/server (e.g. WebSocket), peer-to-peer (e.g. WebRTC), or entirely local (e.g. Bluetooth).
   Bindings to particular networking technologies are handled by separate libraries;
-  see the section on [Sending and receiving changes](#sending-and-receiving-changes) for examples.
+  see the page on [real-time collaboration](cookbook/real-time) for examples.
   It also works with unidirectional messaging: you can send an Automerge file as email attachment,
   or on a USB drive in the mail, and the recipient will be able to merge it with their version.
 - **Immutable state**. An Automerge object is an immutable snapshot of the application state at one
@@ -49,14 +49,14 @@ to be synced from one device to another, and brings them into the same state.
   [type definitions](https://github.com/automerge/automerge/blob/main/@types/automerge/index.d.ts)
   that allow you to use Automerge in a type-safe way.
 
-Automerge is designed for creating [local-first software](https://www.inkandswitch.com/local-first.html),
+Automerge is designed for creating [local-first software](https://www.inkandswitch.com/local-first/),
 i.e. software that treats a user's local copy of their data (on their own device) as primary, rather
 than centralising data in a cloud service. The local-first approach enables offline working while
 still allowing several users to collaborate in real-time and sync their data across multiple
 devices. By reducing the dependency on cloud services (which may disappear if someone stops paying
 for the servers), local-first software can have greater longevity, stronger privacy, and better
 performance, and it gives users more control over their data.
-The [essay on local-first software](https://www.inkandswitch.com/local-first.html) goes into more
+The [essay on local-first software](https://www.inkandswitch.com/local-first/) goes into more
 detail on the philosophy behind Automerge, and the pros and cons of this approach.
 
 However, if you want to use Automerge with a centralised server, that works fine too! You still get

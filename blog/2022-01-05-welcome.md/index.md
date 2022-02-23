@@ -5,6 +5,6 @@ authors: [okdistribute]
 tags: [hello]
 ---
 
-You've reached the automerge docs! We're so happy to have you.
+You've reached the Automerge docs! We're so happy to have you.
 
-We're using docasaurus. Please help edit the docs on [GitHub](https://github.com/automerge/github.io).
+We're using Docusaurus. Please help edit the docs on [GitHub](https://github.com/automerge/automerge.github.io).

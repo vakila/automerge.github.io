@@ -81,7 +81,8 @@ let binary = Automerge.save(doc1)
 let doc2 = Automerge.load(binary)
 ```
 
-Now, when both documents, we make separate (non-conflicting) changes. For handling conflicting changes, read below in [Conflicts](#conflicts).
+Now, when both documents are ready, we make separate (non-conflicting) changes. For handling conflicting changes, see the section on [conflicts](cookbook/conflicts).
+
 ```js
 doc1 = Automerge.change(doc1, 'Mark card as done', doc => {
   doc.cards[0].done = true
