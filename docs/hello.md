@@ -8,21 +8,21 @@ Automerge is a library of data structures for building collaborative
 applications. You can have a copy of the application state locally on several
 devices which may belong to the same user, or to different users. Each user can
 independently update the application state on their local device, even while
-offline, and save the state to local disk. This is similar to git, which allows
+offline, and save the state to local disk. This is similar to Git, which allows
 you to edit files and commit changes offline.
 
 * When a network connection is available, Automerge figures out which changes need
 to be synced from one device to another, and brings them into the same state. 
 
-  (Similar to git, which lets you push your own changes, and pull changes from other developers, when you are online.)
+  (Similar to Git, which lets you push your own changes, and pull changes from other developers, when you are online.)
 
 * If the state was changed concurrently on different devices, Automerge automatically merges the changes together cleanly, so that everybody ends up in the same state, and no changes are lost. 
 
-  (Different from git: **no merge conflicts to resolve!**)
+  (Different from Git: **no merge conflicts to resolve!**)
 
 * Automerge keeps track of the changes you make to the state, so that you can view old versions, compare versions, create branches, and choose when to merge them. 
 
-  (Similar to git, which allows diffing, branching, merging, and pull request workflows.)
+  (Similar to Git, which allows diffing, branching, merging, and pull request workflows.)
 
 ## Design principles
 
@@ -43,9 +43,11 @@ to be synced from one device to another, and brings them into the same state.
   central server. It is based on [academic research on JSON CRDTs](https://arxiv.org/abs/1608.03960), but
   the details of the algorithm in Automerge are different from the JSON CRDT paper, and we are
   planning to publish more detail about it in the future.
-- **Fairly portable**. We're not yet making an effort to support old platforms, but we have tested
-  Automerge in Node.js, Chrome, Firefox, Safari, MS Edge, and [Electron](https://electron.atom.io/).
-  For TypeScript users, Automerge comes with
+- **Portable**. The [JavaScript implementation](https://github.com/automerge/automerge) of
+  Automerge is compatible with Node.js, [Electron](https://electron.atom.io/), and modern browsers.
+  The [Rust implementation](https://github.com/automerge/automerge-rs) compiles to WebAssembly
+  for use in browsers, and it exposes a C API through which it can be used on iOS and other
+  platforms without requiring a JavaScript engine. For TypeScript users, Automerge comes with
   [type definitions](https://github.com/automerge/automerge/blob/main/@types/automerge/index.d.ts)
   that allow you to use Automerge in a type-safe way.
 

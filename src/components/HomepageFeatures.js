@@ -15,7 +15,7 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Network Agnostic',
+    title: 'Network-agnostic',
     Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
@@ -26,11 +26,13 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Fairly portable',
+    title: 'Portable',
     Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-      Implemented in Node.js and Rust, with FFI bindings across platforms including iOS, Electron, Chrome, Safari, Edge, Firefox, and more. 
+      Implemented in <a href="https://github.com/automerge/automerge">JavaScript</a> and <a href="https://github.com/automerge/automerge-rs">Rust</a>,
+      with FFI bindings across platforms including iOS, Electron, Chrome, Safari,
+      Edge, Firefox, and more. 
       </>
     ),
   },

@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-    title: 'Build local-first software',
+    title: 'Automerge CRDT',
     tagline: 'Automerge is a library of data structures for building collaborative applications.',
     url: 'https://automerge.github.io/',
     baseUrl: '/',
