@@ -11,12 +11,12 @@ To complete this tutorial, we assume you have a working knowledge of HTML and Ja
 
 ## What are we building?
 
-Today, you will build a simple todo list app with plain JavaScript. The resulting code from the tutorial will be less than 100 lines, and cover:
+Today, you will build a simple to-do-list app with plain JavaScript. The resulting code from the tutorial will be less than 100 lines, and cover:
 
-* Modeling a document's data model
+* Modeling application state using an Automerge document
 * Making changes to documents
-* Persisting state in IndexedDb to preserve the document after restarting the browser tab using [localforage](https://localforage.github.io/localForage/).
-* Supporting real-time collaboration in the same browser using `BroadcastChannel`
+* Persisting state in IndexedDb to preserve the document after restarting the browser tab (using [localForage](https://localforage.github.io/localForage/))
+* Supporting real-time collaboration in the same browser (using [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel))
 
 ## Setup
 
@@ -25,7 +25,7 @@ Create an `index.html` file that includes `automerge.min.js` and `index.js`.
 ```html
 <html>
     <body>
-        <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/automerge@1.0.1-preview.0/dist/automerge.min.js"></script>
+        <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/automerge@1.0.1-preview.7/dist/automerge.min.js"></script>
         <script type="module" src="./index.js"></script>
     </body>
 </html>
@@ -38,12 +38,12 @@ let doc = Automerge.init()
 console.log(doc)
 ```
 
-Once you've saved index.js, open index.html in your browser. You can use your favorite http-server, for example: 
+Because of the browser security model, you can't just open `index.html` as a local file. You will need to use a local HTTP server, for example:
 
 * `npx http-server` for Node, or 
 * `python -m SimpleHTTPServer` for Python
 
-With both of these files, you should be able to see some representation of the Automerge document in the console.
+Load the localhost page in your browser, open the JavaScript console, and you should see some representation of the Automerge document in the logs.
 
 ## React, vue, or package managers 
 

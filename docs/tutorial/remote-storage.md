@@ -8,7 +8,7 @@ One of the key problems in local-first applications is how to save data on a rem
 
 There are many ways to do this. One option is to have a server peer which behaves similarly to a client peer, but is always online. This server peer can participate in the sync protocol over WebSockets, and you can use the Rust, Node.js, Python, or C Automerge libraries on the server side. It can even store these intermediate changesets in a database like MongoDB.
 
-However, this approach can be complicated and reduce the perceived performance of the application, because of the number of round-trips involved in the sync protocol. In this tutorial we will offer an even simpler solution that will work for the majority of use cases. 
+In this tutorial we will offer a simpler solution based on file storage. 
 
 ## File
 
@@ -25,7 +25,7 @@ git clone https://gist.github.com/8577a591087f1818097da868c84c992c.git
 npm i 
 ```
 
-Or, copy and paste this file to `server.js` and install the related dependencies.
+Or, copy and paste this file to `server.js` and install the related dependencies (the npm packages [express](https://www.npmjs.com/package/express), [body-parser](https://www.npmjs.com/package/body-parser), and [cors](https://www.npmjs.com/package/cors)).
 
 ```js
 const express = require('express')
@@ -33,15 +33,14 @@ const path = require('path')
 const fs = require('fs')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const Automerge = require('automerge')
 
 let app = express()
 var options = {
 	inflate: true,
 	limit: '100kb',
 	type: 'application/octet-stream'
-};
-app.use(bodyParser.raw(options));
+}
+app.use(bodyParser.raw(options))
 
 try { 
 	fs.mkdirSync(path.join(__dirname, 'data'))
@@ -50,7 +49,6 @@ try {
 		console.error(err)
 	} 
 }
-
 
 app.use(cors())
 
@@ -76,7 +74,7 @@ app.post('/:id', (req, res) => {
 
 const port = 5000
 
-app.listen(5000, () => {
+app.listen(port, () => {
 	console.log('listening on http://localhost:' + port)
 })
 ```
@@ -103,19 +101,19 @@ function saveToRemote (docId, doc) {
 When you load the application for the first time, you want to get the item from the remote server and merge those changes locally. Automerge BinaryDocuments must be an `arrayBuffer`.
 
 ```js
-function getItem (docId) {
+async function loadFromRemote (docId) {
   const response = await fetch(`http://localhost:5000/${docId}`)
   if (response.status !== 200) throw new Error('No saved draft for doc with id=' + docId)
   const respbuffer = await response.arrayBuffer()
   if (respbuffer.byteLength === 0) throw new Error('No saved draft for doc with id=' + docId)
   const view = new Uint8Array(respbuffer)
-  return Automerge.load(view as Automerge.BinaryDocument)
+  return Automerge.load(view)
 }
 ```
 
 ## Exercise
 
-There is a bug in our implementation. There is a **race condition**. That happens when a bug appears based on the timing of actions between two or mor processes. If two devices are uploading the document in rapid succession, they could override each other's files in the remote storage server, resulting in a remote copy contains one or another's edits, but not the merged set of both user's edits. 
+There is a bug in our implementation. There is a **race condition**: if two devices are uploading the document in rapid succession, they could override each other's files in the remote storage server, resulting in the server copy containing one or the other's edits, but not the merged set of both users' edits. 
 
 Modify the server to remove this race condition. Before overriding a local file, the server should check the local filesystem for an existing copy. Use `Automerge.merge` on the incoming and local file before saving it to disk.
 
@@ -123,4 +121,4 @@ Modify the server to remove this race condition. Before overriding a local file,
 
 There are multiple ways to solve this problem, and it's very open ended. You could also solve this on the client, by fetching files and merging with them before saving to the server.
 
-In this experimental [React demo](https://github.com/alexjg/automerge-todomvc-http), you can see how a python fileserver can be used to store automerge files. You could also use a Cloud service like Amazon S3 or Digital Ocean Spaces as a remote storage location. 
+In this experimental [React demo](https://github.com/alexjg/automerge-todomvc-http), you can see how a python fileserver can be used to store Automerge files. You could also use a Cloud service like Amazon S3 or Digital Ocean Spaces as a remote storage location. 

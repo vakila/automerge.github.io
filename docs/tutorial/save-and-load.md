@@ -12,18 +12,15 @@ In this example, we will use [localforage](https://localforage.github.io/localFo
 First, add the script tag for [localforage](https://localforage.github.io/localForage/) to your index.html:
 
 ```html
-<script 
-	type="application/javascript" 
-	src="https://raw.githubusercontent.com/mozilla/localForage/master/dist/localforage.min.js">
-</script>
+<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/localforage"></script>
 ```
 
-## Document Ids
+## Document IDs
 
 Until now, your application has only one document. Now, you can assign a document id to retrieve the todo list and have multiple todo lists. This document id can be saved and transmitted in the URL of the website.
 
 ```js
-let docId = window.location.hash
+let docId = window.location.hash.replace(/^#/, '')
 ```
 
 We can access the hash in the browser client as a unique identifier. For example, if you want to make a new todo list called 'groceries', the URL would be:
@@ -37,13 +34,16 @@ In a production app, you will probably want to use randomly generated ids, becau
 When a document loads, you can check to see if you have a copy of that document id locally before initializing a new Automerge document.
 
 ```js
-let docId = window.location.hash
+let docId = window.location.hash.replace(/^#/, '')
 let binary = await localforage.getItem(docId)
+let observable = new Automerge.Observable()
+let doc
 
 if (binary) {
-	doc = Automerge.load(binary);
+  doc = Automerge.load(binary, { observable })
+  render(doc)
 } else {
-	doc = Automerge.init()
+  doc = Automerge.init({ observable })
 }
 ```
 
@@ -52,9 +52,8 @@ if (binary) {
 Every time the document changes, we can save the document using this pattern:
 
 ```js
-let docId = window.location.hash
 let binary = Automerge.save(doc)
-localforage.setItem(docId, doc).catch(err)
+localforage.setItem(docId, binary).catch(err => console.log(err))
 ```
 
 ## Exercise

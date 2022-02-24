@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-    title: 'Build local-first software',
+    title: 'Automerge CRDT',
     tagline: 'Automerge is a library of data structures for building collaborative applications.',
     url: 'https://automerge.github.io/',
     baseUrl: '/',
@@ -23,14 +23,11 @@ const config = {
             ({
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
-                    // Please change this to your repo.
                     editUrl: 'https://github.com/automerge/automerge.github.io/edit/main/',
                 },
                 blog: {
                     showReadingTime: true,
-                    // Please change this to your repo.
-                    editUrl:
-                        'https://github.com/facebook/docusaurus/edit/main/website/blog/',
+                    editUrl: 'https://github.com/automerge/automerge.github.io/edit/main/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),

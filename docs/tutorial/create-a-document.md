@@ -29,12 +29,11 @@ In contrast, Automerge documents are immutable and follow a **functional** patte
 
 Each instance of a document has an actorId. This is useful for Automerge to know which process or device is making changes. It's important that every processes has a unique actorId. Every time you make an Automerge document, it automatically generates an actorId for you.
 
-To try this out, write the actorId to the document or print it to the console using `Automerge.getActorId(doc)`.
+To try this out, print it to the console using `Automerge.getActorId(doc)`:
 
 ```js
 let doc = Automerge.init()
 let actorId = Automerge.getActorId(doc)
-document.write(actorId)
 console.log(actorId)
 ```
 
