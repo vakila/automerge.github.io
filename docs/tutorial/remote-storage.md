@@ -14,7 +14,7 @@ In this tutorial we will offer a simpler solution based on file storage.
 
 ```Automerge.save(doc)``` is a powerful tool. It serializes the Automerge document history into a compact binary format. This binary format can be saved as a file, and sent to a server, downloaded to the filesystem, put on a USB stick, or sent over email. 
 
-To do this in our tutorial, let's create a server in Node.js that has to HTTP routes: GET and PUT a file with a docId.
+To do this in our tutorial, let's create a server in Node.js that has two HTTP routes: GET and PUT a file with a docId.
 
 ## File server
 
@@ -79,41 +79,60 @@ app.listen(port, () => {
 })
 ```
 
+Then run `node server.js`, which starts a separate HTTP server (in addition to the one serving your HTML and JavaScript files).
+
 ## Uploading files
 
-You can then serialize the Automerge document to a binary and send it to the fileserver. Call this function in your `observer.observe` function so that the file is saved to the remote every time you make a change.
+You can now write a function `saveToRemote()`, which sends a serialized Automerge document to the server as an HTTP POST request. We then modify the function `updateDoc()` so that it saves the document to the server every time it changes (in addition to rendering, storing it locally in the browser, and sending it to other browser tabs).
 
 ```js
-function saveToRemote (docId, doc) {
-  let binary = Automerge.save(doc)
-  return fetch(`http://localhost:5000/${docId}`, {
+function saveToRemote(docId, binary) {
+  fetch(`http://localhost:5000/${docId}`, {
     body: binary,
     method: "post",
     headers: {
       "Content-Type": "application/octet-stream",
     }
-  })
+  }).catch(err => console.log(err))
+}
+
+function updateDoc(newDoc) {
+  doc = newDoc
+  render(newDoc)
+  let binary = Automerge.save(newDoc)
+  localforage.setItem(docId, binary).catch(err => console.log(err))
+  channel.postMessage(binary)
+  saveToRemote(docId, binary) // <-- this line is new
 }
 ```
 
 ## Download files
 
-When you load the application for the first time, you want to get the item from the remote server and merge those changes locally. Automerge BinaryDocuments must be an `arrayBuffer`.
+The following function tries to fetch a document with the current docId from the server. If successful, it unserializes the response, merges it with the document in the current browser tab, and then calls `render()` to update the todo list.
 
 ```js
-async function loadFromRemote (docId) {
+async function loadFromRemote(docId) {
   const response = await fetch(`http://localhost:5000/${docId}`)
   if (response.status !== 200) throw new Error('No saved draft for doc with id=' + docId)
   const respbuffer = await response.arrayBuffer()
   if (respbuffer.byteLength === 0) throw new Error('No saved draft for doc with id=' + docId)
   const view = new Uint8Array(respbuffer)
-  return Automerge.load(view)
+  let newDoc = Automerge.merge(doc, Automerge.load(view))
+  doc = newDoc
+  render(newDoc)
 }
+
+// Call when the app starts up
+loadFromRemote(docId)
 ```
+
+Now you should be able to open the same URL in a new browser that doesn't have the document stored locally (for example, a private/incognito window), and it should also render the todo list after fetching the Automerge document from the server.
 
 ## Exercise
 
-There is a bug in our implementation. There is a **race condition**: if two devices are uploading the document in rapid succession, they could override each other's files in the remote storage server, resulting in the server copy containing one or the other's edits, but not the merged set of both users' edits. 
+In this implementation, the server does not push any updates to clients; if the file changes on the server, clients don't find out until they next run `loadFromRemote()`. As an exercise, you can replace the HTTP server with a WebSocket server, and when one client sends an update to the server, it is pushed to all other connected clients.
+
+Moreover, there is a bug in our implementation. There is a **race condition**: if two devices are uploading the document in rapid succession, they could override each other's files in the remote storage server, resulting in the server copy containing one or the other's edits, but not the merged set of both users' edits. 
 
 Modify the server to remove this race condition. Before overriding a local file, the server should check the local filesystem for an existing copy. Use `Automerge.merge` on the incoming and local file before saving it to disk.
 
@@ -121,4 +140,4 @@ Modify the server to remove this race condition. Before overriding a local file,
 
 There are multiple ways to solve this problem, and it's very open ended. You could also solve this on the client, by fetching files and merging with them before saving to the server.
 
-In this experimental [React demo](https://github.com/alexjg/automerge-todomvc-http), you can see how a python fileserver can be used to store Automerge files. You could also use a Cloud service like Amazon S3 or Digital Ocean Spaces as a remote storage location. 
+In this experimental [React demo](https://github.com/alexjg/automerge-todomvc-http), you can see how a Python fileserver can be used to store Automerge files. You could also use a Cloud service like Amazon S3 or Digital Ocean Spaces as a remote storage location. 

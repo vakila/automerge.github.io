@@ -23,7 +23,17 @@ However, you can't just set properties on an Automerge document. With a typical 
 { count: 1 }
 ```
 
-In contrast, Automerge documents are immutable and follow a **functional** pattern. This means that you can retrieve properties from a document, but you can't change them like you would in a typical JavaScript object. 
+In contrast, Automerge documents are immutable and follow a **functional** pattern. This means that you can retrieve properties from a document, but you can't change them like you would in a typical JavaScript object. Instead, you need to use `Automerge.change()`, which we discuss in the [next section](make-a-change).
+
+Let's store the current document in a global variable `doc`, which is initialized as shown above. We also define a function that we call whenever the document changes:
+
+```js
+function updateDoc(newDoc) {
+  doc = newDoc
+}
+```
+
+For now, the function only updates the global variable `doc`, but later we will add more code to this function.
 
 ## ActorId
 
@@ -47,4 +57,21 @@ We want to build a todo list, which will have the following requirements:
 * Each item has: a text box, boolean checkmark
 * An input box to add another item 
 
-When the document is first created, it has no schema. Automerge documents, unlike SQL databases, do not have a fixed schema that you set at the beginning. Instead, we make changes to those documents over time. See the next section to make your first change.
+To store the state of the todo list, we can use a JSON structure like this:
+
+```js
+{
+  "items": [
+    {
+      "text": "water the plants",
+      "done": false
+    },
+    {
+      "text": "feed the cat",
+      "done": true
+    }
+  ]
+}
+```
+
+When the document is first created, it has no schema. Automerge documents, unlike SQL databases, do not have a fixed schema that you set at the beginning. Instead, we set up the document structure by making changes to the Automerge document over time. See the next section to make your first change.

@@ -1,7 +1,7 @@
 ---
 sidebar_position: 6
 ---
-# Save and Load
+# Save and load
 
 One of the most important things people expect in an app is that if they refresh the browser tab, their todo list won't disappear. To do this, we must serialize the Automerge document into a format that can be saved on disk. You could use anything, from localStorage to MongoDB to the filesystem to store these Automerge binaries.
 
@@ -27,37 +27,34 @@ We can access the hash in the browser client as a unique identifier. For example
 
 `http://localhost:8080/#groceries` 
 
-In a production app, you will probably want to use randomly generated ids, because that would be harder to guess and more secure. However, having a user-generated id is fine for our prototype.
+In a production app, you will probably want to use randomly generated ids, because that would be harder to guess and more secure. However, having a user-generated ID is fine for our prototype.
 
 ## Load
 
-When a document loads, you can check to see if you have a copy of that document id locally before initializing a new Automerge document.
+When the page loads, you can check to see if you have a stored document for the document ID in the URL. You can then load and render that document like this:
 
 ```js
 let docId = window.location.hash.replace(/^#/, '')
 let binary = await localforage.getItem(docId)
-let observable = new Automerge.Observable()
-let doc
+let doc = Automerge.init()
 
 if (binary) {
-  doc = Automerge.load(binary, { observable })
+  doc = Automerge.load(binary)
   render(doc)
-} else {
-  doc = Automerge.init({ observable })
 }
 ```
 
 ## Save
 
-Every time the document changes, we can save the document using this pattern:
+Every time the document changes, we can save the document. We can do this by adding the code for saving to the `updateDoc()` function:
 
 ```js
-let binary = Automerge.save(doc)
-localforage.setItem(docId, binary).catch(err => console.log(err))
+function updateDoc(newDoc) {
+  doc = newDoc
+  render(newDoc)
+  let binary = Automerge.save(newDoc)
+  localforage.setItem(docId, binary).catch(err => console.log(err))
+}
 ```
 
-## Exercise
-
-Every time the document is changed, save it in localforage. You can do this by calling `Automerge.save` as part of the callback to `observer.observe(doc, cb)`.
-
-You'll know you did it correctly if you can add some items to the list and refresh the browser, and the items don't disappear.
+Now you can add some items to the list and refresh the browser tab, and the items won't disappear.

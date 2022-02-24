@@ -1,7 +1,7 @@
 ---
 sidebar_position: 10
 ---
-# Extra Credit
+# Extra credit
 
 You did it! Now, you should have a general understanding about how to create an interactive, multi-user app that saves data to the local machine using Automerge. 
 
