@@ -1,9 +1,9 @@
 ---
 sidebar_position: 4
 ---
-# Make a Change
+# Make a change
 
-In our MVP of the todo app, users will need two main interactions:
+In our minimalist todo app, users will need two main interactions:
 
 * Add a todo item
 * Toggle a todo item as complete or not complete
@@ -12,19 +12,20 @@ To add a todo item to the list, we will call `Automerge.change`. We will make
 sure `doc.items` exists, and then add a new item to the list with `done: false`.
 
 ```js
-function addItem(doc, text) {
+function addItem(text) {
   let newDoc = Automerge.change(doc, doc => {
     if (!doc.items) doc.items = []
     doc.items.push({ text, done: false })
   })
-  return newDoc
+  updateDoc(newDoc)
 }
 ```
 
-We return the new document from this function. Because Automerge is functional,
-each document is immutable. The `newDoc` is now the document that should be
-referenced after this change is made. The older document becomes stale and
-cannot be used anymore.
+Because Automerge is functional, each document is immutable. `Automerge.change` does
+not modify the document you pass in, but it returns a `newDoc` which reflects the
+change you just made. We then call `updateDoc()` as defined
+[in the last section](create-a-document) to update the global variable `doc` with
+the latest document state. The old state of the document is not used anymore.
 
 Now, let's create an input element in the HTML so that items can be added to the list.
 
@@ -39,7 +40,7 @@ let form = document.querySelector("form")
 let input = document.querySelector("#new-todo")
 form.onsubmit = (ev) => {
   ev.preventDefault()
-  doc = addItem(doc, input.value)
+  addItem(input.value)
   input.value = null
 }
 ```
