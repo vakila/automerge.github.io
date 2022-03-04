@@ -17,7 +17,7 @@ We believe on the whole there's an art to the granularity of data that is univer
 
 ## TypeScript support
 
-Given that you have a document, how can you create safety rails for it's data integrity? In a typical SQL database, a table would have it's own schema, and you create one-way migrations for application versions. Automerge is flexible on the schema, and will let you add and remove properties and values at will. To improve the programming experience, a Document can be typed to have it's own schema using TypeScript.
+Given that you have a document, how can you create safety rails for its data integrity? In a typical SQL database, a table would have it's own schema, and you create migrations from one schema version to the next. Automerge is flexible on the schema, and will let you add and remove properties and values at will. To improve the programming experience, a document can be typed to have it's own schema using TypeScript.
 
 ```js
 type D = { 
@@ -136,7 +136,7 @@ Some further ideas on safe schema migrations in CRDT apps are discussed in the [
 
 Automerge documents hold their entire change histories. It is fairly performant, and can handle a significant amount of data in a single document's history.  Performance depends very much on your workload, so we strongly suggest you do your own measurements with the type and quantity of data that you will have in your app. 
 
-Some developers have proposed “garbage collecting” large documents. If a document gets to a certain size, a central authority could emit a message to each peer that it would like to reduce it in size and only save the history from a specific change (hash). Martin Kleppman did some experiments with a benchmark document to see how much space would be saved by discarding history, with and without preserving tombstones. See [this video at 55 minutes in](https://youtu.be/x7drE24geUw?t=3289). The savings are not all that great, which is why we haven't prioritised history truncation so far. 
+Some developers have proposed “garbage collecting” large documents. If a document gets to a certain size, a central authority could emit a message to each peer that it would like to reduce it in size and only save the history from a specific change (hash). Martin Kleppmann did some experiments with a benchmark document to see how much space would be saved by discarding history, with and without preserving tombstones. See [this video at 55 minutes in](https://youtu.be/x7drE24geUw?t=3289). The savings are not all that great, which is why we haven't prioritised history truncation so far. 
 
-Typically, performance improvements can come at the networking level. You can set up a single connection (between peers or client-server) and sync many docs over a single connection. The basic idea is to tag each message with the ID of the document it belongs to. There are possible ways of optimising this if necessary. In general, having fewer documents that a client must load over the network or into memory at any given time will reduce the syncronization and startup time for your application. 
+Typically, performance improvements can come at the networking level. You can set up a single connection (between peers or client-server) and sync many docs over a single connection. The basic idea is to tag each message with the ID of the document it belongs to. There are possible ways of optimising this if necessary. In general, having fewer documents that a client must load over the network or into memory at any given time will reduce the synchronization and startup time for your application. 
 

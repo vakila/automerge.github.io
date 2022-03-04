@@ -8,7 +8,7 @@ An observable is an object that can be initialized to watch the state of a
 document. When a document changes, the callback will fire with the diff and
 changes that were applied to that document.
 
-When you want to observe the changes in a document, pass an observable instrance to `Automerge.init`:
+When you want to observe the changes in a document, pass an observable instance to `Automerge.init`:
 
 ```js
 let observable = new Automerge.Observable()

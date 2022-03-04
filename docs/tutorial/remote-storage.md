@@ -140,4 +140,4 @@ Modify the server to remove this race condition. Before overriding a local file,
 
 There are multiple ways to solve this problem, and it's very open ended. You could also solve this on the client, by fetching files and merging with them before saving to the server.
 
-In this experimental [React demo](https://github.com/alexjg/automerge-todomvc-http), you can see how a Python fileserver can be used to store Automerge files. You could also use a Cloud service like Amazon S3 or Digital Ocean Spaces as a remote storage location. 
+In this experimental [React demo](https://github.com/alexjg/automerge-todomvc-http), you can see how a Python file server can be used to store Automerge files. You could also use a Cloud service like Amazon S3 or Digital Ocean Spaces as a remote storage location. 

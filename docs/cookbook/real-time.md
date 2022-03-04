@@ -34,7 +34,7 @@ let [newDoc, patch] = Automerge.applyChanges(currentDoc, changes)
 ```
 
 Note that `Automerge.getChanges(oldDoc, newDoc)` takes two documents as arguments: an old state and
-a new state. It then returns a list of all the changes that were made in `newDoc` since `oldDoc`.
+a new state. It then returns a list of all the changes that were made in `newDoc` since `oldDoc`. If you only need the last change you just made, you can call `Automerge.getLastLocalChange(newDoc)`, which is faster.
 
 The counterpart, `Automerge.applyChanges(oldDoc, changes)` applies the list of `changes` to the
 given document, and returns a new document with those changes applied. Automerge guarantees that
@@ -44,16 +44,16 @@ and it is the essence of what Automerge is all about.
 
 `Automerge.merge(doc1, doc2)` is a related function that is useful for testing. It looks for any
 changes that appear in `doc2` but not in `doc1`, and applies them to `doc1`, returning an updated
-version of `doc1`. This function requires that `doc1` and `doc2` have different actor IDs (that is,
-they originated from different calls to `Automerge.init()`).
+version of `doc1`.
 
 ## Sync protocol
 
-In the case that document history is quite large, and two devices are online at the same time, we want to only send the subset of changes that are relevant. The Automerge sync protocol is designed to help with this process. The Automerge sync protocol brings two documents into sync by exchanging messages between peers until both documents have the same contents. The protocol can run on top of any connection-based network link that supports bidirectional messages, including WebSocket, WebRTC, or plain TCP. It can be used in any network topology: client/server, peer-to-peer, or server-to-server sync are all supported.
+In the case that document history is quite large, and two devices are online at the same time, we want to only send the subset of changes that are relevant. The Automerge sync protocol is designed to help with this process. The Automerge sync protocol brings two documents into sync by exchanging messages between peers until both documents have the same contents. The protocol can run on top of any connection-based network link that supports bidirectional messages, including WebSocket, WebRTC, or plain TCP. It can be used in any network topology: client/server, peer-to-peer, or server-to-server sync are all supported. However, it only works for one-to-one communication between two devices; it is not suitable for broadcast or multicast communication, where one message goes to multiple recipients.
 
-The protocol works by exchanging rounds of sync messages. These sync messages contain two parts: 
- * a lossily-compressed list of changes it already has (implicitly requesting the remainder)
- * changes it believe the other peer needs
+The protocol is explained [in this blog post](https://martin.kleppmann.com/2020/12/02/bloom-filter-hash-graph-sync.html) and [this documentation page](../how-it-works/sync). It works by exchanging rounds of sync messages, which contain two parts: 
+
+ * a lossily-compressed list of changes that the sender already has (implicitly requesting any changes it does not have);
+ * changes it believe the other peer needs.
 
 On connection, each peer should start the exchange with an initial message via `generateSyncMessage(doc, syncState)`. This first message generally does not include changes, but provides the recipient with the information it needs to determine which changes it should send. Upon receiving any message, a peer should always call `receiveSyncMessage(doc, syncState, message)`. This will update the `syncState` with the information necessary to calculate what changes to send, and also cause Automerge to apply any changes it received. The developer can now call `generateSyncMessage(doc, syncState)` to produce the next message to a peer. 
 
@@ -81,7 +81,7 @@ const docs = {} // a hash by [docId] of current documents
 
 **Connecting**
 
-Every peer need it's own sync state. You can initialize a new sync state using `initSyncState()`.
+Every connection to a peer need its own sync state. You can initialize a new sync state using `initSyncState()`.
 
 ```js
 syncStates[peerId][docId] = Automerge.initSyncState()
@@ -142,12 +142,11 @@ Receiving sync messages requires the document, syncState, and incoming message. 
   syncStates[peerId] = { ...syncStates[peerId], [docId]: nextSyncState }
 
   updatePeers(docId)
-}
 ```
 
 **Applying and distributing local changes**
 
-When you create a local change to a document, simply call `generateSyncMessage()` for each peer to produce a message to send them. In general, you can use the same `updatePeers()` implementation for both receiving messages and creating local changes. You may want to rate limit or debounce these communications to reduce network traffic, but this isn't required. *Remember, after applying a local change to the document you will need to forward the resulting patch to your frontend!*
+When you create a local change to a document, simply call `generateSyncMessage()` for each peer to produce a message to send them. In general, you can use the same `updatePeers()` implementation for both receiving messages and creating local changes. You may want to rate limit or debounce these communications to reduce network traffic, but this isn't required.
 
 Here's a sample implementation:
 

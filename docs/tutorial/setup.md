@@ -15,7 +15,7 @@ Today, you will build a simple to-do-list app with plain JavaScript. The resulti
 
 * Modeling application state using an Automerge document
 * Making changes to documents
-* Persisting state in IndexedDb to preserve the document after restarting the browser tab (using [localForage](https://localforage.github.io/localForage/))
+* Persisting state in IndexedDB to preserve the document after restarting the browser tab (using [localForage](https://localforage.github.io/localForage/))
 * Supporting real-time collaboration in the same browser (using [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel))
 
 ## Setup
@@ -55,6 +55,3 @@ import * as Automerge from 'automerge'
 let doc = Automerge.init()
 console.log(doc)
 ```
-
-
-
