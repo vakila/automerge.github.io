@@ -32,90 +32,105 @@ let doc = Automerge.change<D>(Automerge.init(), (doc: D) => {
 })
 ```
 
-## Merging two disjointed documents 
+## Setting up an initial document structure
 
-Few applications have multiple documents that need to be merged together at will. For example, in a Kanban-style app, if you wanted to merge two boards into one board, you can't do that unless the boards come from a common ancestor. To enable this use case, you can create a root change that two documents share. 
+When you create a document using `Automerge.init()`, it's just an empty JSON document with no properties. As the first change, most applications will need to initialize some empty collection objects that are expected to be present within the document.
 
-To create an initial root change for your Automerge document, you can make a change that has the same hash every time it is created. We do this by setting the actorId to a static string `'0000'` and setting the time to always be 0.
+The easiest way of doing this is with a call to `Automerge.change()` that sets up the document schema in the form that you need it, like in the code sample above. You can then [sync](real-time) this initial change to all of your devices; once everybody has the schema, you can have different users updating the document on different devices, and the updates should merge nicely. For example:
 
 ```js
-let doc = Automerge.init('0000', {time: 0})
+// Set up the `cards` array in doc1
+let doc1 = Automerge.change(Automerge.init(), doc => {
+  doc.cards = []
+})
+
+// In doc2, don't create `cards` again! Instead, merge
+// the schema initialization from doc1
+let doc2 = Automerge.merge(Automerge.init(), doc1)
+
+// Now we can update both documents
+doc1 = Automerge.change(doc1, doc => {
+  doc.cards.push({ title: 'card1' })
+})
+
+doc2 = Automerge.change(doc2, doc => {
+  doc.cards.push({ title: 'card2' })
+})
+
+// The merged document will contain both cards
+doc1 = Automerge.merge(doc1, doc2)
+doc2 = Automerge.merge(doc2, doc1)
 ```
 
-We then modify this document to create the initial values for all of the types in the document.
+However, sometimes it's inconvenient to have to sync the initial change to a device before you can modify the document on that device. If you want two devices to be able to independently set up their own document schema, but still to be able to merge those documents, you have to be careful. Simply doing `Automerge.change()` on each device to initialize the schema **will not work**, because you now have two different documents with no shared ancestry (even if the initial change performs the same operations, each device has a different actorId and so the changes will be different).
+
+If you really must initialize each device's copy of a document independently, there are some hacks you can use. One option is to do the initial `Automerge.change()` once to set up your schema, then call `Automerge.getLastLocalChange()` on the document (which returns a byte array), and *hard-code that byte array into your application*. Now, on each device that needs to initialize a document, you do this:
 
 ```js
-type D = { 
-  count: Automerge.Counter,
-  text: Automerge.Text,
-  cards: [] 
-}
-let schema = Automerge.change<D>(Automerge.init('0000', {time: 0}), (doc: D) => {
+// hard-code the initial change here
+const initChange = new Uint8Array([133, 111, 74, 131, ...])
+let [doc] = Automerge.applyChanges(Automerge.init(), [initChange])
+```
+
+This will set you up with a document whose initial change is the one you hard-coded. Any documents you set up with the same initial change will be able to merge.
+
+There is an alternative hack you can use, if you know what you are doing (be careful, this can easily go wrong). Instead of hard-coding a byte array, you can create a change with a hard-coded actorId and a hard-coded timestamp. If two devices perform exactly identical operations with the same actorId and the same timestamp, they will generate changes that are byte-for-byte identical, and which therefore will have the same hash. This way, you can also set up documents with the same initial change.
+
+To hard-code the actorId and timestamp, you can use the following code:
+
+```js
+let schema = Automerge.change(Automerge.init({actorId: '0000'}), {time: 0}, doc => {
   doc.count = new Automerge.Counter()
   doc.text = new Automerge.Text()
   doc.cards = []
 })
+let initChange = Automerge.getLastLocalChange(schema)
 ```
 
-> NOTE: You only have to create this initial change the first time the document loads. You can check if you have a local document already before making this initial document.
-
-Great, now we have an initial document that represents the base schema of our data model. But because we initialized this Automerge document with a fixed actorId, we need to create a new document that has a random id. We don't want all of our resulting changes to be with the actorId `0000`, because that should be reserved for the initial change only.
+Now `initChange` is a byte array as before. You cannot use the document `schema` for any further changes, because it has a fixed actorId, and it's an error to have multiple users with the same actorId. Instead, you can now make a new document with `Automerge.init()` and `initChange` as before:
 
 ```js
-let change = Automerge.getLastLocalChange(schema)
-const [ doc , ]= Automerge.applyChanges(Automerge.init<D>(), [change])
-```
-
-The full resulting code is:
-
-```js
-function createFrozenAncestor()  {
-  let schema = Automerge.change<D>(Automerge.init('0000', {time: 0}), (doc: D) => {
-    doc.count = new Automerge.Counter()
-    doc.text = new Automerge.Text()
-    doc.cards = []
-  })
-  let change = Automerge.getLastLocalChange(schema)
-  const [ doc , ]= Automerge.applyChanges(Automerge.init<D>(), [change])
-  return doc
-}
+let [doc] = Automerge.applyChanges(Automerge.init(), [initChange])
 ```
 
 Now, `doc` is initialized and ready to be used as any other Automerge document. You can save that document to disk as you would normally with `Automerge.save(doc)` and load it later when your app starts.
 
+> NOTE: You only have to create this initial change the first time the document loads. You can check if you have a local document already before making this initial document.
 
 ## Versioning
 
 Often, there comes a time in the production lifecycle where you will need to change the schema of a document. Because Automerge uses a JSON document model, it's similar to a NoSQL database, where properties can be arbitrarily removed and added at will. 
 
-However, we strongly recommend versioning your documents. This allows you to detect older document versions and modify, upgrade, or migrate those documents on the fly. This also provides some enforcement of schema versions. All merged documents will have to be children of the initial document. If the initial document schema changes, you will need to migrate the older document to the new document. 
+You can implement your own versioning scheme, for example by embedding a schema version number into the document, and writing a function that can upgrade a document from one schema version to the next. However, doing this in a CRDT like Automerge is more difficult than migrations in a centralized relational database, because it could happen that two users independently perform the same migration. In this case, you need to ensure that the two migrations don't clash with each other, which is difficult.
 
-For example, if you change the `cards` property in the above example to an `Automerge.Table`, users who upgrade to the latest version of the application may see unexpected behavior. Below is an example of adding versions to your documents. 
+One way of making migrations safe is by using the tricks from the previous section: in addition to hard-coding the initial change that sets up the document, you can also hard-code migrations that upgrade from one schema version to the next, using the same technique (either hard-coding the change as a byte array, or making a change on the fly with hard-coded actorId and timestamp). Do not modify the initial change; instead, every migration should be a separate hard-coded change that depends only on the preceding change. This way, you can have multiple devices independently applying the same migration, and they will all be compatible because the migration is performed identically on every device.
+
 
 ```js
-type D = { 
+type DocV1 = { 
   version: 1,
-  count: Automerge.Counter,
-  text: Automerge.Text,
-  cards: []
+  cards: Card[]
 }
 
-type E = { 
+type DocV2 = { 
   version: 2,
-  count: Automerge.Counter,
-  text: Automerge.Text,
-  cards: Automerge.Table
+  title: Automerge.Text,
+  cards: Card[]
 }
 
-let doc1 = getDocumentFromNetwork()
-let doc2 = localDocument()
+// This change creates the `title` property requried in V2,
+// and updates the `version` property from 1 to 2
+const migrateV1toV2 = new Uint8Array([133, 111, 74, 131, ...])
 
-if (doc1.version === 1) {
-  doc1 = migrate(doc1)
+let doc = getDocumentFromNetwork()
+if (doc.version === 1) {
+  [doc] = Automerge.applyChange(doc, [migrateV1toV2])
 }
 ```
 
-This is heavily dependent upon your user experience requirements and your data model. In some cases, you may want to enforce that users are on the most up-to-date version of the application. In other cases, it is important that the application never prevents the user from editing the database on the local machine, even in the case where the application is out of date. However, this is overall an understudied area of CRDTs that needs more work -- hopefully from you! Ink & Switch wrote about this topic in the [Cambria](https://www.inkandswitch.com/cambria) paper, and there is still much left to do to make nicer primitives for developers to use, rather than handcrafting each migration.
+Also keep in mind that in your app there might be some users using an old version of the app while other users are using a newer version; you will need to take care with migrations to ensure that they do not break compatibility with older app versions, or force all users to update to the latest version.
+
+Some further ideas on safe schema migrations in CRDT apps are discussed in the [Cambria](https://www.inkandswitch.com/cambria) paper, but these are not yet implemented in Automerge. If you want to work on improving schema migrations in Automerge, please get in touch — contributions are welcome!
 
 ## Performance
 
