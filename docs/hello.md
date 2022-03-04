@@ -18,7 +18,7 @@ to be synced from one device to another, and brings them into the same state.
 
 * If the state was changed concurrently on different devices, Automerge automatically merges the changes together cleanly, so that everybody ends up in the same state, and no changes are lost. 
 
-  (Different from Git: **no merge conflicts to resolve!**)
+  (Git only supports merging of plain text; Automerge allows complex file formats to be merged automatically.)
 
 * Automerge keeps track of the changes you make to the state, so that you can view old versions, compare versions, create branches, and choose when to merge them. 
 
@@ -40,9 +40,8 @@ to be synced from one device to another, and brings them into the same state.
   [Redux](http://redux.js.org/), for example.
 - **Automatic merging**. Automerge is a _Conflict-Free Replicated Data Type_ ([CRDT](https://crdt.tech/)),
   which allows concurrent changes on different devices to be merged automatically without requiring any
-  central server. It is based on [academic research on JSON CRDTs](https://arxiv.org/abs/1608.03960), but
-  the details of the algorithm in Automerge are different from the JSON CRDT paper, and we are
-  planning to publish more detail about it in the future.
+  central server. The conflict resolution approach is described
+  [in the documentation](cookbook/conflicts).
 - **Portable**. The [JavaScript implementation](https://github.com/automerge/automerge) of
   Automerge is compatible with Node.js, [Electron](https://electron.atom.io/), and modern browsers.
   The [Rust implementation](https://github.com/automerge/automerge-rs) compiles to WebAssembly

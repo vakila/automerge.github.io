@@ -13,20 +13,19 @@ straightforward to combine those changes.
 
 If users concurrently insert or delete items in a list (or characters in a text document), Automerge
 preserves all the insertions and deletions. If two users concurrently insert at the same position,
-Automerge will arbitrarily place one of the insertions first and the other second, while ensuring
-that the final order is the same on all nodes.
+Automerge will ensure that on all nodes the inserted items are placed in the same order.
 
 The only case Automerge cannot handle automatically, because there is no well-defined resolution, is
 **when users concurrently update the same property in the same object** (or, similarly, the same
-index in the same list). In this case, Automerge arbitrarily picks one of the concurrently written
-values as the "winner":
+index in the same list). In this case, Automerge picks one of the concurrently written
+values as the "winner", and it ensures that this winner is the same on all nodes:
 
 ```js
-// Initialize documents with known actor IDs
-let doc1 = Automerge.change(Automerge.init('actor-1'), doc => {
+// Create two different documents
+let doc1 = Automerge.change(Automerge.init(), doc => {
   doc.x = 1
 })
-let doc2 = Automerge.change(Automerge.init('actor-2'), doc => {
+let doc2 = Automerge.change(Automerge.init(), doc => {
   doc.x = 2
 })
 doc1 = Automerge.merge(doc1, doc2)
