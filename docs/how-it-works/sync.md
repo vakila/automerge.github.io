@@ -1,18 +1,17 @@
 # Sync Protocol 
 
-The Automerge network sync protocol is designed to bring two documents into sync by exchanging messages between peers until both documents have the same contents. The protocol can run on top of any connection-based network link that supports bidirectional messages, including WebSocket, WebRTC, or plain TCP. It can be used in any network topology: client/server, peer-to-peer, or server-to-server sync are all supported.
+The Automerge network sync protocol is designed to bring two documents into sync by exchanging messages between peers until both documents have the same contents. The protocol can run on top of any connection-based network link that supports bidirectional messages, including WebSocket, WebRTC, or plain TCP. It can be used in any network topology: client/server, peer-to-peer, or server-to-server sync are all supported. However, it only works for one-to-one communication between two devices; it is not suitable for broadcast or multicast communication, where one message goes to multiple recipients.
 
-The protocol works by exchanging rounds of sync messages. These sync messages contain two parts: 
- * a lossily-compressed list of changes it already has (implicitly requesting the remainder)
- * changes it believe the other peer needs
+The protocol is described in [this paper](https://arxiv.org/abs/2012.00472) and [this blog post](https://martin.kleppmann.com/2020/12/02/bloom-filter-hash-graph-sync.html). It works by exchanging rounds of sync messages, which contain two parts: 
 
-Each node will also maintain a local `syncState` for each peer they want to synchronize with, which keeps track of what the local node knows about that peer. This sync state has to be kept around during synchronization, and can be saved to disk between executions as a performance optimization, but will be automatically regenerated if the protocol detects any problems.
+ * a lossily-compressed list of changes that the sender already has (implicitly requesting any changes it does not have);
+ * changes it believe the other peer needs.
 
-On connection, each peer should start the exchange with an initial message via `generateSyncMessage(doc, syncState)`. This first message generally does not include changes, but provides the recipient with the information it needs to determine which changes it should send. Upon receiving any message, a peer should always call `receiveSyncMessage(doc, syncState, message)`. This will update the `syncState` with the information necessary to calculate what changes to send, and also cause Automerge to apply any changes it received. The developer can now call `generateSyncMessage(doc, syncState)` to produce the next message to a peer. 
+Each node also maintains a local `syncState` for each peer they want to synchronize with, which keeps track of what the local node knows about that peer. This sync state has to be kept around during synchronization, and can be saved to disk between executions as a performance optimization, but will be automatically regenerated if the protocol detects any problems.
+
+On connection, each peer should start the exchange with an initial message via `generateSyncMessage(doc, syncState)`. This first message generally does not include changes, but provides the recipient with the information it needs to determine which changes it should send. Upon receiving any message, a peer should always call `receiveSyncMessage(doc, syncState, message)`. This will update the `syncState` with the information necessary to calculate what changes to send, and also cause Automerge to apply any changes it received. You can then call `generateSyncMessage(doc, syncState)` to produce the next message to a peer. 
 
 From then on, a peer should continue to call these functions until `generateSyncMessage()` returns a `null` value, indicating both peers are synchronized and no further communication is necessary.
-
-The algorithm is described in more detail in [this paper](https://arxiv.org/abs/2012.00472) and [this blog post](https://martin.kleppmann.com/2020/12/02/bloom-filter-hash-graph-sync.html).
 
 ### The first exchanges
 If we don't already have any existing sync state with a peer, the first call to `generateSyncMessage()` will create a Bloom filter which contains encoded hashes of all the changes in the document. The recipient of this message will walk their local graph of changes backwards from each "head" in their document until the Bloom filter indicates the other peer has the change in question. Everything from that point forward is collected and sent in a response message -- along with a new bloom filter so the other peer can reciprocate.
