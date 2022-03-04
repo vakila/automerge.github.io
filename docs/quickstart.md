@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # 5-Minute Quick Start
 
-This guide will get you up and running with Automerge in a JavaScript or TypeScript application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](/docs/tutorial/introduction) section.
+This guide will get you up and running with Automerge in a JavaScript or TypeScript application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](/docs/tutorial/introduction/) section.
 
 
 ## Setup
@@ -71,7 +71,7 @@ unmodified. The only special things about it are:
   - Every object has a unique ID, which you can get by passing the object to the
     `Automerge.getObjectId()` function. This ID is used by Automerge to track which object is which.
   - Objects also have information about _conflicts_, which is used when several users make changes to
-    the same property concurrently (see [conflicts](cookbook/conflicts)). 
+    the same property concurrently (see [conflicts](/docs/cookbook/conflicts/)). 
 
 ## Merging documents
 
@@ -90,7 +90,7 @@ let binary = Automerge.save(doc1)
 let doc2 = Automerge.load(binary)
 ```
 
-Now, when both documents are ready, we make separate (non-conflicting) changes. For handling conflicting changes, see the section on [conflicts](cookbook/conflicts).
+Now, when both documents are ready, we make separate (non-conflicting) changes. For handling conflicting changes, see the section on [conflicts](/docs/cookbook/conflicts/).
 
 ```js
 doc1 = Automerge.change(doc1, 'Mark card as done', doc => {
@@ -127,4 +127,4 @@ Automerge.getHistory(finalDoc).map(state => [state.change.message, state.snapsho
 
 ## More
 
-If you're hungry for more, look in the [Cookbook](cookbook/modeling-data) section.
+If you're hungry for more, look in the [Cookbook](/docs/cookbook/modeling-data/) section.

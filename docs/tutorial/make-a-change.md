@@ -24,7 +24,7 @@ function addItem(text) {
 Because Automerge is functional, each document is immutable. `Automerge.change` does
 not modify the document you pass in, but it returns a `newDoc` which reflects the
 change you just made. We then call `updateDoc()` as defined
-[in the last section](create-a-document) to update the global variable `doc` with
+[in the last section](/docs/tutorial/create-a-document/) to update the global variable `doc` with
 the latest document state. The old state of the document is not used anymore.
 
 Now, let's create an input element in the HTML so that items can be added to the list.

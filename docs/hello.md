@@ -30,7 +30,7 @@ to be synced from one device to another, and brings them into the same state.
   kind of network you use. It works with any connection-oriented network protocol, which could be
   client/server (e.g. WebSocket), peer-to-peer (e.g. WebRTC), or entirely local (e.g. Bluetooth).
   Bindings to particular networking technologies are handled by separate libraries;
-  see the page on [real-time collaboration](cookbook/real-time) for examples.
+  see the page on [real-time collaboration](/docs/cookbook/real-time/) for examples.
   It also works with unidirectional messaging: you can send an Automerge file as email attachment,
   or on a USB drive in the mail, and the recipient will be able to merge it with their version.
 - **Immutable state**. An Automerge object is an immutable snapshot of the application state at one
@@ -41,7 +41,7 @@ to be synced from one device to another, and brings them into the same state.
 - **Automatic merging**. Automerge is a _Conflict-Free Replicated Data Type_ ([CRDT](https://crdt.tech/)),
   which allows concurrent changes on different devices to be merged automatically without requiring any
   central server. The conflict resolution approach is described
-  [in the documentation](cookbook/conflicts).
+  [in the documentation](/docs/cookbook/conflicts/).
 - **Portable**. The [JavaScript implementation](https://github.com/automerge/automerge) of
   Automerge is compatible with Node.js, [Electron](https://electron.atom.io/), and modern browsers.
   The [Rust implementation](https://github.com/automerge/automerge-rs) compiles to WebAssembly

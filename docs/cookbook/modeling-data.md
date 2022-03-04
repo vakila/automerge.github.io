@@ -36,7 +36,7 @@ let doc = Automerge.change<D>(Automerge.init(), (doc: D) => {
 
 When you create a document using `Automerge.init()`, it's just an empty JSON document with no properties. As the first change, most applications will need to initialize some empty collection objects that are expected to be present within the document.
 
-The easiest way of doing this is with a call to `Automerge.change()` that sets up the document schema in the form that you need it, like in the code sample above. You can then [sync](real-time) this initial change to all of your devices; once everybody has the schema, you can have different users updating the document on different devices, and the updates should merge nicely. For example:
+The easiest way of doing this is with a call to `Automerge.change()` that sets up the document schema in the form that you need it, like in the code sample above. You can then [sync](/docs/cookbook/real-time/) this initial change to all of your devices; once everybody has the schema, you can have different users updating the document on different devices, and the updates should merge nicely. For example:
 
 ```js
 // Set up the `cards` array in doc1

@@ -10,6 +10,7 @@ const config = {
     tagline: 'Automerge is a library of data structures for building collaborative applications.',
     url: 'https://automerge.github.io/',
     baseUrl: '/',
+    trailingSlash: true,
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     favicon: 'img/favicon.ico',

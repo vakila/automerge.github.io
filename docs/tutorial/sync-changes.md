@@ -54,4 +54,4 @@ Now, test it! Copy and paste your URL into a new window in the same browser, so 
 
 This approach of sending each other serialized documents, and merging them, works just as well over a network as between tabs in the same browser. However, if your documents get big, then it is inefficient to repeatedly send each other the entire serialized document.
 
-As an alternative, it's possible to encode only the changes that have been made since the last sync, and send those. You can find more information on how to do this in the [Cookbook](/docs/cookbook/real-time).
+As an alternative, it's possible to encode only the changes that have been made since the last sync, and send those. You can find more information on how to do this in the [Cookbook](/docs/cookbook/real-time/).

@@ -23,7 +23,7 @@ However, you can't just set properties on an Automerge document. With a typical 
 { count: 1 }
 ```
 
-In contrast, Automerge documents are immutable and follow a **functional** pattern. This means that you can retrieve properties from a document, but you can't change them like you would in a typical JavaScript object. Instead, you need to use `Automerge.change()`, which we discuss in the [next section](make-a-change).
+In contrast, Automerge documents are immutable and follow a **functional** pattern. This means that you can retrieve properties from a document, but you can't change them like you would in a typical JavaScript object. Instead, you need to use `Automerge.change()`, which we discuss in the [next section](/docs/tutorial/make-a-change/).
 
 Let's store the current document in a global variable `doc`, which is initialized as shown above. We also define a function that we call whenever the document changes:
 

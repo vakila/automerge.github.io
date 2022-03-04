@@ -50,7 +50,7 @@ version of `doc1`.
 
 In the case that document history is quite large, and two devices are online at the same time, we want to only send the subset of changes that are relevant. The Automerge sync protocol is designed to help with this process. The Automerge sync protocol brings two documents into sync by exchanging messages between peers until both documents have the same contents. The protocol can run on top of any connection-based network link that supports bidirectional messages, including WebSocket, WebRTC, or plain TCP. It can be used in any network topology: client/server, peer-to-peer, or server-to-server sync are all supported. However, it only works for one-to-one communication between two devices; it is not suitable for broadcast or multicast communication, where one message goes to multiple recipients.
 
-The protocol is explained [in this blog post](https://martin.kleppmann.com/2020/12/02/bloom-filter-hash-graph-sync.html) and [this documentation page](../how-it-works/sync). It works by exchanging rounds of sync messages, which contain two parts: 
+The protocol is explained [in this blog post](https://martin.kleppmann.com/2020/12/02/bloom-filter-hash-graph-sync.html) and [this documentation page](/docs/how-it-works/sync/). It works by exchanging rounds of sync messages, which contain two parts: 
 
  * a lossily-compressed list of changes that the sender already has (implicitly requesting any changes it does not have);
  * changes it believe the other peer needs.
@@ -87,7 +87,7 @@ Every connection to a peer need its own sync state. You can initialize a new syn
 syncStates[peerId][docId] = Automerge.initSyncState()
 ```
 
-Automerge keeps track of ongoing exchanges with another peer using a `syncState` data structure. During synchronization, Automerge uses a probabilistic structure known as a Bloom filter to avoid having to send the full descriptions of every local change to peers. To reduce the size and cost of this structure, it is only built for changes the other peer has not already told us they have. This is described in more detail later in the [Internals section](/docs/how-it-works/sync). 
+Automerge keeps track of ongoing exchanges with another peer using a `syncState` data structure. During synchronization, Automerge uses a probabilistic structure known as a Bloom filter to avoid having to send the full descriptions of every local change to peers. To reduce the size and cost of this structure, it is only built for changes the other peer has not already told us they have. This is described in more detail later in the [Internals section](/docs/how-it-works/sync/). 
 
 To maintain this structure, when a peer is discovered, first create a new `syncState` via `initSyncState()`. These `syncState` objects can be persisted between program executions as an optimization, but it is not required. All subsequent sync operations with that peer will return a new `syncState` to replace the previous one.
 
