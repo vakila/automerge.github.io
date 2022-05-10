@@ -5,6 +5,8 @@ sidebar_position: 7
 
 Until now, you've built an Automerge application for a single user only. But Automerge excels when there are multiple users editing a document over time, who may or may not be online at the same time.
 
+> NOTE: Syncing changes requires that both nodes are starting from the same Automerge document. If you haven't implemented some form of [Save and Load](https://automerge.org/docs/tutorial/save-and-load/) behavior, your syncing will not work properly.
+
 ## BroadcastChannel
 
 In this tutorial, we will use a [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel), which allows you to simulate a local area network. All tabs and windows on the same domain in the browser will be able to send and receive messages from each other. In a production application, you could use a WebSocket, WebRTC server, HTTP server, or simply send binary files around. 
