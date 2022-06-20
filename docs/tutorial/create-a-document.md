@@ -37,7 +37,7 @@ For now, the function only updates the global variable `doc`, but later we will 
 
 ## ActorId
 
-Each instance of a document has an actorId. This is useful for Automerge to know which process or device is making changes. It's important that every processes has a unique actorId. Every time you make an Automerge document, it automatically generates an actorId for you.
+Each instance of a document has an actorId. This is useful for Automerge to know which process or device is making changes. It's important that every process has a unique actorId. Every time you make an Automerge document, it automatically generates an actorId for you.
 
 To try this out, print it to the console using `Automerge.getActorId(doc)`:
 
