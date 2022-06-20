@@ -101,7 +101,7 @@ doc2 = Automerge.change(doc2, 'Delete card', doc => {
 })
 ```
 
-Now comes the moment of truth. Let's merge the changes again. You can also do the merge the other way around, and you'll get the same result. Order doesn't matter here. The merged result remembers that 'Rewrite everything in Haskell' was set to true, and that 'Rewrite everything in Clojure' was deleted:
+Now comes the moment of truth. Let's merge the changes again. You can also do the merge the other way around, and you'll get the same result. Order doesn't matter here. The merged result remembers that 'Rewrite everything in Clojure' was set to true, and that 'Rewrite everything in Haskell' was deleted:
 
 ```js
 let finalDoc = Automerge.merge(doc1, doc2)
