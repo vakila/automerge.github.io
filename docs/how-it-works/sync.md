@@ -21,7 +21,7 @@ Conceptually, the most straightforward way to synchronize the two sets of change
 
 ### False positives
 
-Bloom filters encode data probabalistically. The Automerge Bloom filter implementation is tuned such that there is a 1% chance per change of mistakenly believing the other peer already has the change in question. When this occurs, the receiving peer will not see any result from applying those changes. Until all change dependencies are in place, the new changes will remain invisible. To resolve this, the next syncMessage will include a `need` request which specifies particular changes by hash to send from the other peer.
+Bloom filters encode data probabilistically. The Automerge Bloom filter implementation is tuned such that there is a 1% chance per change of mistakenly believing the other peer already has the change in question. When this occurs, the receiving peer will not see any result from applying those changes. Until all change dependencies are in place, the new changes will remain invisible. To resolve this, the next syncMessage will include a `need` request which specifies particular changes by hash to send from the other peer.
 
 ### Shared Heads
 To avoid constantly recalculating and retransmitting Bloom filters, the `syncState` tracks the "greatest common document" the two peers have in common. Every time changes are received and applied, we can safely skip adding those changes to any subsequent the Bloom filter. Thus, we simply begin adding changes to the Bloom filter at that point in the document history.
@@ -35,7 +35,7 @@ b: [ a0, b0, a1, b1 ] + [ b2, b3 ]
 
 In this example, we show data on two peers. If we imagine in some past synchronization exchange both peers synchronized and wound up with "shared heads" of `[a1, b1]`. This is the "greatest common document". To synchronize the two nodes, peer `a` would encode their local changes `[a2, a3]` into a Bloom filter and send them to `b`.
 
-Upon receipt, `b` would check the Bloom filter for each of its local changes beginning with `b2`. Once it found a change `a` was missing, it would assume all subsequent changes should be sent. Thus 99% of the time (as we noted, the Bloom filter is probabalistic), it would send all the changes `a` needed. The remaining 1% of the time, it would mistakenly not send `b2`, but rather begin sending changes with `b3`. In this case, upon receiving those changes, `a` would see that it was still missing the `b2` dependency for `b3` and explicitly request it. 
+Upon receipt, `b` would check the Bloom filter for each of its local changes beginning with `b2`. Once it found a change `a` was missing, it would assume all subsequent changes should be sent. Thus 99% of the time (as we noted, the Bloom filter is probabilistic), it would send all the changes `a` needed. The remaining 1% of the time, it would mistakenly not send `b2`, but rather begin sending changes with `b3`. In this case, upon receiving those changes, `a` would see that it was still missing the `b2` dependency for `b3` and explicitly request it. 
 
 ### Error Recovery
 Finally, Automerge helps recover failed peer nodes by resetting the list of `sharedHeads` in the document and beginning sync again from scratch. This can come in handy if one of the peers crashes after confirming data but before writing it to disk.
