@@ -17,7 +17,7 @@ We believe on the whole there's an art to the granularity of data that is univer
 
 ## TypeScript support
 
-Given that you have a document, how can you create safety rails for its data integrity? In a typical SQL database, a table would have it's own schema, and you create migrations from one schema version to the next. Automerge is flexible on the schema, and will let you add and remove properties and values at will. To improve the programming experience, a document can be typed to have it's own schema using TypeScript.
+Given that you have a document, how can you create safety rails for its data integrity? In a typical SQL database, a table would have its own schema, and you create migrations from one schema version to the next. Automerge is flexible on the schema, and will let you add and remove properties and values at will. To improve the programming experience, a document can be typed to have its own schema using TypeScript.
 
 ```js
 type D = { 
