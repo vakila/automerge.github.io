@@ -2,6 +2,8 @@
 sidebar_position: 1
 ---
 
+import Bundlers from "@site/src/components/Bundlers";
+
 # 5-Minute Quick Start
 
 This guide will get you up and running with Automerge in a JavaScript or TypeScript application. This guide is recommended for you if you have strong understanding of JavaScript fundamentals and CRDTs. If you find this quick start to be complicated, we recommend trying the [Tutorial](/docs/tutorial/introduction/) section.
@@ -27,11 +29,9 @@ If you are using ES2015 or TypeScript, import the library like this:
 import * as Automerge from 'automerge'
 ```
 
-In a browser-based app, you can load Automerge with a script tag, which will set up a global variable called `Automerge`:
+If you are in a browser you will need to setup a bundler to load WebAssembly modules, examples for three common examples are given below (more detailed working examples available [in the repo](https://github.com/automerge/automerge-rs/tree/main/javascript/examples)):
 
-```html
-<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/automerge@1.0.1-preview.7/dist/automerge.min.js"></script>
-```
+<Bundlers />
 
 
 ## Creating a document

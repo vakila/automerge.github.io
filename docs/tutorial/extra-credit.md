@@ -5,7 +5,7 @@ sidebar_position: 10
 
 You did it! Now, you should have a general understanding about how to create an interactive, multi-user app that saves data to the local machine using Automerge. 
 
-To see the full working code, look on GitHub: [https://github.com/okdistribute/automerge-tutorial](https://github.com/okdistribute/automerge-tutorial)
+To see the full working code, look on GitHub: https://github.com/alexjg/automerge-tutorial-todo
 
 ## Conflicts
 
