@@ -111,6 +111,22 @@ const config = {
                 darkTheme: darkCodeTheme,
             },
         }),
+    plugins: [
+        [
+            "docusaurus-plugin-typedoc",
+            {
+                entryPoints: ["./automerge/javascript/src/index.ts"],
+                tsconfig: "./automerge/javascript/tsconfig.json",
+                readme: "./automerge/javascript/typedoc-readme.md",
+                out: "tsapi",
+                sidebar: {
+                    categoryLabel: "API Docs",
+                    position: 6,
+                    readmeLabel: "Overview"
+                }
+            }
+        ]
+    ]
 };
 
 module.exports = config;

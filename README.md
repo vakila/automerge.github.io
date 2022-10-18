@@ -8,6 +8,14 @@ This website is built using [Docusaurus 2](https://docusaurus.io/), a modern sta
 $ yarn
 ```
 
+The source for the latest release of the javascript package
+`@automerge/automerge` is included as a git submodule, so you need to update
+submodules.
+
+```
+git submodule update
+```
+
 ### Local Development
 
 ```
