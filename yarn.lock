@@ -130,10 +130,10 @@
     "@algolia/logger-common" "4.11.0"
     "@algolia/requester-common" "4.11.0"
 
-"@automerge/automerge-wasm@^0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@automerge/automerge-wasm/-/automerge-wasm-0.1.12.tgz#8ce25255d95d4ed6fb387de6858f7b7b7e2ed4a9"
-  integrity sha512-/xjX1217QYJ+QaoT6iHQw4hGNUIoc3xc65c9eCnfX5v9J9BkTOl05p2Cnr51O2rPc/M6TqZLmlvpvNVdcH9JpA==
+"@automerge/automerge-wasm@^0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@automerge/automerge-wasm/-/automerge-wasm-0.1.15.tgz#2999c49d1fa27bd84433c0b2b196c22783200f1b"
+  integrity sha512-n1K8Jq4ICb5U5F+vYkUx5o86b7CaQo1CufOsHDAJGycDyA1ATKqh0Bkf6imTue9BHbncpmP95vX8BKERkKR2Qg==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.16.0", "@babel/code-frame@^7.8.3":
   version "7.16.0"
