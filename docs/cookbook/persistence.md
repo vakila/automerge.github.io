@@ -52,12 +52,12 @@ by `Automerge.save()`.
 > The Automerge `init` and `load` functions take an optional `actorId` parameter:
 >
 > ```js
-> const actorId = '1234-abcd-56789-qrstuv'
+> const actorId = '1234abcd567890011aa'
 > const doc1 = Automerge.init(actorId)
 > const doc3 = Automerge.load(str, actorId)
 > ```
 >
-> The `actorId` is a string that uniquely identifies the current node; if you omit `actorId`, a
+> The `actorId` is a byte-aligned hexidecimal string that uniquely identifies the current node. While there are many models for persistence and synchronization, every actor/thread/process which can generate unique changes to your document should be considered its own actor; In the most straightforward and default case, you omit `actorId`, a
 > random UUID is generated. If you pass in your own `actorId`, you must ensure that there can never
 > be two different processes with the same actor ID. Even if you have two different processes
 > running on the same machine, they must have distinct actor IDs.
