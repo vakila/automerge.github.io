@@ -14,19 +14,19 @@ This guide will get you up and running with Automerge in a JavaScript or TypeScr
 Installation from [npm](https://www.npmjs.com/package/automerge), using Node.js:
 
 ```bash
-npm install automerge ## or yarn add automerge
+npm install @automerge/automerge ## or yarn add @automerge/automerge
 ```
 
 Then load the library as follows:
 
 ```js
-const Automerge = require('automerge')
+const Automerge = require('@automerge/automerge')
 ```
 
 If you are using ES2015 or TypeScript, import the library like this:
 
 ```typescript
-import * as Automerge from 'automerge'
+import * as Automerge from '@automerge/automerge'
 ```
 
 If you are in a browser you will need to setup a bundler to load WebAssembly modules, examples for three common examples are given below (more detailed working examples available [in the repo](https://github.com/automerge/automerge-rs/tree/main/javascript/examples)):
