@@ -118,7 +118,7 @@ type DocV2 = {
   cards: Card[]
 }
 
-// This change creates the `title` property requried in V2,
+// This change creates the `title` property required in V2,
 // and updates the `version` property from 1 to 2
 const migrateV1toV2 = new Uint8Array([133, 111, 74, 131, ...])
 
