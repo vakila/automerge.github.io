@@ -138,6 +138,10 @@ While we are very proud of the round-trip efficiency of Automerge synchronizatio
 
 While we retain the full history of Automerge documents and provide APIs to access it, we don’t currently provide an efficient way to reconcile many closely related versions of a given document. This feature is particularly valuable for supporting offline collaboration in professional environments and (combined with Rich Text Support) should make it much easier for our friends in journalism organizations to build powerful and accurate editing tools.
 
+## History Editing
+
+Today the best way to remove something from an Automerge document's history is to recreate it, or to reset to a time before that change went in. In the future, we plan to provide additional tools to give developers more control over how they work with the history of a document, including analogues of version control tools like "shallow clones", and "squash commits". We're excited about how those features could enable agents to work with less memory, or more confident collaboration around sensitive data.
+
 # Conclusion
 
 Automerge 2.0 is here, it’s ready for you, and we’re tremendously excited to share it with you. We’ve made Automerge faster, more memory efficient, and we’re bringing it to more platforms than ever. We’re adding features, making it easier to adopt, and have begun growing a team to support it. There has never been a better moment to start building local-first software: why not [give it a try](https://automerge.org/docs/hello/)?
