@@ -7,7 +7,7 @@ tags: []
 
 # Automerge 2.0
 
-Automerge 2.0 now has an official release. It’s the first supported release resulting from a ground-up rewrite focused on performance and reliability and it comes with improved documentation and, for the first time, support options for production users.
+Automerge 2.0 is here and ready for production. It’s the first supported release resulting from a ground-up rewrite. The result is a production-ready CRDT with huge improvements in performance and reliability. It's available in both Javascript and Rust, and includes Typescript types and C bindings for use in other ecosystems. Even better, Automerge 2.0 comes with improved documentation and, for the first time, support options for production users.
 
 ## Local-first Software
 
@@ -43,7 +43,8 @@ Please note that WebAssembly is not currently supported in React-Native applicat
 
 ## Documenting Automerge
 
-Past Automerge releases have often had minimal documentation. We’ve written a few documents about how the internals work, shared some example code in the README, a couple of demonstration projects, and that’s about all. With this new release, we’re pleased to highlight a major investment in the documentation available at Automerge.org. This work was led by lab alumnus Rae McKelvey and includes all kind of additional detail, including a guided introduction to building your first Automerge application. We’ll continue to invest in expanding and improving these docs. Take a look and see if your curiosity is satisfied!
+With Automerge 2.0 we've made a big investment in improving documentation. In addition to [sample code], we now have a [tutorial] and [quick-start guide] that support both Vite and create-react-app, as well as [internals] documentation, and [file format] documentation. This work was led by lab alumnus Rae McKelvey and we hope it helps make getting started with Automerge much easier. Please let us know if there are other topics or areas you'd like to see covered!
+
 
 ## Supporting Automerge
 
