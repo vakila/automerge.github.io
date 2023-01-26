@@ -31,7 +31,7 @@ As a result, we decided to rewrite Automerge in Rust. In the browser, Rust can b
 
 The change should be mostly transparent for JavaScript users. We built a JS wrapper around the Rust core that provides a similar API to earlier versions of Automerge.
 
-To create Automerge 2.0, lab members Alex Good and Orion Henry teamed up with Andrew Jeffrey, Jason Kankiewicz (as well as several other open source collaborators) to polish and optimize the Rust implementation and develop the JS wrapper. The result is a codebase that is hundreds of times faster, radically more memory efficient, and both better tested and more reliable.
+To create Automerge 2.0, lab members Alex Good and Orion Henry teamed up with open source collaborators including Andrew Jeffrey, and Jason Kankiewicz to polish and optimize the Rust implementation and develop the JS wrapper. The result is a codebase that is hundreds of times faster than past releases, radically more memory efficient, and both better tested and more reliable.
 
 ```
 notice: 
@@ -67,9 +67,10 @@ Let's take a look at some numbers. One of the most challenging benchmarks for CR
 
 | Insert ~260k operations      | Timing (ms) | Memory (bytes) |
 | ---------------------------- | ----------- | -------------- |
-| Automerge 1.0                |      13,052 |    184,721,408 |
+| Automerge 1.0                |  ~1,280,000 | ~3,000,000,000 |
+| Automerge 1.0.1              |      13,052 |    184,721,408 |
 | Automerge 2.0.1              |       1,816 |     44,523,520 |
-| Yjs                          |       1,074 |     10,141,696 |
+| Yjs (what version?)          |       1,074 |     10,141,696 |
 | Automerge 2.0.2-unstable     |         661 |     22,953,984 |
 
 Of course, even the most productive authors struggle to type an entire paper quite so quickly. Indeed, writing a paper can occur over months or even years, making both storage size on disk and load performance important as well.
@@ -84,20 +85,17 @@ The binary format works wonders in this example, encoding a full history for the
 
 | Load ~260k operations    | Timing (ms) |
 +--------------------------+-------------+
-| Automerge 1.0            |         590 |
+| Automerge 1.0.1          |         590 |
 | Automerge 2.0.1          |         593 |
 | Automerge 2.0.2-unstable |         438 |
 
-Loading the compressed document is fast as well. 
+Loading the compressed document is fast as well, ensuring the best possible start-up time.
 
-We will continue to invest in performance and memory 
+While we are proud of these results, we will continue to invest in improved performance with each release as you can see with the preliminary numbers for the upcoming Automerge 2.0.2 release.
 
-The particular implementation we used to run the benchmarks can be found [here](https://github.com/alexjg/automerge-perf-comparisons). Here's the TLDR, running on Alex's Ryzen 9 7900X. The "timing" column is how long it takes to apply every single edit in the trace, whilst the "memory" common is the peak memory usage during this process.
+A few notes about methodology before we move on. The particular implementation we used to run the benchmarks can be found [here](https://github.com/alexjg/automerge-perf-comparisons). These numbers were produced on Ryzen 9 7900X. The "timing" column is how long it takes to apply every single edit in the trace, whilst the "memory" common is the peak memory usage during this process.
 
-The "-unstable" refers to a new API for text we are working on. Also note that the "automerge 1.0" here is actually the `automerge@1.0.1-preview-7` release, which uses a similar architecture to the rust implementation, the speed and memory improvements are the result of using WebAssembly, rather than an architectural change. There _is_ a major architectural change from `automerge@1.0` though, `automerge@1.0` takes around 20 minutes to process the edit trace and uses multiple gigabytes of memory.
-
-For automerge `2.0` we're still a little way behind Yjs in timings and our memory use is very high, but you can see we are making good progress on both fronts in `2.0.1`.
-
+The improvements found in "2.0.2-unstable" mostly result from an upcoming improved API for text. Also note that the "automerge 1.0.1" here is actually the `automerge@1.0.1-preview-7` release. Automerge 1.0.1 was a significant rewrite from 1.0.0 and has a similar architecture to the Rust implementation. Improvements between 1.0.1 and 2.0.1 are a result of both optimization and adopting WebAssembly rather than an architectural change.
 
 ## Portability & Mobile Devices
 
