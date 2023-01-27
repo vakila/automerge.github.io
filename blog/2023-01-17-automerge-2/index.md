@@ -33,12 +33,12 @@ The change should be mostly transparent for JavaScript users. We built a JS wrap
 
 To create Automerge 2.0, lab members Alex Good and Orion Henry teamed up with open source collaborators including Andrew Jeffrey, and Jason Kankiewicz to polish and optimize the Rust implementation and develop the JS wrapper. The result is a codebase that is hundreds of times faster than past releases, radically more memory efficient, and both better tested and more reliable.
 
-```
-notice: 
+
+:::caution
 
 With the release of Automerge 2.0 the package name has changed on npm from `automerge` to `@automerge/automerge`.
 
-```
+:::
 
 ## Documenting Automerge
 
