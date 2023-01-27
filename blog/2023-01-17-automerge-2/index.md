@@ -15,7 +15,7 @@ Before getting into the details of why we're excited about Automerge 2.0, let's 
 
 Automerge is a CRDT, or "conflict-free replicated data type", but if you're allergic to buzzwords you can just think of it as a version controlled data structure. Automerge lets you record changes made to data and then replay them in other places, reliably producing the same result in each. It supports JSON-like data, including arbitrarily nested maps and arrays, as well as some more advanced data types such as text and numeric counters.
 
-This is useful for quite a few reasons: you can use it to implement real-time collaboration for an application without having to figure out tricky application-specific algorithms on the server such as Operational Transform. You can also use it to better support offline work. We think it has even more potential than just that.
+This is useful for quite a few reasons: you can use it to implement real-time collaboration for an application without having to figure out tricky application-specific algorithms on the server. You can also use it to better support offline work. We think it has even more potential than just that.
 
 Since the rise of the cloud, developers have largely had to choose between building cloud software or traditional installed software. Although installed software has some reliability and performance benefits, cloud software has dominated the market. Cloud software makes implementing collaboration easy and includes ubiquitous access from any computing device. Unfortunately, the advantages of cloud software come at a high price. Cloud software is fragile and prone to outages, rarely supports offline use, and is literally expensive to scale to large audiences.
 
@@ -81,10 +81,10 @@ Of course, even the most productive authors struggle to type an entire paper qui
 | automerge    | 129,062    |
 | naive        | 32,100,000 |
 
-The binary format works wonders in this example, encoding a full history for the document with only 30% overhead. That's less than a one additional byte per character! Compare that to a naive JSON encoding and which can be 300 bytes *per character*.
+The binary format works wonders in this example, encoding a full history for the document with only 30% overhead. That's less than one additional byte per character! Compare that to a naive JSON encoding and which can be 300 bytes *per character*.
 
 | Load ~260k operations    | Timing (ms) |
-+--------------------------+-------------+
+| ------------------------ | ------------|
 | Automerge 1.0.1          |         590 |
 | Automerge 2.0.1          |         593 |
 | Automerge 2.0.2-unstable |         438 |
