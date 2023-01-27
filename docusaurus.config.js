@@ -116,13 +116,13 @@ const config = {
             "docusaurus-plugin-typedoc",
             {
                 entryPoints: ["./automerge/javascript/src/index.ts"],
-                tsconfig: "./automerge/javascript/tsconfig.json",
-                readme: "./automerge/javascript/typedoc-readme.md",
+                tsconfig: "./automerge/javascript/config/declonly.json",
+                readme: "none",
                 out: "tsapi",
                 sidebar: {
                     categoryLabel: "API Docs",
                     position: 6,
-                    readmeLabel: "Overview"
+                    indexLabel: "Overview"
                 }
             }
         ]
