@@ -60,7 +60,7 @@ Let's take a look at some numbers. One of the most challenging benchmarks for CR
 
 | Insert ~260k operations      | Timing (ms) | Memory (bytes) |
 | ---------------------------- | ----------- | -------------- |
-| Automerge 0.14               |  ~1,280,000 | ~3,000,000,000 |
+| Automerge 0.14               |    ~500,000 | ~1,100,000,000 |
 | Automerge 1.0.1              |      13,052 |    184,721,408 |
 | Automerge 2.0.1              |       1,816 |     44,523,520 |
 | Yjs (what version?)          |       1,074 |     10,141,696 |
@@ -68,13 +68,13 @@ Let's take a look at some numbers. One of the most challenging benchmarks for CR
 
 Of course, even the most productive authors struggle to type an entire paper quite so quickly. Indeed, writing a paper can occur over months or even years, making both storage size on disk and load performance important as well.
 
-| Size on Disk | bytes       |
-| ------------ | ----------- |
-| plain text   | 107,121     |
-| automerge    | 129,062     |
-| naive JSON   | ~32,100,000 |
+| Size on Disk   | bytes       |
+| -------------- | ----------- |
+| plain text     | 107,121     |
+| automerge 2.0  | 129,062     |
+| automerge 0.14 | 146,406,415      |
 
-The binary format works wonders in this example, encoding a full history for the document with only 30% overhead. That's less than one additional byte per character! The naive JSON encoding found in earlier versions of automerge could exceed 300 bytes *per character*. If you'd like to learn more about the file format, we have a [specification](https://alexjg.github.io/automerge-storage-docs/) document.
+The binary format works wonders in this example, encoding a full history for the document with only 30% overhead. That's less than one additional byte per character! The naive JSON encoding often used circa automerge 0.14 could exceed 1,300 bytes *per character*. If you'd like to learn more about the file format, we have a [specification](https://alexjg.github.io/automerge-storage-docs/) document.
 
 | Load ~260k operations    | Timing (ms)  |
 | ------------------------ | ------------ |
