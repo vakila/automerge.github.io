@@ -21,24 +21,17 @@ Since the rise of the cloud, developers have largely had to choose between build
 
 At Ink & Switch, we’ve been researching a model for developing software which we call [local-first software](https://www.inkandswitch.com/local-first/), with the goal of combining the best of both worlds: reliable, locally-executed software paired with scalable offline-friendly collaboration infrastructure. We believe that a strong data model based on recording change over time for every application should be a cornerstone of that effort.
 
-## Reimplementing Automerge for Performance & Portability
+## Automerge-RS: Rebuilt for Performance & Portability
 
 Earlier versions of Automerge were implemented in pure JavaScript. Our initial implementations were theoretically sound but much too slow and used too much memory for most production use cases.
 
-Furthermore, JavaScript support on mobile devices and embedded systems is limited. We wanted a fast and efficient version of Automerge that was available everywhere: in the browser, on any mobile device, and even embedded devices like the ESP32.
+Furthermore, JavaScript support on mobile devices and embedded systems is limited. We wanted a fast and efficient version of Automerge that was available everywhere: in the browser, on any mobile device, and even microcontrollers like the [ESP32](https://en.wikipedia.org/wiki/ESP32).
 
 Instead of trying to coordinate multiple distinct versions of Automerge, we decided to rewrite Automerge in Rust and use platform-specific wrappers to make it available in each language ecosystem. This way we can be confident that the core CRDT logic is identical across all platforms and that everyone benefits from new features and optimizations together.
 
 For JavaScript applications, this means compiling the Rust to WebAssembly and providing a JavaScript wrapper that maintains the existing Automerge API. Rust applications can obviously use the library directly, and we're making sure that it's as easy as possible to implement support in other languages with well-designed traits and a comprehensive set of C bindings.
 
-To deliver this new version, lab members Alex Good and Orion Henry teamed up with open source collaborators including Andrew Jeffery and Jason Kankiewicz to polish and optimize the Rust implementation and JavaScript wrapper. The result is a codebase that is hundreds of times faster than past releases, radically more memory efficient, and both better tested and more reliable.
-
-
-:::caution
-
-With the release of Automerge 2.0 the npm package name has moved to `@automerge/automerge`. We have deprecated the `automerge` package.
-
-:::
+To deliver this new version, lab members Alex Good and Orion Henry teamed up with open source collaborators including Andrew Jeffery and Jason Kankiewicz to polish and optimize the Rust implementation and JavaScript wrapper. The result is a codebase that is hundreds of times faster than past releases, radically more memory efficient, better tested, and more reliable.
 
 ## Documenting Automerge
 
@@ -57,7 +50,7 @@ If your business is interested in sponsoring Automerge, you can [sponsor us dire
 
 ## Performance: Speed, Memory and Disk
 
-Using a CRDT inherently comes with additional overhead: we have to track additional information in order to be able to correctly merge work from different sources. The goal of all CRDT authors is to find the right trade-offs between preserving useful history, reducing CPU overhead, and efficiently storing data in memory and on disk.
+Using a CRDT inherently comes with overhead: we have to track additional information in order to be able to correctly merge work from different sources. The goal of all CRDT authors is to find the right trade-offs between preserving useful history, reducing CPU overhead, and efficiently storing data in memory and on disk.
 
 With the Automerge project, our goal is to retain the full history of any document and allow an author to reconstruct any point in time on demand. As software developers we're accustomed to having this power: it's hard to imagine version control without history.
 
@@ -81,13 +74,13 @@ Of course, even the most productive authors struggle to type an entire paper qui
 | automerge    | 129,062     |
 | naive JSON   | ~32,100,000 |
 
-The binary format works wonders in this example, encoding a full history for the document with only 30% overhead. That's less than one additional byte per character! Compare that to a naive JSON encoding which can be 300 bytes *per character*. If you'd like to learn more about the file format, we have a [specification](https://alexjg.github.io/automerge-storage-docs/) document.
+The binary format works wonders in this example, encoding a full history for the document with only 30% overhead. That's less than one additional byte per character! The naive JSON encoding found in earlier versions of automerge could exceed 300 bytes *per character*. If you'd like to learn more about the file format, we have a [specification](https://alexjg.github.io/automerge-storage-docs/) document.
 
-| Load ~260k operations    | Timing (ms) |
-| ------------------------ | ------------|
-| Automerge 1.0.1          |         590 |
-| Automerge 2.0.1          |         593 |
-| Automerge 2.0.2-unstable |         438 |
+| Load ~260k operations    | Timing (ms)  |
+| ------------------------ | ------------ |
+| Automerge 1.0.1          |         590  |
+| Automerge 2.0.1          |         593  |
+| Automerge 2.0.2-unstable |         438  |
 
 Loading the compressed document is fast as well, ensuring the best possible start-up time.
 
@@ -101,7 +94,7 @@ The improvements found in "2.0.2-unstable" mostly result from an upcoming improv
 
 Because the core logic of Automerge is now built in Rust, we're able to port it more easily to a wide variety of environments and bind it to almost any language. We have users today who directly build on Automerge using the Rust APIs (and the helpful [autosurgeon](https://github.com/automerge/autosurgeon) library). We also have a [C-bindings API](https://github.com/automerge/automerge-rs/tree/main/rust/automerge-c) designed and contributed by `jkankiewicz`, and are excited to see the [`automerge-go`](https://github.com/automerge/automerge-go) implementation underway by Conrad Irwin.
 
-In the future, we hope to provide bindings for other languages including Swift, Kotlin, and Python.
+In the future, we hope to provide bindings for other languages including Swift, Kotlin, and Python. If you're interested in getting involved in those projects please let us know!
 
 One important note is that React-Native does not support WASM today. Developers building mobile applications will need to bind directly via C. If you're interested in either working on or sponsoring work on this problem, feel free to get in touch.
 
@@ -127,16 +120,22 @@ We've seen tremendous enthusiasm for the native Rust experience of Automerge, an
 
 ## Improved Synchronization
 
-Automerge's current synchronization system has some great properties. In many cases it can bring two clients up to date with only a single round-trip each direction. That said, we see big potential to improve the CPU performance of this process, and also lots of opportunity to improve sync performance of many documents at once. We also expect to provide other optimizations our users and sponsors have requested, such as more efficient first-document loading, network compaction of related changes, and enabling something akin to a Git “shallow clone” in the case of clients which don’t often require access to a document’s history.
+Automerge's current synchronization system has some great properties. In many cases it can bring two clients up to date with only a single round-trip each direction. That said, we see big potential to improve the CPU performance of this process, and also lots of opportunity to improve sync performance of many documents at once. We also expect to provide other optimizations our users and sponsors have requested, such as more efficient first-document loading, network compaction of related changes, and enabling something akin to a Git “shallow clone” for clients which don't need historical data.
 
 ## Built-in Branches
 
 While we retain the full history of Automerge documents and provide APIs to access it, we don’t currently provide an efficient way to reconcile many closely related versions of a given document. This feature is particularly valuable for supporting offline collaboration in professional environments and (combined with Rich Text Support) should make it much easier for our friends in journalism organizations to build powerful and accurate editing tools.
 
-## History Editing
+## History Management
 
-Today the best way to remove something from an Automerge document's history is to recreate it, or to reset to a time before that change went in. In the future, we plan to provide additional tools to give developers more control over how they work with the history of a document, including analogues of version control tools like "shallow clones", and "squash commits". We're excited about how those features could enable agents to work with less memory, or more confident collaboration around sensitive data.
+Today the best way to remove something from an Automerge document's history is to recreate the document from scratch or to reset to a time before that change went in. In the future, we plan to provide additional tools to give developers more control over document history. We expect this to include the ability to share just the latest version of a document (similar to a shallow clone in `git`), and to share updates that bypass changes you don't want to share (as when a developer squashes commits before publishing). 
 
 # Conclusion
 
-Automerge 2.0 is here, it’s ready for you, and we’re tremendously excited to share it with you. We’ve made Automerge faster, more memory efficient, and we’re bringing it to more platforms than ever. We’re adding features, making it easier to adopt, and have begun growing a team to support it. There has never been a better moment to start building local-first software: why not [give it a try](https://automerge.org/docs/hello/)?
+Automerge 2.0 is here, it’s ready for you, and we’re tremendously excited to share it with you. We’ve made Automerge faster, more memory efficient, and we’re bringing it to more platforms than ever. We’re adding features, making it easier to adopt, and have begun growing a team to support it. There has never been a better moment to start building local-first software: why not [give it a try](https://automerge.org/docs/hello/), and please feel welcome to [join us in the Automerge Slack](https://join.slack.com/t/automerge/shared_invite/zt-e4p3760n-kKh7r3KRH1YwwNfiZM8ktw), too.
+
+:::caution
+
+A note to existing users: Automerge 2.0 is found on npm at `@automerge/automerge`. We have deprecated the `automerge` package.
+
+:::
