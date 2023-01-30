@@ -35,7 +35,7 @@ To deliver this new version, lab members Alex Good and Orion Henry teamed up wit
 
 ## Documenting Automerge
 
-With Automerge 2.0 we've made a big investment in improving documentation. In addition to [sample code], we now have a [tutorial](https://automerge.org/docs/tutorial/introduction/) and [quick-start guide](https://automerge.org/docs/quickstart/) that support both Vite and create-react-app, as well as [internals](https://automerge.org/docs/how-it-works/backend/) documentation, [file format](https://alexjg.github.io/automerge-storage-docs/) and [sync protocol](https://automerge.org/docs/how-it-works/sync/) documentation. This work was led by lab alumnus Rae McKelvey and we hope it helps make getting started with Automerge much easier. Please let us know if there are other topics or areas you'd like to see covered!
+With Automerge 2.0 we've made a big investment in improving documentation. In addition to [sample code](https://github.com/automerge/automerge-rs/tree/main/javascript/examples), we now have a [tutorial](https://automerge.org/docs/tutorial/introduction/) and [quick-start guide](https://automerge.org/docs/quickstart/) that support both Vite and create-react-app, as well as [internals](https://automerge.org/docs/how-it-works/backend/) documentation, [file format](https://alexjg.github.io/automerge-storage-docs/) and [sync protocol](https://automerge.org/docs/how-it-works/sync/) documentation. This work was led by lab alumnus Rae McKelvey and we hope it helps make getting started with Automerge much easier. Please let us know if there are other topics or areas you'd like to see covered!
 
 ## Supporting Automerge
 
@@ -63,7 +63,7 @@ Let's take a look at some numbers. One of the most challenging benchmarks for CR
 | Automerge 0.14               |    ~500,000 | ~1,100,000,000 |
 | Automerge 1.0.1              |      13,052 |    184,721,408 |
 | Automerge 2.0.1              |       1,816 |     44,523,520 |
-| Yjs (what version?)          |       1,074 |     10,141,696 |
+| Yjs                          |       1,074 |     10,141,696 |
 | Automerge 2.0.2-unstable     |         661 |     22,953,984 |
 
 Of course, even the most productive authors struggle to type an entire paper quite so quickly. Indeed, writing a paper can occur over months or even years, making both storage size on disk and load performance important as well.
