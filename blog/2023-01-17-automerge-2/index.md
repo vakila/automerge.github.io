@@ -92,7 +92,7 @@ The improvements found in "2.0.2-unstable" mostly result from an upcoming improv
 
 ## Portability & Mobile Devices
 
-Because the core logic of Automerge is now built in Rust, we're able to port it more easily to a wide variety of environments and bind it to almost any language. We have users today who directly build on Automerge using the Rust APIs (and the helpful [autosurgeon](https://github.com/automerge/autosurgeon) library). We also have a [C-bindings API](https://github.com/automerge/automerge-rs/tree/main/rust/automerge-c) designed and contributed by `jkankiewicz`, and are excited to see the [`automerge-go`](https://github.com/automerge/automerge-go) implementation underway by Conrad Irwin.
+Because the core logic of Automerge is now built in Rust, we're able to port it more easily to a wide variety of environments and bind it to almost any language. We have users today who directly build on Automerge using the Rust APIs (and the helpful [autosurgeon](https://github.com/automerge/autosurgeon) library). We also have a [C-bindings API](https://github.com/automerge/automerge-rs/tree/main/rust/automerge-c) designed and contributed by Jason Kankiewicz, and are excited to see the [`automerge-go`](https://github.com/automerge/automerge-go) implementation underway by Conrad Irwin.
 
 In the future, we hope to provide bindings for other languages including Swift, Kotlin, and Python. If you're interested in getting involved in those projects please let us know!
 
