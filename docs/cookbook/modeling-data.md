@@ -23,12 +23,15 @@ Given that you have a document, how can you create safety rails for its data int
 type D = { 
   count: Automerge.Counter,
   text: Automerge.Text,
-  cards: [] 
+  cards: string[] 
 }
 let doc = Automerge.change<D>(Automerge.init(), (doc: D) => {
   doc.count = new Automerge.Counter()
   doc.text = new Automerge.Text()
-  doc.cards = []
+  // Note that we have to wrap the array in Automerge.List. This is fine because
+  // automerge immediately wraps the underlying array in a proxy object
+  // conforming to `Automerge.List
+  doc.cards = [] as unknown as Automerge.List<string>
 })
 ```
 
