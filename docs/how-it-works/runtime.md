@@ -1,14 +1,5 @@
 # Runtime
 
-## Overview
-
-The data model of Automerge is a JSON document consisting of nested Map and List objects. The APIs that Automerge supports is a superset of plain JSON object in Javascript. Before reading this document, we strongly recommend that you read the tutorial of Automerge to get farmiliar with it on a high level abstraction [<sup>1</sup>](#refer-anchor-1). In this document, we will introduce the internals of Automerge that illustrates how Automerge stores the data and achieves eventual consistency.
-
-Automerge's architecture is illustrated in the diagram below. This document will concentrate on the OpSet part, which serves as the runtime for Automerge and handles the tasks of creating, retrieving, updating, and deleting objects of JSON documents. In the subsequent document, we will delve into the columnar encoding of operations.
-<img 
-    src={require("/img/internal/arch.png").default} alt="Automerge Architecture">
-</img>
-
 ## Operation Set
 
 Operation Set (OpSet), as the name suggested, is a set of operations. It is the runtime data structure of Automerge, that enables the creation, retrieval, updating, and deletion of objects. The merging of two documents is conceptually the union of two operation sets.
@@ -96,15 +87,16 @@ Let‘s say we have a code snippet in the following:
 ```rust
 let mut doc = Automerge::new();
 let mut tx = doc.transaction();
-tx.put(ROOT, "name", "liangrun")?;
+tx.put(ROOT, "name", "Alice")?;
 tx.put(ROOT, "age", "21")?;
 tx.put(ROOT, "age", "23")?;
 tx.put(ROOT, "age", "24")?;
-tx.put(ROOT, "name", "Liangrun Da")?;
+tx.put(ROOT, "name", "Bob")?;
 tx.commit();
 ```
 
 It will result in an OpTree like this:
+
 <img
 src={require("/img/internal/runtime1.png").default} width="60%">
 </img>
@@ -152,8 +144,7 @@ end_idx = 4;
 
 2. We iterate through `table[3]` to `table[4]` and append `op 5@actor0` to the `result`. Eventually, the `search` function returns `([op 5@actor0], 5)`.
 
-3. Finally, in the `get` function, we return the `action.value` of `op 5@actor0`, and as a result, we obtain the value of `root.name`, which is "Liangrun Da".
-
+3. Finally, in the `get` function, we return the `action.value` of `op 5@actor0`, and as a result, we obtain the value of `root.name`, which is "Bob".
 ### put
 
 ```c
@@ -176,7 +167,7 @@ def put(table, prop, value):
 	insert_op(local_op, last_idx);
 ```
 
-Let's consider an example of `put(root, "name", "new Liangrun Da")`:
+Let's consider an example of `put(root, "name", "Carol")`:
 
 1. Initially, we use the `search` function to search for the predecessor and index, and it returns `([op 5@actor0], 5)`.
 2. Next, a successor is added for `op 5@actor0`, which is `6@actor0`.
@@ -241,13 +232,13 @@ For example, consider the following code snippet:
 
 ```c
 contact := put_object(root, "contact", Map);
-put(contact, "email", "me@liangrunda.com");
+put(contact, "email", "alice@example.com");
 ```
 
 1. Call the `search` function, which returns `([], 3)` since no contacts exist at the moment.
 2. Generate a `make map` operation and add it to index 3 of the table.
 3. Function `put_object` returns the OpId `6@actor0`, which is the object id of the newly created map.
-4. Using object id `6@actor0`, we can access the OpTree of `contact` and insert the `put, email, set "me.liangrunda.com"` operation into it.
+4. Using object id `6@actor0`, we can access the OpTree of `contact` and insert the `put, email, set "alice@example.com"` operation into it.
 
 <img
 src={require("/img/internal/runtime4.png").default} width="100%">
@@ -262,7 +253,7 @@ Considering the following code:
 ```rust
 let mut doc1 = Automerge::new();
 let mut tx = doc1.transaction();
-tx.put(ROOT, "name", "Liangrun Da").unwrap();
+tx.put(ROOT, "name", "Alice").unwrap();
 tx.put(ROOT, "age", "21").unwrap();
 tx.put(ROOT, "age", "22").unwrap();
 tx.commit();
@@ -325,7 +316,7 @@ In this example, calling `get_all(age)` will retrieve both `99` and `100`. It be
 
 ## List
 
-Now we will add the List object to our document. Before we explain how to generate list operations, you need to understand what a Replicated Growable Array is [<sup>2</sup>](#refer-anchor-2).
+Now we will add the List object to our document. Before we explain how to generate list operations, you need to understand what a Replicated Growable Array is [<sup>1</sup>](#refer-anchor-1).
 
 We need to flatten the RGA tree into a table, just like what we did in Map. This is achieved by performing a Depth First Search (DFS) on the RGA tree. For example, for the following code snippet:
 
@@ -625,9 +616,6 @@ src={require("/img/internal/runtime15.png").default} width="60%">
 ## Reference
 <div id="refer-anchor-1"></div>
 
-[1] “Introduction: Automerge CRDT,” Automerge CRDT, https://automerge.org/docs/tutorial/introduction/
-<div id="refer-anchor-2"></div>
-
-[2] H.-G. Roh, M. Jeon, J.-S. Kim, and J. Lee, “Replicated abstract data types: Building Blocks for Collaborative Applications,” *Journal of Parallel and Distributed Computing*, vol. 71, no. 3, pp. 354–368, 2011. doi:10.1016/j.jpdc.2010.12.006 
+[1] H.-G. Roh, M. Jeon, J.-S. Kim, and J. Lee, “Replicated abstract data types: Building Blocks for Collaborative Applications,” *Journal of Parallel and Distributed Computing*, vol. 71, no. 3, pp. 354–368, 2011. doi:10.1016/j.jpdc.2010.12.006 
 
 

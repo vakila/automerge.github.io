@@ -11,12 +11,12 @@ As the number of operations increases, maintaining the Hash DAG can become cumbe
 ```rust
 let mut doc = Automerge::new();
 let mut tx = doc.transaction();
-tx.put(ROOT, "name", "liangrun")?;
+tx.put(ROOT, "name", "Alice")?;
 tx.put(ROOT, "age", "21")?;
 tx.commit();
 ```
 
-In this example, `put(root, "name", "liangrun")` and `put(root, "age", 21)` belong to the same transaction. When committing, we combine all operations to create a change. A change is the minimum unit of applying, which implies that all the operations in a change are either fully applied or not applied at all.
+In this example, `put(root, "name", "Alice")` and `put(root, "age", 21)` belong to the same transaction. When committing, we combine all operations to create a change. A change is the minimum unit of applying, which implies that all the operations in a change are either fully applied or not applied at all.
 
 By doing so, we can manage the dependencies between changes rather than dependencies between operations. In Automerge, we use a `struct ChangeGraph` to maintain this Hash DAG:
 
@@ -41,8 +41,7 @@ Before applying change D, it is necessary to ensure that changes B and C have al
 
 Moreover, using changes not only avoids the need to maintain a large number of dependencies but also enables us to compress operations efficiently. These operations can be viewed as a table, where each operation represents a row in the table. By utilizing columnar encoding, we can encode this table and greatly reduce the space required to store it.
 
-Moving forward, we will explore the process of encoding these operations into a compact format.
-
+Moving forward, we will explore the process of encoding these operations into a compact format. Before proceeding, you have the option to familiarize yourself with the [specification of Automerge binary encoding](https://automerge.org/docs/how-it-works/binary-format/). However, it is also possible to skip the specification for now, as we will provide essential information on encoding a basic change in the following sections. In case you encounter any difficulties, you can refer back to the specification to resolve them.
 
 
 ## Change encoding
@@ -210,7 +209,7 @@ We use an example to illustrate how a change is encoded. Suppose we have the fol
 ```rust
 let mut doc = Automerge::new();
 let mut tx = doc.transaction();
-tx.put(ROOT, "name", "Liangrun")?;
+tx.put(ROOT, "name", "Alice")?;
 tx.put(ROOT, "age", 21)?;
 tx.commit();
 ```
@@ -219,25 +218,26 @@ It will be encoded to the byte sequence like this:
 
 ```
 856f4a83264ba5060140001003ebab6d29df47f39c5ea7d4cd9d6e03010100000006150a340142025604570970027e046e616d65036167650202017e8601144c69616e6772756e150200
+856f4a83fc117446013c0010ba92a37960334606aa47606579716f20010100000006150a340142025603570670027e046e616d65036167650202017e5614416c696365150200
 ```
 
 We can deconstruct it into different parts:
 
 ```c
 0x856f4a83 // magic
-0x264ba506 // checksum
+0xfc117446 // checksum
 0x01 // chuck type
-0x40 // chunk length
+0x3c // chunk length
 0x00 // dependencies
 0x10 // actor length
-0x03ebab6d29df47f39c5ea7d4cd9d6e03 //actor 
+0xba92a37960334606aa47606579716f20 //actor 
 0x01 // sequence number
 0x01 // start op
 0x00 // time
 0x00 // message length
 0x00 // other actors
-0x06150a34014202560457097002 // operation column metadata
-0x7e046e616d65036167650202017e8601144c69616e6772756e150200 // operation columns
+0x06150a34014202560357067002 // operation column metadata
+0x7e046e616d65036167650202017e5614416c696365150200 // operation columns
 ```
 
 #### Change metadata
@@ -251,7 +251,7 @@ The magic is defined as `[0x85, 0x6f, 0x4a, 0x83]`.
 The checksum is calculated by computing the SHA256 of all subsequent parts and taking the first 4 bytes.
 
 ```
-SHA256(0140001003ebab6d29df47f39c5ea7d4cd9d6e03010100000006150a340142025604570970027e046e616d65036167650202017e8601144c69616e6772756e150200) = 264ba506493afaa055db12eb14f78d77ff7d939e0dc621e330d75b91e9fef05f
+SHA256(013c0010ba92a37960334606aa47606579716f20010100000006150a340142025603570670027e046e616d65036167650202017e5614416c696365150200) = fc117446c2701317ab462d610d17981fc12ac4cae6e242515d401db831a6e6d4
 ```
 
 - chunk type
@@ -260,7 +260,7 @@ The chunk type of a change is always equal to 0x01.
 
 - chunk length
 
-The chunk length indicates how many bytes follow and is of type uLEB. In this case, `0x40` is equal to `0b01000000`, so the length of the following bytes is `0b100 0000`, which is 64 bytes.
+The chunk length indicates how many bytes follow and is of type uLEB. In this case, `0x3c` is equal to `0b00111100`, so the length of the following bytes is `0b011 1100`, which is 60 bytes.
 
 - dependencies
 
@@ -272,7 +272,7 @@ This is in uLEB format, which indicates the length of the actor in bytes. `0x10`
 
 - actor
 
-`03ebab6d29df47f39c5ea7d4cd9d6e03` is the actor ID.
+`0xba92a37960334606aa47606579716f20` is the actor ID.
 
 - sequence number
 
@@ -303,18 +303,18 @@ Following the uLEB `0x06` = 6 indicating the number of columns, there are 6 pair
 | 0x15 = 21, key string         | 0x0a          |
 | 0x34 = 52, insert             | 0x01          |
 | 0x42 = 66, action             | 0x02          |
-| 0x56 = 86, value metadata     | 0x04          |
-| 0x57 = 87, value              | 0x09          |
+| 0x56 = 86, value metadata     | 0x03          |
+| 0x57 = 87, value              | 0x06          |
 | 0x70 = 112, predecessor group | 0x02          |
 
-The sum of `0x0a + 0x01 + 0x02 + 0x04 + 0x09 + 0x02` is 28, so the next 28 bytes are operation columns.
+The sum of `0x0a + 0x01 + 0x02 + 0x03 + 0x06 + 0x02` is 24, so the next 24 bytes are operation columns.
 
 #### Operation columns
 
 - key string：
 
 ```
-7e046e616d6503616765
+7e046e616d650361676
 ```
 
 In Automerge, `key string` is encoded using Run Length Encoding (RLE).
@@ -352,19 +352,19 @@ RLE is used for the action column. Here, `0x02` = 2, indicating that the value i
 
 The value part is `0x01`. Repeating it twice gives us `[0x01, 0x01]`.
 
-According to the Automerge specification[<sup>3</sup>](#refer-anchor-3), `0x01` as the action value means "set". Therefore, the action column is `[set, set]`.
+According to the Automerge specification, `0x01` as the action value means "set". Therefore, the action column is `[set, set]`.
 
 
 
 - value metadata
 
 ```
-7e860114
+7e5614
 ```
 
 The value metadata is encoded using the `Value Encoding`.
 
-`0x8601 = 1000 0110 0000 0001` can be interpreted as `0b 000 0001 000 0110`, which means the first type is `0b110` (String), and the length is `0b1000 = 8 bytes`.
+`0x56 = 0101 0110` can be interpreted as `0b 101 0110`, which means the first type is `0b0110` (String), and the length is `0b101 = 5 bytes`.
 
 The following `0x14 = 0b0001 0100`,  indicates that the second type is `0b100` (Signed Integer), and the length is `0b1 = 1 byte`.
 
@@ -375,12 +375,12 @@ So the entire value metadata column can be interpreted as `[<String, 8>, <Signed
 - value
 
 ```
-4c69616e6772756e15
+416c69636515
 ```
 
-`0x4c69616e6772756e` is converted to the UTF-8 string "Liangrun". And `0x15 = 21`.
+`0x416c696365` is converted to the UTF-8 string "Alice". And `0x15 = 21`.
 
-Therefore, the value column can be interpreted as `["Liangrun", 21]`.
+Therefore, the value column can be interpreted as `["Alice", 21]`.
 
 
 
@@ -391,7 +391,6 @@ Therefore, the value column can be interpreted as `["Liangrun", 21]`.
 ```
 
 The first column of the predecessor group is encoded using RLE, which is equivalent to [0x00, 0x00] here. This means that there are no predecessors for these two operations. Therefore, the predecessor group is interpreted as `[[], []]`.
-
 
 
 ## Document encoding
@@ -428,7 +427,7 @@ We use an example to illustrate how a document is encoded. Suppose we have the f
 ```rust
 let mut doc = Automerge::new();
 let mut tx1 = doc.transaction();
-tx1.put(ROOT, "name", "Liangrun")?;
+tx1.put(ROOT, "name", "Bob")?;
 tx1.put(ROOT, "age", 21)?;
 tx1.commit();
 
@@ -442,21 +441,22 @@ It will be encoded to the byte sequence like this:
 
 ```
 856f4a83e7a6f50e009301011013336ec1ed354befa60b3e3f05346028012f2f0a65b40461263a496749d8bb0b0746c234cbddb092e11473861242638a0c07010203021303230240034302560208151121022304340142025605570d800102020002017e020102007e00017f0002077d036167650667656e646572046e616d6503007d02017e0303017d14468601156d616c654c69616e6772756e030001
+856f4a834afcae9c008d01011015cb7623f0314fc09773daafcf4138d7016cdffc539c7e02a93ab4f9762fc4466b90fc4134c6662382d067f02d9e9418bf070102030213032302400343025602081511210223043401420256045708800102020002017e020102007e00017f0002077d036167650667656e646572046e616d6503007d02017e0303017d144636156d616c65426f62030001
 ```
 
 We can deconstruct it into different parts:
 
 ```c
 0x856f4a83 // magic
-0xe7a6f50e // checksum
+0x4afcae9c // checksum
 0x00 // chunk type
-0x9301 // chunk length
-0x011013336ec1ed354befa60b3e3f05346028 // actors
-0x012f2f0a65b40461263a496749d8bb0b0746c234cbddb092e11473861242638a0c // heads
+0x8d01 // chunk length
+0x011015cb7623f0314fc09773daafcf4138d7 // actors
+0x016cdffc539c7e02a93ab4f9762fc4466b90fc4134c6662382d067f02d9e9418bf // heads
 0x070102030213032302400343025602 // change column metadata
-0x08151121022304340142025605570d8001 // operation column metadata
-0x02020002017e020102007e00017f000207 // change column
-0x7d036167650667656e646572046e616d6503007d02017e0303017d14468601156d616c654c69616e6772756e0300 // operation columns
+0x081511210223043401420256045708800102 // operation column metadata
+0x020002017e020102007e00017f000207 // change column
+0x7d036167650667656e646572046e616d6503007d02017e0303017d144636156d616c65426f620300 // operation columns
 0x01 // heads index
 ```
 
@@ -467,7 +467,7 @@ As most of the fields are similar to change encoding, we will not explain them h
 #### change columns metadata
 
 ```
-070102030213032302400343025602
+0x070102030213032302400343025602
 ```
 
 Following the uLEB `0x07` = 7 indicating the number of columns, there are 7 pairs of <Column Specification, Column Length>:
@@ -489,7 +489,7 @@ Following the uLEB `0x07` = 7 indicating the number of columns, there are 7 pair
 #### operation columns metadata
 
 ```
-08151121022304340142025605570d8001
+0x081511210223043401420256045708800102
 ```
 
 Following the uLEB `0x08` = 8 indicating the number of columns, there are 8 pairs of <Column Specification, Column Length>:
@@ -501,18 +501,18 @@ Following the uLEB `0x08` = 8 indicating the number of columns, there are 8 pair
 | 0x23 = 35, counter            | 0x04          |
 | 0x34 = 52, insert             | 0x01          |
 | 0x42 = 66, action             | 0x02          |
-| 0x56 = 86, value metadata     | 0x05          |
-| 0x57 = 87, value              | 0x0d          |
-| 0x8000 = 128, successor group | 0x02          |
+| 0x56 = 86, value metadata     | 0x04          |
+| 0x57 = 87, value              | 0x08          |
+| 0x8001 = 128, successor group | 0x02          |
 
-0x11 + 0x02 + 0x04 + 0x01 + 0x02 + 0x05 + 0x0d + 0x02 = 46 bytes
+0x11 + 0x02 + 0x04 + 0x01 + 0x02 + 0x04 + 0x08 + 0x02 = 40 bytes
 
 
 
 #### change columns
 
 ```
-02020002017e020102007e00017f000207
+0x020002017e020102007e00017f000207
 ```
 
 - actor
@@ -523,7 +523,7 @@ Following the uLEB `0x08` = 8 indicating the number of columns, there are 8 pair
 
 The actor column uses RLE. First, the length is `0x02`, indicating that the value is repeated twice. Then, the value is `0x00`, indicating that the actor column is [0x00, 0x00].
 
-In this case, 0x00 refers to the first actor in the actors list, which is `011013336ec1ed354befa60b3e3f05346028`.
+In this case, 0x00 refers to the first actor in the actors list, which is `0x011015cb7623f0314fc09773daafcf4138d7`.
 
 - sequence number
 
@@ -574,7 +574,7 @@ Dependencies group can be interpreted as [0x00, 0x01]. As a result, the first ch
 #### operation columns
 
 ```
-7d036167650667656e646572046e616d6503007d02017e0303017d14468601156d616c654c69616e6772756e0300
+0x7d036167650667656e646572046e616d6503007d02017e0303017d144636156d616c65426f620300
 ```
 
 - key string
@@ -628,7 +628,7 @@ According to the Automerge specification, `0x01` as the action value means "set"
 - value metadata
 
 ```
-7d14468601
+7d144636
 ```
 
 `0x7d` = -3, which means there is no compression used.
@@ -637,21 +637,21 @@ Next is the value part, which consists of several 64-bit uLEBs:
 
 1. `14` = 0001 0100, which means type = 0b100 (Signed integer), length = 0b1 = 1 byte.
 2. `46` = 0100 0110, which means type = 0b110 (String), length = 0b100 = 4 bytes.
-3. `0x8601 = 1000 0110 0000 0001`, which can be interpreted as 0b000 0001 000 0110, which means type = 0b110 (String), length = 0b1000 = 8 bytes.
+3. `36` = 0011 0110, which means type = 0b110 (String), length = 0b11 = 3 bytes.
 
-Therefore, the entire value metadata column can be interpreted as [<Signed Integer, 1>, <String, 4>, <String, 8>].
+Therefore, the entire value metadata column can be interpreted as [<Signed Integer, 1>, <String, 4>, <String, 3>].
 
 - value
 
 ```
-156d616c654c69616e6772756e
+156d616c65426f62
 ```
 
 1. Signed Integer, `0x15` = 21
 2. String, `0x6d616c65` = "male"
-3. String, `0x4c69616e6772756e` = "Liangrun"
+3. String, `0x426f62` = "Bob"
 
-Therefore, the entire value column can be interpreted as [21, "male", "Liangrun"].
+Therefore, the entire value column can be interpreted as [21, "male", "Bob"].
 
 - successor group
 
@@ -670,6 +670,3 @@ So there is no successor for all the operations. Hence the operation group can b
 <div id="refer-anchor-2"></div>
 
 [2]. Kleppmann M, Howard H. Byzantine eventual consistency and the fundamental limits of peer-to-peer databases[J]. arXiv preprint arXiv:2012.00472, 2020.
-<div id="refer-anchor-3"></div>
-
-[3]. A. J. Alex Good, Binary document format, https://automerge.org/automerge-binary-format-spec/.
