@@ -61,8 +61,8 @@ You cannot use `...` when updating a Automerge document. For example, the follow
 
 ```js
 Automerge.change(doc, doc => {
-  doc.items = [...doc.items, toggledItem]
+  doc.items = [...doc.items, toggledItem] // This will overwrite doc.items with a new copy; automerge won't know what actually changed
 })
 ```
 
-Instead, to add an item to a list, you need to use `doc.items.push(item)` inside `Automerge.change` to add to the end of the list. You can also use `doc.items.unshift(item)` to add an item to the beginning, or `doc.items.insertAt(index, item)` to add an item at any index.
+Instead, to add an item to a list, you need to use `doc.items.push(item)` inside `Automerge.change` to add to the end of the list. You can also use `doc.items.unshift(item)` to add an item to the beginning, or `doc.items.insertAt(index, item)` to add an item at any index. For more information, see [types/lists]<../../types/lists/>
