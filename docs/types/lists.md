@@ -5,7 +5,7 @@ sidebar_position: 3
 
 # Lists
 
-JavaScript Arrays are fully supported in Automerge. You can use `push`, `unshift`, `insertAt`, `splice`, loops, and nested objects.
+JavaScript Arrays are fully supported in Automerge. You can use `push`, `unshift`, `insertAt`, `deleteAt`, `splice`, loops, and nested objects.
 
 ```js
 newDoc = Automerge.change(currentDoc, doc => {
