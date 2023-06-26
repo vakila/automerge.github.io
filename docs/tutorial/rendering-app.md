@@ -65,4 +65,4 @@ Automerge.change(doc, doc => {
 })
 ```
 
-Instead, to add an item to a list, you need to use `doc.items.push(item)` inside `Automerge.change` to add to the end of the list. You can also use `doc.items.unshift(item)` to add an item to the beginning, or `doc.items.insertAt(index, item)` to add an item at any index. For more information, see [types/lists]<../../types/lists/>
+Instead, to add an item to a list, you need to use `doc.items.push(item)` inside `Automerge.change` to add to the end of the list. You can also use `doc.items.unshift(item)` to add an item to the beginning, or `doc.items.insertAt(index, item)` to add an item at any index. For more information, see [the documentation for lists](/docs/types/lists).
