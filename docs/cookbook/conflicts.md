@@ -30,8 +30,8 @@ let doc2 = Automerge.change(Automerge.init(), doc => {
 })
 doc1 = Automerge.merge(doc1, doc2)
 doc2 = Automerge.merge(doc2, doc1)
-// Now, doc1 might be either {x: 1} or {x: 2} -- the choice is random.
-// However, doc2 will be the same, whichever value is chosen as winner.
+// Now, we can't tell which value doc1.x and doc2.x are going to assume --
+// the choice is random. However, what's for certain is that they are equal
 assert.deepEqual(doc1, doc2)
 ```
 
