@@ -10,30 +10,10 @@ In this section, we will discuss how to model data within a particular document,
 
 ## How many documents?
 
-You can decide which things to group together as one Automerge document (more fine grained or more coarse grained) based on what makes sense in your app. Having hundreds of docs should be fine — we've built prototypes of that scale. One major automerge project, [PushPin](https://github.com/automerge/pushpin), was built around very granular documents. This had a lot of benefits, but the overhead of syncing many thousands of documents was high. One of the first challenges in synchronizing large numbers of documents is that nodes are likely to have overlapping but disjoint documents and neither side wants to disclose things the other doesn't know about (at least in our last system, knowing the ID of a document was evidence a client should have access to it.)  
+You can decide which things to group together as one Automerge document (more fine grained or more coarse grained) based on what makes sense in your app. Having hundreds of docs should be fine — we've built prototypes of that scale. One major automerge project, [PushPin](https://github.com/automerge/pushpin), was built around very granular documents. This had a lot of benefits, but the overhead of syncing many thousands of documents was high. 
 
 We believe on the whole there's an art to the granularity of data that is universal. When should you have two JSON documents or two SQLite databases or two rows? We suspect that an Automerge document is best suited to being a unit of collaboration between two people or a small group. 
 
-
-## TypeScript support
-
-Given that you have a document, how can you create safety rails for its data integrity? In a typical SQL database, a table would have its own schema, and you create migrations from one schema version to the next. Automerge is flexible on the schema, and will let you add and remove properties and values at will. To improve the programming experience, a document can be typed to have its own schema using TypeScript.
-
-```js
-type D = { 
-  count: Automerge.Counter,
-  text: Automerge.Text,
-  cards: string[] 
-}
-let doc = Automerge.change<D>(Automerge.init(), (doc: D) => {
-  doc.count = new Automerge.Counter()
-  doc.text = new Automerge.Text()
-  // Note that we have to wrap the array in Automerge.List. This is fine because
-  // automerge immediately wraps the underlying array in a proxy object
-  // conforming to `Automerge.List
-  doc.cards = [] as unknown as Automerge.List<string>
-})
-```
 
 ## Setting up an initial document structure
 
@@ -67,38 +47,15 @@ doc2 = Automerge.merge(doc2, doc1)
 
 However, sometimes it's inconvenient to have to sync the initial change to a device before you can modify the document on that device. If you want two devices to be able to independently set up their own document schema, but still to be able to merge those documents, you have to be careful. Simply doing `Automerge.change()` on each device to initialize the schema **will not work**, because you now have two different documents with no shared ancestry (even if the initial change performs the same operations, each device has a different actorId and so the changes will be different).
 
-If you really must initialize each device's copy of a document independently, there are some hacks you can use. One option is to do the initial `Automerge.change()` once to set up your schema, then call `Automerge.getLastLocalChange()` on the document (which returns a byte array), and *hard-code that byte array into your application*. Now, on each device that needs to initialize a document, you do this:
+If you really must initialize each device's copy of a document independently, one option is to do the initial `Automerge.change()` once to set up your schema, then call `Automerge.save()` on the document (which returns a byte array), and *hard-code that byte array into your application*. Now, on each device that needs to initialize a document, you do this:
 
 ```js
 // hard-code the initial change here
 const initChange = new Uint8Array([133, 111, 74, 131, ...])
-let [doc] = Automerge.applyChanges(Automerge.init(), [initChange])
+let [doc] = Automerge.load(initChange)
 ```
 
 This will set you up with a document whose initial change is the one you hard-coded. Any documents you set up with the same initial change will be able to merge.
-
-There is an alternative hack you can use, if you know what you are doing (be careful, this can easily go wrong). Instead of hard-coding a byte array, you can create a change with a hard-coded actorId and a hard-coded timestamp. If two devices perform exactly identical operations with the same actorId and the same timestamp, they will generate changes that are byte-for-byte identical, and which therefore will have the same hash. This way, you can also set up documents with the same initial change.
-
-To hard-code the actorId and timestamp, you can use the following code:
-
-```js
-let schema = Automerge.change(Automerge.init({actorId: '0000'}), {time: 0}, doc => {
-  doc.count = new Automerge.Counter()
-  doc.text = new Automerge.Text()
-  doc.cards = []
-})
-let initChange = Automerge.getLastLocalChange(schema)
-```
-
-Now `initChange` is a byte array as before. You cannot use the document `schema` for any further changes, because it has a fixed actorId, and it's an error to have multiple users with the same actorId. Instead, you can now make a new document with `Automerge.init()` and `initChange` as before:
-
-```js
-let [doc] = Automerge.applyChanges(Automerge.init(), [initChange])
-```
-
-Now, `doc` is initialized and ready to be used as any other Automerge document. You can save that document to disk as you would normally with `Automerge.save(doc)` and load it later when your app starts.
-
-> NOTE: You only have to create this initial change the first time the document loads. You can check if you have a local document already before making this initial document.
 
 ## Versioning
 

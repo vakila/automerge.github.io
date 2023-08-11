@@ -1,8 +1,8 @@
 ---
-sidebar_position: 6
+sidebar_position: 5
 ---
 
-# Managing Conflicts
+# Conflicts
 
 Automerge allows different nodes to independently make arbitrary changes to their respective copies
 of a document. In most cases, those changes can be combined without any trouble. For example, if
@@ -58,3 +58,5 @@ resolved, and the conflict disappears from the object returned by `Automerge.get
 Automerge uses a combination of LWW (last writer wins) and multi-value register. By default, if you read from `doc.foo` you will get the LWW semantics, but you can also see the conflicts by calling `Automerge.getConflicts(doc, 'foo')` which has multi-value semantics.
 
 Every operation has a unique operation ID that is the combination of a counter and the actorId that generated it. Conflicts are ordered based on the counter first (using the actorId only to break ties when operations have the same counter value).
+
+

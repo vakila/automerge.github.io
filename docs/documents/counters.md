@@ -40,5 +40,4 @@ state = Automerge.change(state, doc => {
 
 > **Note:** In relational databases it is common to use an auto-incrementing counter to generate
 > primary keys for rows in a table, but this is not safe in Automerge, since several users may end
-> up generating the same counter value! See the [Table](#table) datatype below for implementing a
-> relational-like table with a primary key.
+> up generating the same counter value! Instead it is best to use UUIDs to identify entities.

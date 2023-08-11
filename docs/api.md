@@ -1,7 +1,12 @@
 ---
 sidebar_position: 1000
 ---
-# Other APIs
+# API Docs
+
+* [`@automerge/automerge`](http://automerge.org/automerge/api-docs/js)
+* [`@automerge/automerge-repo`](http://automerge.org/automerge-repo/)
+
+# Other Languages
 
 Here you can find links to the APIs for each implementation.
 

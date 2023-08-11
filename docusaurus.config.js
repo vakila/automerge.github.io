@@ -1,6 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const math = require("remark-math");
+const katex = require("rehype-katex");
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
@@ -17,6 +19,11 @@ const config = {
     organizationName: 'automerge', // Usually your GitHub org/user name.
     projectName: 'automerge', // Usually your repo name.
 
+    markdown: {
+        mermaid: true
+    },
+    themes: ["@docusaurus/theme-mermaid"],
+
     presets: [
         [
             '@docusaurus/preset-classic',
@@ -25,6 +32,8 @@ const config = {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl: 'https://github.com/automerge/automerge.github.io/edit/main/',
+                    remarkPlugins: [math],
+                    rehypePlugins: [katex],
                 },
                 blog: {
                     showReadingTime: true,
@@ -36,6 +45,17 @@ const config = {
             }),
         ],
     ],
+
+    stylesheets: [
+      {
+        href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+        type: 'text/css',
+        integrity:
+          'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+        crossorigin: 'anonymous',
+      },
+    ],
+
 
     themeConfig:
         /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
@@ -111,22 +131,6 @@ const config = {
                 darkTheme: darkCodeTheme,
             },
         }),
-    plugins: [
-        [
-            "docusaurus-plugin-typedoc",
-            {
-                entryPoints: ["./automerge/javascript/src/index.ts"],
-                tsconfig: "./automerge/javascript/config/declonly.json",
-                readme: "none",
-                out: "tsapi",
-                sidebar: {
-                    categoryLabel: "API Docs",
-                    position: 6,
-                    indexLabel: "Overview"
-                }
-            }
-        ]
-    ]
 };
 
 module.exports = config;
