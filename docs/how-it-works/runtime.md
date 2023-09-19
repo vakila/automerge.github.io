@@ -6,7 +6,7 @@ Operation Set (OpSet), as the name suggested, is a set of operations. It is the 
 
 Everytime we update, delete or create an object, we insert an operation into the OpSet. And the retrieval of an object is actually the retrieval of an operation of the OpSet.
 
-Every operation in the operation set is associated with a timestamp which indicates the causal order of the operation. We use `<couter, actorID>` as the timestamp, which is a Lamport clock.  In Automerge, the term "actor" is used instead of "replica", but the two are essentially interchangeable. For the remainder of the document, we will refer to the timestamp of an operation as `OpId` (Operation ID).
+Every operation in the operation set is associated with a timestamp which indicates the causal order of the operation. We use `<counter, actorID>` as the timestamp, which is a Lamport clock.  In Automerge, the term "actor" is used instead of "replica", but the two are essentially interchangeable. For the remainder of the document, we will refer to the timestamp of an operation as `OpId` (Operation ID).
 
 Every Map or List object has an object ID, which is the OpId of the operation that creates the object. We use object ID to uniquelly identify an object in an Automerge document. The object ID of root is `<0, 0>`.
 
@@ -117,7 +117,7 @@ Let's explain how get, put and delete works in pseudocode.
 ```c
 def get(table, prop):
 	operations, _ := search(table, prop);
-	last := operations[opertaions.len - 1];
+	last := operations[operations.len - 1];
 	return last.action.value;
 
 def search(table, prop):
