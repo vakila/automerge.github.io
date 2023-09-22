@@ -24,11 +24,11 @@ Over time we have made a number of changes to the automerge API which are not ba
 
 ### Using the next API
 
-There are two waays to use the next API
+There are two ways to use the next API
 
 #### Subpath Exports
 
-If you are either a) using JavaScript in a modern browser or on node > 16 then you can do the following:
+If you are either using JavaScript in a modern browser or on node > 16 then you can do the following:
 
 ```javascript
 import {default as A} from "@automerge/automerge/next"
@@ -59,7 +59,7 @@ The first version of automerge was implemented in pure javascript and is what we
 
 ### `@automerge/automerge-wasm` and `@automerge/automerge`
 
-More recently we rewrote automerge in Rust and deployed it to javascript by compiling to a wasm package at [`@automerge/automerge-wasm`](https://www.npmjs.com/package/@automerge/automerge-wasm). This wasm package is something we currently consider to be an implementation detail and should not be depended on by third parties. The `@automerge/automerge` package offers a very similar API to the original `automerge` package but implemented by forwarding logic to `@automerge/automerge`. It is consequently much faster.
+More recently we rewrote automerge in Rust and deployed it to javascript by compiling to a wasm package at [`@automerge/automerge-wasm`](https://www.npmjs.com/package/@automerge/automerge-wasm). This wasm package is something we currently consider to be an implementation detail and should not be depended on by third parties. The `@automerge/automerge` package offers a very similar API to the original `automerge` package but implemented by forwarding logic to `@automerge/automerge-wasm`. It is consequently much faster.
 
 ### `@automerge/automerge-repo`
 
