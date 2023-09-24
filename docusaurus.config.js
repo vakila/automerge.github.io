@@ -87,8 +87,8 @@ const config = {
                         title: 'Docs',
                         items: [
                             {
-                                label: 'Tutorial',
-                                to: 'docs/tutorial/introduction',
+                                label: 'Quick Start',
+                                to: 'docs/quickstart/introduction',
                             },
                         ],
                     },
