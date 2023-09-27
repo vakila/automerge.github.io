@@ -219,7 +219,7 @@ The handle we have created has a URL, we can access that with `DocHandle.url`. N
 
 ```js
 const repo = new AutomergeRepo.Repo({
-  network: [new BrowserWebSocketClientAdapter("ws://sync.automerge.org")],
+  network: [new BrowserWebSocketClientAdapter("wss://sync.automerge.org")],
 })
 const doc = repo.find(<url copied from the previous example>)
 console.log(await doc.value()) // Prints the same contents as in the previous snippet
@@ -244,7 +244,7 @@ import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-index
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
 
 const repo = new AutomergeRepo.Repo({
-  network: [new BrowserWebSocketClientAdapter("ws://sync.automerge.org")],
+  network: [new BrowserWebSocketClientAdapter("wss://sync.automerge.org")],
   storage: new IndexedDBStorageAdapter(),
 })
 ```
