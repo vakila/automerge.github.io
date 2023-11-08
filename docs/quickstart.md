@@ -52,18 +52,6 @@ export default defineConfig({
     format: "es",
     plugins: [wasm()],
   },
-
-  optimizeDeps: {
-    // This is necessary because otherwise `vite dev` includes two separate
-    // versions of the JS wrapper. This causes problems because the JS
-    // wrapper has a module level variable to track JS side heap
-    // allocations, and initializing this twice causes horrible breakage
-    exclude: [
-      "@automerge/automerge-wasm",
-      "@automerge/automerge-wasm/bundler/bindgen_bg.wasm",
-      "@syntect/wasm",
-    ],
-  },
 })
 ```
 
@@ -109,6 +97,7 @@ if (isValidAutomergeUrl(rootDocUrl)) {
     handle.change(d => d.counter = new A.Counter())
 }
 const docUrl = document.location.hash = handle.url
+// @ts-ignore
 window.handle = handle // we'll use this later for experimentation
 ```
 
@@ -167,7 +156,7 @@ Inside `App.tsx`, add these imports:
 ```typescript
 import {AutomergeUrl} from '@automerge/automerge-repo'
 import {useDocument} from '@automerge/automerge-repo-react-hooks'
-import * as A from "@automerge/automerge"
+import {next as A} from "@automerge/automerge"
 ```
 
 and change the first few lines to these:
@@ -199,41 +188,71 @@ Congratulations! You have a working Automerge-backed React app with live local s
 
 ## Collaborating over the internet
 
-<!-- peter's notes 
+The handle we have created has a URL, we can access that with `DocHandle.url`, this URL can be used to sync the document with any peer who has it. Open up your browser debugger and run `console.log(handle.url)`, this should print something that looks like `"automerge:45NuQi1e45PKsemx8GhSCu62gyag"`, make a note of this for later.
 
-we might be hitting our 5m quota already here!
-- storage should maybe go first because we can just look in the indexeddb
-- networking we can watch the network panel to see messages going out after we add BrowserWebsocketClientAdapter
-- we could also show adding a local sync server, and we should talk about the sharePolicy
+First, we'll add a network adapter to the `Repo` in our web app which syncs to a sync server via a websocket. Add the following dependency to the web app we've been building:
 
-stuff not covered here that we should consider for the tutorial:
-- creating docs & using links (and when to use >1 doc)
-- ephemeral messaging
-- a survey of data types: arrays, maps, counters, text... rich text?
-- svelte / vanilla JS examples
-
--->
-
-
-The handle we have created has a URL, we can access that with `DocHandle.url`. Now, in a second process (such as in another tab) we can do this:
-
-```js
-const repo = new AutomergeRepo.Repo({
-  network: [new BrowserWebSocketClientAdapter("wss://sync.automerge.org")],
-})
-const doc = repo.find(<url copied from the previous example>)
-console.log(await doc.value()) // Prints the same contents as in the previous snippet
+```bash
+yarn add @automerge/automerge-repo-network-websocket
 ```
 
-And we can make changes
+Then add a network adapter connecting the repo to `sync.automerge.org`
+
+```
+// main.tsx
+// Add this import
+import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
+
+...
+
+// now update the repo definition to look like this:
+const repo = new Repo({
+    network: [
+        new BroadcastChannelNetworkAdapter(),
+        // This is the new line
+        new BrowserWebSocketClientAdapter('wss://sync.automerge.org')
+    ],
+    storage: new IndexedDBStorageAdapter(),
+})
+```
+
+This creates a repo which syncs changes it sees to `sync.automerge.org` and any other process can connect to that server and use the URL to get the changes we've made. 
+
+:::note
+
+The Automerge project provides a public sync server for you to experiment with `sync.automerge.org`. This is not a private instance, and as an experimental service has no reliability or data safety guarantees. Basically, it's good for demos and prototyping, but run your own sync server for production uses.
+
+:::
+
+To see this in action we'll create a little node app. Change into a clean directory and run
+
+```bash
+npm create @automerge/repo-node-app amg-quickstart
+cd amg-quickstart
+```
+
+Now open `index.js` and add the following:
+
+
+```js
+// repo is already set up by the `repo-node-app` helper
+const doc = repo.find("<url copied from the debugger>")
+console.log(await doc.doc())
+// This is required because we don't have a way of shutting down the repo
+setTimeout(() => process.exit(), 1000)
+```
+
+Now run this with `node index.js` and you should see the contents of the document.
+
+Now add the following at the end of `index.js` (but before the setTimeout)
 
 ```js
 doc.change(d => {
-  d.cards[0].done = true
+    d.counter.increment(1)
 })
 ```
 
-This change will be reflected in any connected and listening handles.
+This change will be reflected in any connected and listening handles. Go back to the original browser window and watch it as you run `node index.js`. What you should see is that every time you run the script the counter in the browser changes.
 
 ## Saving the document
 
