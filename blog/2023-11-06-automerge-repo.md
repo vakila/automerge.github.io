@@ -139,7 +139,7 @@ function TodoList(listUrl: AutomergeUrl) {
 }
 ```
 
-Note that when `Repo` receives changes over the network or registers local changes, the original Automerge document remains immutable, and any modified parts of the document get new objects. This means that React will only re-render the parts of the UI that depend on a part of the document that has changed.
+Note that when `Repo` receives changes over the network or registers local changes, the original Automerge document remains immutable, and any modified parts of the document get new objects. This means that you can continue to use reference equality checks you're used to for in-memory data, in places like `React.memo` or `useMemo`.
 
 ### Svelte Integration
 
