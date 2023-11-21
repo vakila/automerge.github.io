@@ -105,7 +105,7 @@ A real application would probably handle routing differently, but this is enough
 
 ## Working with the document
 
-The main way of interacting with a Repo is through `DocHandles`, which allow you to read data from a document or make changes to it and which emit `"change"` events whenever the document changes -- either through local actions or over the network.
+The main way of interacting with a Repo is through `DocHandles`, which allow you to read data from a document or make changes to it, and which emit `"change"` events whenever the document changes -- either through local actions or over the network.
 
 Now that we have a document handle stuck onto the window, let's experiment with it. Start your application now with:
 
@@ -216,7 +216,7 @@ const repo = new Repo({
 })
 ```
 
-This creates a repo which syncs changes it sees to `sync.automerge.org` and any other process can connect to that server and use the URL to get the changes we've made. 
+This creates a repo which syncs changes it sees to `sync.automerge.org`, and any other process can connect to that server and use the URL to get the changes we've made. 
 
 :::note
 
