@@ -21,7 +21,7 @@ The object passed to `broadcast` will be CBOR encoded so you can send whatever y
 
 ## Receiving
 
-To receive you listen to the `"ephemeral-mesage"` event on the `DocHandle`
+To receive you listen to the `"ephemeral-message"` event on the `DocHandle`
 
 ```typescript
 const handle = Repo.find("<some url>")
