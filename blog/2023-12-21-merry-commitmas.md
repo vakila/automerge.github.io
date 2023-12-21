@@ -12,7 +12,7 @@ But first, a few feature updates:
 
 Tiny Essay Editor is built around the [automerge-codemirror](https://github.com/automerge/automerge-codemirror) integration and uses incremental updates to make sure it stays fast even on extremely large documents. We've managed to maintain next-frame performance for most edits and document sizes, but on very large documents we still have a few stalls caused by calculating  network synchronization messages to work through.
 
-That said, the CodeMirror integration is stable, efficient, and works well with both the marks and cursors APIs. If you need a well-supported plaintext editor (or want a reference to write your own integration for your favorite editor) start here. ProseMirror integration is coming too, more about that after christmas.
+That said, the CodeMirror integration is stable, efficient, and works well with both the marks and cursors APIs. If you need a well-supported plaintext editor (or want a reference to write your own integration for your favorite editor) start here. ProseMirror integration is coming too, more about that after Christmas.
 
 ## updateText for easy integration
 
