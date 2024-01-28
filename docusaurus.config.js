@@ -96,8 +96,8 @@ const config = {
                         title: 'Community',
                         items: [
                             {
-                                label: 'Slack community',
-                                href: 'https://join.slack.com/t/automerge/shared_invite/zt-e4p3760n-kKh7r3KRH1YwwNfiZM8ktw',
+                                label: 'Discord community',
+                                href: 'https://discord.gg/XcbDtgJVdN',
                             },
                             {
                                 label: 'Ink & Switch',
