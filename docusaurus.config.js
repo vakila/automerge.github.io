@@ -97,7 +97,7 @@ const config = {
                         items: [
                             {
                                 label: 'Discord community',
-                                href: 'https://discord.gg/XcbDtgJVdN',
+                                href: 'https://discord.gg/zKGe4DCfgR',
                             },
                             {
                                 label: 'Ink & Switch',
