@@ -2,9 +2,13 @@
 sidebar_position: 1
 ---
 
-# 5-Minute Quick Start
+# Automerge: A quick tour
 
-It's easy to build a local-first web application with real-time synchronization using Automerge. In this quickstart, we'll start with the standard `yarn create vite` example Typescript application and use Automerge to turn it into a simple local-first application.
+Automerge is a suite of tools for building [local-first](https://www.inkandswitch.com/local-first) web applications with real-time synchronization that works on and offline. In this tutorial, we'll build a local-first multiplayer todo app with TypeScript, React, and Automerge. We'll discover how to:
+
+- Represent data as Automerge [documents]()
+- Store & synchronize a set of documents in an Automerge [repository]() 
+- Build a multiplayer realtime web app client with Automerge's [React hooks]()
 
 All the code here can be found at the [automerge-repo-quickstart](https://github.com/automerge/automerge-repo-quickstart) repo.
 
