@@ -1,16 +1,53 @@
 ---
 sidebar_position: 1
+
+
 ---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Hello Automerge: A quick tour
 
+<!-- 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
+```js
+function helloWorld() {
+  console.log('Hello, world!');
+}
+```
+
+</TabItem>
+<TabItem value="py" label="Python">
+
+```py
+def hello_world():
+  print("Hello, world!")
+```
+
+</TabItem>
+<TabItem value="java" label="Java">
+
+```java
+class HelloWorld {
+  public static void main(String args[]) {
+    System.out.println("Hello, World");
+  }
+}
+```
+
+</TabItem>
+</Tabs> -->
+
 Automerge is a suite of tools for building [local-first](https://www.inkandswitch.com/local-first) web applications with real-time synchronization that works on and offline. 
 
-In this tutorial, you'll build a local-first multiplayer todo app with TypeScript, React, Vite, and Automerge. You'll discover how to:
+In this tutorial, you'll build a local-first multiplayer todo-list app with TypeScript, React, Vite, and Automerge. You'll discover how to:
 
-- Represent data as Automerge [documents]()
-- Store & synchronize a set of documents in an Automerge [repository]() 
-- Build a multiplayer realtime web app client with Automerge's [React hooks]()
+- Represent data as Automerge [documents](automerge.org/TODO)
+- Store & synchronize a set of documents in an Automerge [repository](automerge.org/TODO) 
+- Build a multiplayer realtime web app client with Automerge's [React hooks](automerge.org/TODO)
 
 All the code here can be found at the [automerge-repo-quickstart](https://github.com/automerge/automerge-repo-quickstart) repo.
 
@@ -42,25 +79,25 @@ $ yarn
 
 ## Modeling Data: Automerge Documents
 
-[Documents](TODO) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, known as a Conflict-free Replicated Data Type, or [CRDT](TODO).
+[Documents](automerge.org/TODO) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, known as a Conflict-free Replicated Data Type, or [CRDT](automerge.org/TODO).
 
-Each document is identified by a unique [ID](TODO) that looks something like: `automerge:45NuQi1e45PKsemx8GhSCu62gyag`
+Each document is identified by a unique [ID](automerge.org/TODO) that looks something like: `automerge:45NuQi1e45PKsemx8GhSCu62gyag`
 
- Like JSON, Automerge documents support various [data types](), such as a piece of `Text` or an incrementing `Counter`. You'll use the `@automerge/automerge` package to define document(s) that [model the data](TODO) your app needs. 
+ Like JSON, Automerge documents support various [data types](automerge.org/TODO), such as a piece of `Text` or an incrementing `Counter`. You'll use the `@automerge/automerge` package to define document(s) that [model the data](automerge.org/TODO) your app needs. 
 
  ### Define Documents for a todo-list app
 
-
+...Model some data...
 
 
 
 ## Storing & Synchronizing: Automerge Repositories
 
-The magic of Automerge Documents is that they support [synchronization](TODO) between all communicating peers working with the same document ID. 
+The magic of Automerge Documents is that they support [synchronization](automerge.org/TODO) between all communicating peers working with the same document ID. 
 
-An Automerge Repository, or [Repo](TODO), is what lets you store, synchronize, and manage your app's Documents, and is the second core concept you need to build apps with Automerge.
+An Automerge Repository, or [Repo](automerge.org/TODO), is what lets you store, synchronize, and manage your app's Documents, and is the second core concept you need to build apps with Automerge.
 
-A Repo keeps track of all the documents you load and makes sure they're properly synchronized and stored. Much like git, this lets you make changes locally, send & receive changes to/from others, and [merge](TODO) those changes as needed. 
+A Repo keeps track of all the documents you load and makes sure they're properly synchronized and stored. Much like git, this lets you make changes locally, send & receive changes to/from others, and [merge](automerge.org/TODO) those changes as needed. 
 
 The `@automerge/automerge-repo` package lets you create & configure a Repo for documents created with `@automerge/automerge`.
 
@@ -69,8 +106,8 @@ The `@automerge/automerge-repo` package lets you create & configure a Repo for d
 
 To work with Automerge documents, you first need to configure an Automerge Repo.
 Each Repo needs to know:
-- Where its documents should be saved, specified via a [StorageAdapter](TODO)
-- How/Where to send, retrieve, and synchronize doc updates, specified via a [NetworkAdapter](TODO)
+- Where its documents should be saved, specified via a [StorageAdapter](automerge.org/TODO)
+- How/Where to send, retrieve, and synchronize doc updates, specified via a [NetworkAdapter](automerge.org/TODO)
 
 Add the following imports to `src/main.tsx`:
 
