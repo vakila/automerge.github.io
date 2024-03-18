@@ -50,7 +50,7 @@ export default defineConfig({
 
   worker: {
     format: "es",
-    plugins: [wasm()],
+    plugins: () => [wasm()],
   },
 })
 ```
@@ -88,7 +88,7 @@ Now that we have the repo, we want to either create a document if we don't have 
 Add this code right after the repo initialization code.
 
 ```typescript
-const rootDocUrl = `${document.location.hash.substr(1)}`
+const rootDocUrl = `${document.location.hash.substring(1)}`
 let handle
 if (isValidAutomergeUrl(rootDocUrl)) {
     handle = repo.find(rootDocUrl)
@@ -97,8 +97,8 @@ if (isValidAutomergeUrl(rootDocUrl)) {
     handle.change(d => d.counter = new A.Counter())
 }
 const docUrl = document.location.hash = handle.url
-// @ts-ignore
-window.handle = handle // we'll use this later for experimentation
+// @ts-expect-error we'll use this later for experimentation
+window.handle = handle
 ```
 
 A real application would probably handle routing differently, but this is enough to get started.
