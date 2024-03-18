@@ -19,13 +19,18 @@ In this tutorial, you'll build a local-first multiplayer todo-list app with Type
 - Store & synchronize a set of documents in an Automerge [Repository](automerge.org/TODO) 
 - Build a multiplayer realtime web app client with Automerge's [React library](automerge.org/TODO)
 
-<Admonition>
+<figure style={ {margin: '0px auto', textAlign: 'center'} } >
+<video src={ require('../static/img/counter-sync-sm.mov').default } width={600} autoPlay />
+<figcaption>The local-first app in action</figcaption>
+</figure>
+
+## Setup
+
+<Admonition type="info">
 
 All the code here can be found at the [automerge-repo-quickstart](https://github.com/automerge/automerge-repo-quickstart) repo.
 
 </Admonition>
-
-## Setup
 
 To get started:
 - clone the tutorial project from [automerge-repo-quickstart](https://github.com/automerge/automerge-repo-quickstart)
@@ -76,18 +81,24 @@ Each document is identified by a unique [ID](automerge.org/TODO), e.g.:
 
  ### Create a todo document
 
-In App.tsx, import the `@automerge/automerge` package, then use the data types it exposes to define the shape of the document(s) your app will need. 
+In App.tsx, import the `@automerge/automerge` package, then use builtin JS data types combined with a few Automerge-specific data types exposed by this package to define the shape of the document(s) your app will need. 
 
-For example, for a todo-list app, you might represent each item as a `TodoDoc` with a string that describes the `task`, and a boolean `done` property. 
+For example, for a simple app that counts how many times a button has been clicked, you might have a `CounterDoc` with two properties: a `name` string and a `counter` which we can represent with a special numeric value `A.Counter`.
 
 You can manually create a new Automerge document from a JS object with `A.from()`:
 
 ```ts
 import { next as A } from '@automerge/automerge';
 
-const todo = A.from({
-  task: 'Learn Automerge',
-  done: false,
+
+interface CounterDoc {
+  name: string;
+  counter: A.Counter;
+} 
+
+const counter: CounterDoc = A.from({
+  name: 'clicks',
+  counter: new A.Counter(),
 });
 ```
 
@@ -100,27 +111,28 @@ As changes are made to a Document's data, those changes are stored along with th
 Instead of manipulating a `Document`'s values directly, in Automerge you'll write a callback function with the transformation you want to apply to the given doc. Pass the document & the callback function to the `A.change` method, and Automerge will return a new copy of the document with the callback's changes applied. 
 
 
-For example, to mark a `todo` as completed, you can set its `done` value like so:
+For example, to rename our counter doc we can set its `.name` property:
 
 ```ts
-const doneTodo = A.change(todo, d => d.done = true);
+const renamedCounter = A.change(counter, d => d.name = 'button clicks');
 ```
 
-Or to change the name of the task: 
+And to increment the counter itself we can call `.counter.increment(1)`: 
 
 ```ts
-const renamedTodo = A.change(todo, d => d.task = 'Learn more Automerge');
+const incrementedCounter = A.change(counter, d => d.counter.increment(1));
 ```
 
 
 <Admonition>
+
 Documents are [immutable](TODO), so each change creates a new document while the original document remains unaltered.
 
 
 ```ts
-const doneTodo = A.change(todo, d => d.done = true);
-doneTodo.done // true
-todo.done // false
+const renamedCounter = A.change(counter, d => d.name = 'button clicks');
+renamedCounter.name // 'button clicks'
+counter.name // 'clicks'
 ```
 
 </Admonition>
@@ -132,13 +144,16 @@ As the name implies, one of the key powers of Automerge is its ability to [merge
 Pass two documents with different changes to `A.merge`, and Automerge will return a new document that includes the changes from both:
 
 ```ts
-const mergedTodo = A.merge(doneTodo, renamedTodo);
-console.log(mergedTodo); // { task: 'Learn more Automerge', done: true }
+const increased = A.change(A.clone(counter), d => d.counter.increment(10));
+const renamed = A.change(A.clone(counter), d => d.name = 'button clicks');
+const merged = A.merge(increased, renamed);
+console.log(merged.name); // 'button clicks'
+console.log(merged.counter.value) // 10
 ```
 
 When merging two different changes to the same property, Automerge uses various strategies to avoid [conflicts](https://automerge.org/docs/documents/conflicts/) and ensure that the merged document will be identical for every user.
 
-## Store & Sync Docs with a `Repo`
+## Manage Docs with a `Repo`
 
 As shown above, you can manipulate documents directly with `A`, which is useful for understanding Automerge and taking it for a spin. However, in a real app you will typically interact with Documents within an Automerge [Repository](https://automerge.org/docs/repositories/). 
 
@@ -175,14 +190,34 @@ const repo = new Repo({
 ```
 
 <Admonition>
+
 If the Automerge project doesn't have a pre-built adapter that fits your needs, you can create [custom adapter(s)](./repositories/storage/#roll-your-own) as needed. 
+
 </Admonition>
 
-## Creating (or finding) a document
+### Create or Find a Document
 
-Now that we have the repo, we want to either create a document if we don't have one already or we want to load a document. To keep things simple, we'll check the URL hash for a document ID, and if we don't find one, we'll start a new document and set it in the hash.
+To create a new document in a repo, you can call `repo.create()` and pass in the initial values of the document:
 
-Add this code right after the repo initialization code.
+```ts
+const counterHandle = repo.create<CounterDoc>({
+  name: 'clicks',
+  counter: new A.Counter(),
+})
+```
+
+This returns a [`DocHandle`](TODO) object, which provides an interface for working with the document. 
+
+The `DocHandle` has a `.url` property with the document's unique ID: 
+
+```ts
+counterHandle.url // automerge:1234...
+``` 
+
+For this counter app, we want to either retrieve the existing counter document if it exists, or create a new document if we don't have one already. 
+
+It's common practice to pass document IDs around as URL hashes. In this case, you can check the URL hash for a document ID, and if none exists, we'll create a new document and set its ID in the URL hash. (In a production app you'd probably handle routing differently, but this is enough for our example.)
+
 
 ```typescript
 const rootDocUrl = `${document.location.hash.substring(1)}`
@@ -190,81 +225,83 @@ let handle
 if (isValidAutomergeUrl(rootDocUrl)) {
     handle = repo.find(rootDocUrl)
 } else {
-    handle = repo.create<{counter?: A.Counter}>()
-    handle.change(d => d.counter = new A.Counter())
+    handle = repo.create<CounterDoc>({
+      name: 'clicks',
+      counter: new A.Counter();
+    })
 }
 const docUrl = document.location.hash = handle.url
-// @ts-ignore
-window.handle = handle // we'll use this later for experimentation
 ```
 
-A real application would probably handle routing differently, but this is enough to get started.
+### Read the document
 
-## Working with the document
 
-The main way of interacting with a Repo is through `DocHandles`, which allow you to read data from a document or make changes to it, and which emit `"change"` events whenever the document changes -- either through local actions or over the network.
+The handle's `doc` method asynchronously loads & returns the document's data from the `Repo`'s storage:
 
-Now that we have a document handle stuck onto the window, let's experiment with it. Start your application now with:
-
-`$ yarn dev`
-
-You won't see any changes from the default example application on screen, but we've attached an Automerge document to the `window` object, which makes it conveniently available in the Chrome debugger. 
-
-Your new document is empty, because we just created it. Let's start by initializing a counter. Run the following command in your Chrome debugger.
-
-```typescript
-handle.change(d => { d.counter.increment(10) })
+```ts
+await counterHandle.doc()
 ```
 
-`DocHandle.change` allows you to modify the document managed by a `DocHandle` and takes care of storing new changes and notifying any peers of new changes.
+(There is also a synchronous `.docSync()` method which returns undefined if the document is unavailable either because it is still loading, or because it can't be found.)
 
-Next, run this code to see the contents of your document. The contents will look a bit complex, but you should see a counter with a value of 10 if you poke around.
+<Admonition type="info">
 
-```typescript
-handle.docSync()
+If you want to render loading states differently from an unavailable state, you can inspect `handle.state` and branch accordingly.
+
+</Admonition>
+
+
+### Manipulate the document
+
+
+A `DocHandle` also exposes a `.change` method allows you to modify the document. It accepts a callback function for updating the document's data, as we saw before:  
+
+```ts
+counterHandle.change(d => { d.counter.increment(10) })
 ```
 
-Calling `DocHandle.docSync()` return the current value of the document synchronously, or returns undefined if the document is unavailable either because it is still loading, or because it can't be found. To avoid this problem, prefer the asynchronous form: `await handle.doc()`. If you want to render loading states differently from an unavailable state, you can inspect `handle.state` and branch accordingly.
+The `.change` method takes care of storing new changes, and notifies any peers of new changes by emitting `"change"` events whenever the document changes -- either through local actions or over the network, as determined by the configuration of your `Repo`.
 
-## Updating your app to use Automerge
 
-We've already created or fetched our initial document via `main.tsx`, but usually when we want to work with a document in a React application, we will refer to it by URL. Let's start by editing the call signature for `App.tsx` to pass in the URL for your newly created document, and then make it available to your component with the `useDocument` hook.
+## Automerge in React
+
+To make it easier to work with Automerge Repos and Documents in client-side React apps, the `@automerge/automerge-repo-react-hooks` package provides some React-specific conveniences.
+
+### `RepoContext` and `useRepo` hook
 
 We also need to make the `repo` object we created available throughout the application, so we use a React Context provider for that. In `main.tsx`, modify the `React.render()` call to look like this:
 
 ```typescript
+import { RepoContext } from '@automerge/automerge-repo-react-hooks'
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RepoContext.Provider value={repo}>
-      <App docUrl={docUrl}/>
+      <App />
     </RepoContext.Provider>
   </React.StrictMode>,
 )
 ```
 
-and also add another import line:
+Then, in `App.tsx` you can use the `useRepo` React hook to retrieve the repo saved in the surrounding context: 
+
+### `useDocument` Hook
+
+Once you have the URL (ID) of the document you want to work with, you can access & modify it from your components with the `useDocument` hook:
 
 ```typescript
-import { RepoContext } from '@automerge/automerge-repo-react-hooks'
-```
-
-Inside `App.tsx`, add these imports:
-
-```typescript
-import {AutomergeUrl} from '@automerge/automerge-repo'
-import {useDocument} from '@automerge/automerge-repo-react-hooks'
+// App.tsx
 import {next as A} from "@automerge/automerge"
-```
+import type {AutomergeUrl} from '@automerge/automerge-repo'
+import {useRepo, useDocument} from '@automerge/automerge-repo-react-hooks'
 
-and change the first few lines to these:
+function App() {
 
-```typescript
-interface CounterDoc {
-  counter: A.Counter
+  const repo = useRepo();
+
+  const [doc, changeDoc] = useDocument<CounterDoc>(docUrl);
+
 }
-
-function App({docUrl}: {docUrl: AutomergeUrl}) {
-  const [doc, changeDoc] = useDocument<CounterDoc>(docUrl)
 ```
 
 Now you've got access to the document in a more native React-style way: a hook that will update every time the document changes.
