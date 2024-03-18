@@ -32,8 +32,7 @@ yarn add @automerge/automerge \
   @automerge/automerge-repo-react-hooks \
   @automerge/automerge-repo-network-broadcastchannel \
   @automerge/automerge-repo-storage-indexeddb \
-  vite-plugin-wasm \
-  vite-plugin-top-level-await
+  vite-plugin-wasm 
 ```
 
 Because Vite support for WebAssembly modules (used by Automerge) currently requires configuring a plugin, replace `vite.config.ts` with the following:
@@ -43,25 +42,27 @@ Because Vite support for WebAssembly modules (used by Automerge) currently requi
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import wasm from "vite-plugin-wasm"
-import topLevelAwait from "vite-plugin-top-level-await"
 
 export default defineConfig({
-  plugins: [topLevelAwait(), wasm(), react()],
+  plugins: [wasm(), react()],
 
   worker: {
     format: "es",
-    plugins: [wasm()],
+    plugins: () => [wasm()],
   },
 })
+
 ```
 
 With that out of the way, we're ready to build the application.
 
 # Using Automerge
 
-The central concept of Automerge is one of documents. An Automerge document is a JSON-like data structure that is kept synchronized between all communicating peers with the same document ID.
+The central concept of Automerge is one of [documents](./documents/). An Automerge document is a JSON-like data structure that is kept synchronized between all communicating peers with the same document ID.
 
-To create or find Automerge documents, we'll use a Repo. The Repo (short for repository) keeps track of all the documents you load and makes sure they're properly synchronized and stored. Let's go ahead and make one. Add the following imports to `src/main.tsx`:
+To create or find Automerge documents, we'll use a [Repo](./repositories/). The Repo (short for repository) keeps track of all the documents you load and makes sure they're properly synchronized and stored. 
+
+Let's go ahead and make one. Add the following imports to `src/main.tsx`:
 
 ```typescript
 import { isValidAutomergeUrl, Repo } from '@automerge/automerge-repo'
@@ -256,7 +257,7 @@ This change will be reflected in any connected and listening handles. Go back to
 
 ## Saving the document
 
-If you provide a `Repo` with a `StorageAdapter` then it will save documents for use later. In the browser we might used IndexedDB:
+If you provide a `Repo` with a `StorageAdapter` then it will save documents for use later. In the browser we used IndexedDB:
 
 ```js
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb"
