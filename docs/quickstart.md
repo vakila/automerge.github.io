@@ -14,7 +14,7 @@ Let's begin.
 
 First, let's initialize an off-the-shelf React app using Vite as our bundler. We're not going to remind you along the way, but we recommend you initialize a git repo and check in the code at whatever interval feels comfortable.
 
-```bash 
+```bash
 $ yarn create vite
 # Project name: hello-automerge-repo
 # Select a framework: React
@@ -32,26 +32,25 @@ yarn add @automerge/automerge \
   @automerge/automerge-repo-react-hooks \
   @automerge/automerge-repo-network-broadcastchannel \
   @automerge/automerge-repo-storage-indexeddb \
-  vite-plugin-wasm 
+  vite-plugin-wasm
 ```
 
 Because Vite support for WebAssembly modules (used by Automerge) currently requires configuring a plugin, replace `vite.config.ts` with the following:
 
 ```typescript
 // vite.config.ts
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
-import wasm from "vite-plugin-wasm"
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import wasm from 'vite-plugin-wasm'
 
 export default defineConfig({
   plugins: [wasm(), react()],
 
   worker: {
-    format: "es",
+    format: 'es',
     plugins: () => [wasm()],
   },
 })
-
 ```
 
 With that out of the way, we're ready to build the application.
@@ -60,15 +59,15 @@ With that out of the way, we're ready to build the application.
 
 The central concept of Automerge is one of [documents](./documents/). An Automerge document is a JSON-like data structure that is kept synchronized between all communicating peers with the same document ID.
 
-To create or find Automerge documents, we'll use a [Repo](./repositories/). The Repo (short for repository) keeps track of all the documents you load and makes sure they're properly synchronized and stored. 
+To create or find Automerge documents, we'll use a [Repo](./repositories/). The Repo (short for repository) keeps track of all the documents you load and makes sure they're properly synchronized and stored.
 
 Let's go ahead and make one. Add the following imports to `src/main.tsx`:
 
 ```typescript
 import { isValidAutomergeUrl, Repo } from '@automerge/automerge-repo'
 import { BroadcastChannelNetworkAdapter } from '@automerge/automerge-repo-network-broadcastchannel'
-import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb"
-import {next as A} from "@automerge/automerge" //why `next`? See the the "next" section of the conceptual overview
+import { IndexedDBStorageAdapter } from '@automerge/automerge-repo-storage-indexeddb'
+import { next as A } from '@automerge/automerge' //why `next`? See the the "next" section of the conceptual overview
 ```
 
 ## Initializing a repository
@@ -92,12 +91,12 @@ Add this code right after the repo initialization code.
 const rootDocUrl = `${document.location.hash.substring(1)}`
 let handle
 if (isValidAutomergeUrl(rootDocUrl)) {
-    handle = repo.find(rootDocUrl)
+  handle = repo.find(rootDocUrl)
 } else {
-    handle = repo.create<{counter?: A.Counter}>()
-    handle.change(d => d.counter = new A.Counter())
+  handle = repo.create<{ counter?: A.Counter }>()
+  handle.change(d => (d.counter = new A.Counter()))
 }
-const docUrl = document.location.hash = handle.url
+const docUrl = (document.location.hash = handle.url)
 // @ts-expect-error we'll use this later for experimentation
 window.handle = handle
 ```
@@ -112,12 +111,14 @@ Now that we have a document handle stuck onto the window, let's experiment with 
 
 `$ yarn dev`
 
-You won't see any changes from the default example application on screen, but we've attached an Automerge document to the `window` object, which makes it conveniently available in the Chrome debugger. 
+You won't see any changes from the default example application on screen, but we've attached an Automerge document to the `window` object, which makes it conveniently available in the Chrome debugger.
 
 Your new document is empty, because we just created it. Let's start by initializing a counter. Run the following command in your Chrome debugger.
 
 ```typescript
-handle.change(d => { d.counter.increment(10) })
+handle.change(d => {
+  d.counter.increment(10)
+})
 ```
 
 `DocHandle.change` allows you to modify the document managed by a `DocHandle` and takes care of storing new changes and notifying any peers of new changes.
@@ -155,9 +156,9 @@ import { RepoContext } from '@automerge/automerge-repo-react-hooks'
 Inside `App.tsx`, add these imports:
 
 ```typescript
-import {AutomergeUrl} from '@automerge/automerge-repo'
-import {useDocument} from '@automerge/automerge-repo-react-hooks'
-import {next as A} from "@automerge/automerge"
+import { AutomergeUrl } from '@automerge/automerge-repo'
+import { useDocument } from '@automerge/automerge-repo-react-hooks'
+import { next as A } from '@automerge/automerge'
 ```
 
 and change the first few lines to these:
@@ -217,7 +218,7 @@ const repo = new Repo({
 })
 ```
 
-This creates a repo which syncs changes it sees to `sync.automerge.org`, and any other process can connect to that server and use the URL to get the changes we've made. 
+This creates a repo which syncs changes it sees to `sync.automerge.org`, and any other process can connect to that server and use the URL to get the changes we've made.
 
 :::note
 
@@ -234,10 +235,9 @@ cd amg-quickstart
 
 Now open `index.js` and add the following:
 
-
 ```js
 // repo is already set up by the `repo-node-app` helper
-const doc = repo.find("<url copied from the debugger>")
+const doc = repo.find('<url copied from the debugger>')
 console.log(await doc.doc())
 // This is required because we don't have a way of shutting down the repo
 setTimeout(() => process.exit(), 1000)
@@ -249,7 +249,7 @@ Now add the following at the end of `index.js` (but before the setTimeout)
 
 ```js
 doc.change(d => {
-    d.counter.increment(1)
+  d.counter.increment(1)
 })
 ```
 
@@ -260,17 +260,16 @@ This change will be reflected in any connected and listening handles. Go back to
 If you provide a `Repo` with a `StorageAdapter` then it will save documents for use later. In the browser we used IndexedDB:
 
 ```js
-import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb"
-import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket"
+import { IndexedDBStorageAdapter } from '@automerge/automerge-repo-storage-indexeddb'
+import { BrowserWebSocketClientAdapter } from '@automerge/automerge-repo-network-websocket'
 
 const repo = new AutomergeRepo.Repo({
-  network: [new BrowserWebSocketClientAdapter("wss://sync.automerge.org")],
+  network: [new BrowserWebSocketClientAdapter('wss://sync.automerge.org')],
   storage: new IndexedDBStorageAdapter(),
 })
 ```
 
 Documents will be stored in `IndexedDB` and methods like `Repo.find` will consult storage when loading. The upshot is that if you had a document locally, it will continue to be available regardless of whether you are connected to any peers.
-
 
 ## More
 
