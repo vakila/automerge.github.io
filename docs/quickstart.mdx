@@ -75,25 +75,22 @@ Each document is identified by a unique [ID](automerge.org/TODO), e.g.:
  
  You'll use the `@automerge/automerge` package to define document(s) that [model the data](./cookbook/modeling-data/) your app needs. 
 
- ### Create a todo document
+ ### Defining a Document's Shape
 
 In App.tsx, import the `@automerge/automerge` package, then use builtin JS data types combined with a few Automerge-specific data types exposed by this package to define the shape of the document(s) your app will need. 
 
-For example, for a simple app that counts how many times a button has been clicked, you might have a `CounterDoc` with two properties: a `name` string and a `counter` which we can represent with a special numeric value `A.Counter`.
+For example, for a simple app that counts how many times a button has been clicked, you might have a `CounterDoc` with a `counter` property storing a special numeric value `A.Counter`.
 
-You can manually create a new Automerge document from a JS object with `A.from()`:
+Although you'll 
 
 ```ts
 import { next as A } from '@automerge/automerge';
 
-
 interface CounterDoc {
-  name: string;
   counter: A.Counter;
 } 
 
 const counter: CounterDoc = A.from({
-  name: 'clicks',
   counter: new A.Counter(),
 });
 ```
