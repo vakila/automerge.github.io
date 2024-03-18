@@ -4,128 +4,179 @@ sidebar_position: 1
 
 ---
 
+import Admonition from '@theme/Admonition';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Hello Automerge: A quick tour
-
-<!-- 
-<Tabs>
-<TabItem value="js" label="JavaScript">
-
-```js
-function helloWorld() {
-  console.log('Hello, world!');
-}
-```
-
-</TabItem>
-<TabItem value="py" label="Python">
-
-```py
-def hello_world():
-  print("Hello, world!")
-```
-
-</TabItem>
-<TabItem value="java" label="Java">
-
-```java
-class HelloWorld {
-  public static void main(String args[]) {
-    System.out.println("Hello, World");
-  }
-}
-```
-
-</TabItem>
-</Tabs> -->
+# Meet Automerge: A Quick Tour
 
 Automerge is a suite of tools for building [local-first](https://www.inkandswitch.com/local-first) web applications with real-time synchronization that works on and offline. 
 
-In this tutorial, you'll build a local-first multiplayer todo-list app with TypeScript, React, Vite, and Automerge. You'll discover how to:
+In this tutorial, you'll build a local-first multiplayer todo-list app with TypeScript, React, [Vite](https://vite.dev), and Automerge. You'll discover how to:
 
-- Represent data as Automerge [documents](automerge.org/TODO)
-- Store & synchronize a set of documents in an Automerge [repository](automerge.org/TODO) 
-- Build a multiplayer realtime web app client with Automerge's [React hooks](automerge.org/TODO)
+- Represent data as Automerge [Documents](automerge.org/TODO)
+- [Change](TODO) documents' data and [merge](TODO) changes from different peers
+- Store & synchronize a set of documents in an Automerge [Repository](automerge.org/TODO) 
+- Build a multiplayer realtime web app client with Automerge's [React library](automerge.org/TODO)
+
+<Admonition>
 
 All the code here can be found at the [automerge-repo-quickstart](https://github.com/automerge/automerge-repo-quickstart) repo.
 
+</Admonition>
+
 ## Setup
 
-To get started, clone the tutorial project from [automerge-repo-quickstart](https://github.com/automerge/automerge-repo-quickstart), then enter the `automerge-repo-quickstart` directory and install the project dependencies:
+To get started:
+- clone the tutorial project from [automerge-repo-quickstart](https://github.com/automerge/automerge-repo-quickstart)
+- in the `automerge-repo-quickstart` directory, install the project dependencies
+- start the local Vite development server 
+
+
+<Tabs>
+<TabItem value="npm" label="npm">
+
+```bash
+$ git clone https://github.com/automerge/automerge-repo-quickstart
+# Cloning into 'automerge-repo-quickstart'...
+$ cd automerge-repo-quickstart
+$ npm i
+# ...installing dependencies...
+$ npm run dev
+```
+
+</TabItem>
+<TabItem value="yarn" label="yarn">
 
 ```bash
 $ git clone https://github.com/automerge/automerge-repo-quickstart
 # Cloning into 'automerge-repo-quickstart'...
 $ cd automerge-repo-quickstart
 $ yarn
-# yarn install v1.22.22
-# Resolving packages...
-
+# ...installing dependencies...
+$ yarn dev
 ```
 
-Feel free to check out a new branch for your work, and commit your code changes at whatever interval feels comfortable as you work through the tutorial.
+</TabItem>
+</Tabs>
 
-```bash 
-$ yarn create vite
-# Project name: hello-automerge-repo
-# Select a framework: React
-# Select a variant: TypeScript
 
-$ cd hello-automerge-repo
-$ yarn
+## Model Data as `Document`s
+
+[Documents](automerge.org/TODO) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, aka a Conflict-free Replicated Data Type, or [CRDT](http://crdt.tech).
+
+Each document is identified by a unique [ID](automerge.org/TODO), e.g.: 
+
+`automerge:45NuQi1e45PKsemx8GhSCu62gyag`
+
+ Automerge documents support various [data types](./documents/), including builtin JS datatypes and `Date`, as well as Automerge-specific types including an incrementing integer known as a `Counter`.
+ 
+ 
+ You'll use the `@automerge/automerge` package to define document(s) that [model the data](./cookbook/modeling-data/) your app needs. 
+
+ ### Create a todo document
+
+In App.tsx, import the `@automerge/automerge` package, then use the data types it exposes to define the shape of the document(s) your app will need. 
+
+For example, for a todo-list app, you might represent each item as a `TodoDoc` with a string that describes the `task`, and a boolean `done` property. 
+
+You can manually create a new Automerge document from a JS object with `A.from()`:
+
+```ts
+import { next as A } from '@automerge/automerge';
+
+const todo = A.from({
+  task: 'Learn Automerge',
+  done: false,
+});
 ```
 
-## Modeling Data: Automerge Documents
+### Changing Documents
 
-[Documents](automerge.org/TODO) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, known as a Conflict-free Replicated Data Type, or [CRDT](automerge.org/TODO).
+Although they might look like JSON objects, Automerge Documents are much more powerful.
+ 
+As changes are made to a Document's data, those changes are stored along with the data itself, and can be "undone", "replayed", and synchronized with other changes made to the same document.
 
-Each document is identified by a unique [ID](automerge.org/TODO) that looks something like: `automerge:45NuQi1e45PKsemx8GhSCu62gyag`
-
- Like JSON, Automerge documents support various [data types](automerge.org/TODO), such as a piece of `Text` or an incrementing `Counter`. You'll use the `@automerge/automerge` package to define document(s) that [model the data](automerge.org/TODO) your app needs. 
-
- ### Define Documents for a todo-list app
-
-...Model some data...
+Instead of manipulating a `Document`'s values directly, in Automerge you'll write a callback function with the transformation you want to apply to the given doc. Pass the document & the callback function to the `A.change` method, and Automerge will return a new copy of the document with the callback's changes applied. 
 
 
+For example, to mark a `todo` as completed, you can set its `done` value like so:
 
-## Storing & Synchronizing: Automerge Repositories
+```ts
+const doneTodo = A.change(todo, d => d.done = true);
+```
 
-The magic of Automerge Documents is that they support [synchronization](automerge.org/TODO) between all communicating peers working with the same document ID. 
+Or to change the name of the task: 
 
-An Automerge Repository, or [Repo](automerge.org/TODO), is what lets you store, synchronize, and manage your app's Documents, and is the second core concept you need to build apps with Automerge.
+```ts
+const renamedTodo = A.change(todo, d => d.task = 'Learn more Automerge');
+```
 
-A Repo keeps track of all the documents you load and makes sure they're properly synchronized and stored. Much like git, this lets you make changes locally, send & receive changes to/from others, and [merge](automerge.org/TODO) those changes as needed. 
 
-The `@automerge/automerge-repo` package lets you create & configure a Repo for documents created with `@automerge/automerge`.
+<Admonition>
+Documents are [immutable](TODO), so each change creates a new document while the original document remains unaltered.
+
+
+```ts
+const doneTodo = A.change(todo, d => d.done = true);
+doneTodo.done // true
+todo.done // false
+```
+
+</Admonition>
+
+### Merging Changes
+
+As the name implies, one of the key powers of Automerge is its ability to [merge](TODO) different changes to a given document, much like git lets you merge multiple edits to a given file. 
+
+Pass two documents with different changes to `A.merge`, and Automerge will return a new document that includes the changes from both:
+
+```ts
+const mergedTodo = A.merge(doneTodo, renamedTodo);
+console.log(mergedTodo); // { task: 'Learn more Automerge', done: true }
+```
+
+When merging two different changes to the same property, Automerge uses various strategies to avoid [conflicts](https://automerge.org/docs/documents/conflicts/) and ensure that the merged document will be identical for every user.
+
+## Store & Sync Docs with a `Repo`
+
+As shown above, you can manipulate documents directly with `A`, which is useful for understanding Automerge and taking it for a spin. However, in a real app you will typically interact with Documents within an Automerge [Repository](https://automerge.org/docs/repositories/). 
+
+A Repository, or [Repo](automerge.org/TODO), keeps track of all the documents you load and makes sure they're properly synchronized and stored. It provides an interface to create, modify, and manage documents locally, send & receive changes to/from others, and merge those changes as needed. 
+
+Repos are the second core concept you need to build apps with Automerge. The `@automerge/automerge-repo` package lets you create & configure a Repo for documents created with `@automerge/automerge`.
 
 
 ### Initialize a repository
 
-To work with Automerge documents, you first need to configure an Automerge Repo.
 Each Repo needs to know:
-- Where its documents should be saved, specified via a [StorageAdapter](automerge.org/TODO)
-- How/Where to send, retrieve, and synchronize doc updates, specified via a [NetworkAdapter](automerge.org/TODO)
+- Where its documents should be saved, specified via a [`StorageAdapter`](automerge.org/TODO)
+- How/Where to send, retrieve, and synchronize doc updates, specified via zero or more [`NetworkAdapter`](automerge.org/TODO)s
 
-Add the following imports to `src/main.tsx`:
+For this app, you can store documents in an IndexedDB in the browser, and send changes over a Broadcast Channel to keep tabs within the same browser (origin) in sync. 
 
-```typescript
-import { isValidAutomergeUrl, Repo } from '@automerge/automerge-repo'
-import { BroadcastChannelNetworkAdapter } from '@automerge/automerge-repo-network-broadcastchannel'
+In `src/main.tsx`, import and instantiate the IndexedDB `StorageAdapter` and BroadcastChannel `NetworkAdapter` from their `@automerge` packages:
+
+```ts
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb"
-import {next as A} from "@automerge/automerge" //why `next`? See the the "next" section of the conceptual overview
+import { BroadcastChannelNetworkAdapter } from '@automerge/automerge-repo-network-broadcastchannel'
+
+const broadcast = new BroadcastChannelNetworkAdapter();
+const indexedDB = new IndexedDBStorageAdapter();
 ```
 
-Then, create a Repo that can synchronize with other tabs using a sort of pseudo-network built into the browser that allows communication between tabs with the same shared origin: the BroadcastChannel.
+Then, create a new `Repo` by passing in those adapters like so:
 
 ```js
 const repo = new Repo({
-  network: [new BroadcastChannelNetworkAdapter()],
-  storage: new IndexedDBStorageAdapter(),
+  storage: indexedDB,
+  network: [broadcast],
 })
 ```
+
+<Admonition>
+If the Automerge project doesn't have a pre-built adapter that fits your needs, you can create [custom adapter(s)](./repositories/storage/#roll-your-own) as needed. 
+</Admonition>
 
 ## Creating (or finding) a document
 
@@ -134,7 +185,7 @@ Now that we have the repo, we want to either create a document if we don't have 
 Add this code right after the repo initialization code.
 
 ```typescript
-const rootDocUrl = `${document.location.hash.substr(1)}`
+const rootDocUrl = `${document.location.hash.substring(1)}`
 let handle
 if (isValidAutomergeUrl(rootDocUrl)) {
     handle = repo.find(rootDocUrl)
