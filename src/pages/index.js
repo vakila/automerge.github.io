@@ -6,6 +6,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import styles from './index.module.css'
 import HomepageFeatures from '../components/HomepageFeatures'
 import '@fontsource/merriweather'
+import '@fontsource/overpass'
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext()
@@ -16,7 +17,7 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link className="button button--primary button--lg" to="docs/hello">
-            Get Started
+            Get started
           </Link>
         </div>
       </div>

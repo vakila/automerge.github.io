@@ -4,19 +4,34 @@
  * work well for content-centric websites.
  */
 
+
 :root {
-  --ifm-font-family-base: 'Merriweather', serif;
   --ifm-font-size-base: 1rem;
-  --ifm-code-font-size: 0.8rem;
-  --ifm-color-primary: #ba7402;
-  --ifm-color-primary-dark: #ef9603;
-  --ifm-color-primary-darker: #e28d03;
-  --ifm-color-primary-darkest: #ba7402;
-  --ifm-color-primary-light: #fcad2c;
-  --ifm-color-primary-lighter: #fdb239;
-  --ifm-color-primary-lightest: #fdc261;
+  --ifm-code-font-size: 0.9rem;
+  --ifm-font-family-base: 'Merriweather', serif;
+  --ifm-heading-font-family: Overpass, sans-serif;
+  --ifm-color-primary: #fbcc34;
+  --ifm-color-primary-dark: #fac516;
+  --ifm-color-primary-darker: #fac107;
+  --ifm-color-primary-darkest: #d0a004;
+  --ifm-color-primary-light: #fcd352;
+  --ifm-color-primary-lighter: #fcd761;
+  --ifm-color-primary-lightest: #fde28d;
   --ifm-color-white: #fcfcfc;
   --ifm-background-color: #fcfcfc;
+  --ifm-color-content: #2e2e2e;
+  --ifm-menu-color: inherit;
+  --ifm-menu-color-active: inherit;
+  --ifm-menu-color-background-active: inherit;
+  --ifm-breadcrumb-color-active: var(--ifm-color-content);
+  --ifm-navbar-link-hover-color: inherit;
+  --ifm-hero-background-color: #efefef;
+  --ifm-hero-text-color: inherit;
+}
+
+:root[data-theme='dark'] {
+  --ifm-color-content: #e3e3e3;
+  --ifm-hero-background-color: #2e2e2e;
 }
 
 .docusaurus-highlight-code-line {
@@ -30,14 +45,79 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-html[data-theme='dark'] {
-  --ifm-color-primary: #fbcc34;
-  --ifm-color-primary-dark: #fac516;
-  --ifm-color-primary-darker: #fac107;
-  --ifm-color-primary-darkest: #d0a004;
-  --ifm-color-primary-light: #fcd352;
-  --ifm-color-primary-lighter: #fcd761;
-  --ifm-color-primary-lightest: #fde28d;
+.footer {
+  --ifm-footer-background-color: #242526;
+  padding: 3.5rem;
+}
+
+.footer__col {
+  text-align: center;
+}
+
+.footer__copyright {
+  margin-top: 3.5rem;
+}
+
+.button {
+  --ifm-button-padding-horizontal: 1rem;
+  --ifm-button-background-color: var(--ifm-color-primary);
+  --ifm-button-color: black;
+  outline: 2px solid #242526;
+  outline-offset: -5px;
+  border-radius: 0.5rem;
+  font-family: Overpass, sans-serif;
+}
+
+.button:hover {
+  outline: 3px solid #242526;
+  outline-offset: -6px;
+}
+
+a {
+  --ifm-link-color: var(--ifm-color-content);
+  text-decoration-skip-ink: none;
+}
+
+a:hover,
+.table-of-contents__link,
+.navbar__link:hover,
+.table-of-contents__link:hover code,
+.table-of-contents__link--active code {
+  color: inherit;
+}
+
+article a {
+  --ifm-link-decoration: underline 3px solid var(--ifm-color-primary);
+  --ifm-link-hover-decoration: underline 3px solid var(--ifm-color-primary);
+}
+
+article div {
+  --ifm-menu-color-background-active: var(--ifm-background-color);
+}
+
+.menu__link--active,
+.menu__link:hover,
+.table-of-contents__link--active,
+.table-of-contents__link:hover,
+.navbar__link--active,
+.navbar__link:hover,
+.navbar__brand:hover {
+  color: inherit;
+  text-decoration: underline 3px solid var(--ifm-color-primary) !important;
+}
+
+.navbar__title {
+  font-family: Overpass, sans-serif;
+  margin-left: 0.2rem;
+}
+
+h1,
+h2,
+h3 {
+}
+
+.hero > .container {
+  max-width: 700px;
 }
 
 code {
