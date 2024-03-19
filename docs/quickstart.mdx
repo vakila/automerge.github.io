@@ -163,7 +163,7 @@ Each Repo needs to know:
 
 For this app, you can store documents in an IndexedDB in the browser, and send changes over a Broadcast Channel to keep tabs within the same browser (origin) in sync. 
 
-In `src/main.tsx`, import and instantiate the IndexedDB `StorageAdapter` and BroadcastChannel `NetworkAdapter` from their `@automerge` packages:
+In `src/main.tsx`, import and instantiate the IndexedDB `StorageAdapter` and BroadcastChannel `NetworkAdapter` from their `@automerge` packages, which have already been included in the project dependencies:
 
 ```ts
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb"
