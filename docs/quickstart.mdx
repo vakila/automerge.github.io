@@ -344,9 +344,23 @@ A document's URL is the unique identifier that allows the Repo to sync the docum
 
 Add a network adapter to the `Repo` which syncs to a sync server via a websocket. Add the following dependency to the web app we've been building:
 
+
+<Tabs>
+<TabItem value="npm" label="npm">
+
 ```bash
-yarn add @automerge/automerge-repo-network-websocket
+$ npm i @automerge/automerge-repo-network-websocket
 ```
+
+</TabItem>
+<TabItem value="yarn" label="yarn">
+
+```bash
+$ yarn add @automerge/automerge-repo-network-websocket
+```
+
+</TabItem>
+</Tabs>
 
 Then add a network adapter connecting the repo to `sync.automerge.org`
 
