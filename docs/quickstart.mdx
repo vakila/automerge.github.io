@@ -12,12 +12,12 @@ import TabItem from '@theme/TabItem';
 
 Automerge is a suite of tools for building [local-first](https://www.inkandswitch.com/local-first) web applications with real-time synchronization that works on and offline. 
 
-In this tutorial, you'll build a local-first multiplayer todo-list app with TypeScript, React, [Vite](https://vite.dev), and Automerge. You'll discover how to:
+In this tutorial, you'll build a local-first multiplayer app with TypeScript, React, [Vite](https://vite.dev), and Automerge. You'll discover how to:
 
-- Represent data as Automerge [Documents](automerge.org/TODO)
-- [Change](TODO) documents' data and [merge](TODO) changes from different peers
-- Store & synchronize a set of documents in an Automerge [Repository](automerge.org/TODO) 
-- Build a multiplayer realtime web app client with Automerge's [React library](automerge.org/TODO)
+- Represent data as Automerge [Documents](../concepts/#documents)
+- [Change](../documents/conflicts/) documents' data and [merge](../documents/conflicts/) changes from different peers
+- Store & synchronize a set of documents in an Automerge [Repository](../concepts/#repositories) 
+- Build a multiplayer realtime web app client with Automerge's [React library](https://github.com/automerge/automerge-repo/tree/main/packages/automerge-repo-react-hooks)
 
 
 ## Setup
@@ -64,16 +64,16 @@ $ yarn dev
 
 ## Model Data as `Document`s
 
-[Documents](automerge.org/TODO) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, aka a Conflict-free Replicated Data Type, or [CRDT](http://crdt.tech).
+[Documents](../concepts/#documents) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, aka a Conflict-free Replicated Data Type, or [CRDT](http://crdt.tech).
 
-Each document is identified by a unique [ID](automerge.org/TODO), e.g.: 
+Each document is identified by a [Document URL](../concepts/#document-urls) that serves as its unique ID, e.g.: 
 
 `automerge:45NuQi1e45PKsemx8GhSCu62gyag`
 
- Automerge documents support various [data types](./documents/), including builtin JS datatypes and `Date`, as well as Automerge-specific types including an incrementing integer known as a `Counter`.
+ Automerge documents support various [data types](../documents/), including builtin JS datatypes and `Date`, as well as Automerge-specific types including an incrementing integer known as a `Counter`.
  
  
- You'll use the `@automerge/automerge` package to define document(s) that [model the data](./cookbook/modeling-data/) your app needs. 
+ You'll use the `@automerge/automerge` package to define document(s) that [model the data](../cookbook/modeling-data/) your app needs. 
 
  ### Defining a Document's Shape
 
@@ -113,9 +113,9 @@ const incrementedCounter = A.change(counter, d => d.counter.increment(1));
 ```
 
 
-<Admonition>
+<Admonition type="info">
 
-Documents are [immutable](TODO), so each change creates a new document while the original document remains unaltered.
+Documents are [immutable](../hello/#design-principles), so each change creates a new document while the original document remains unaltered.
 
 
 ```ts
@@ -128,7 +128,7 @@ counter.name // 'clicks'
 
 ### Merging Changes
 
-As the name implies, one of the key powers of Automerge is its ability to [merge](TODO) different changes to a given document, much like git lets you merge multiple edits to a given file. 
+As the name implies, one of the key powers of Automerge is its ability to [merge](../under-the-hood/merge_rules/) different changes to a given document, much like git lets you merge multiple edits to a given file. 
 
 Pass two documents with different changes to `A.merge`, and Automerge will return a new document that includes the changes from both:
 
@@ -144,9 +144,9 @@ When merging two different changes to the same property, Automerge uses various 
 
 ## Manage Docs with a `Repo`
 
-As shown above, you can manipulate documents directly with `A`, which is useful for understanding Automerge and taking it for a spin. However, in a real app you will typically interact with Documents within an Automerge [Repository](https://automerge.org/docs/repositories/). 
+As shown above, you can manipulate documents directly with `A`, which is useful for understanding Automerge and taking it for a spin. However, in a real app you will almost always interact with Documents within an Automerge [Repository](concepts/#repositories). 
 
-A Repository, or [Repo](automerge.org/TODO), keeps track of all the documents you load and makes sure they're properly synchronized and stored. It provides an interface to create, modify, and manage documents locally, send & receive changes to/from others, and merge those changes as needed. 
+A Repository, or [Repo](../docs/repositories/), keeps track of all the documents you load and makes sure they're properly synchronized and stored. It provides an interface to create, modify, and manage documents locally, send & receive changes to/from others, and merge those changes as needed. 
 
 Repos are the second core concept you need to build apps with Automerge. The `@automerge/automerge-repo` package lets you create & configure a Repo for documents created with `@automerge/automerge`.
 
@@ -154,8 +154,8 @@ Repos are the second core concept you need to build apps with Automerge. The `@a
 ### Initialize a repository
 
 Each Repo needs to know:
-- Where its documents should be saved, specified via a [`StorageAdapter`](automerge.org/TODO)
-- How/Where to send, retrieve, and synchronize doc updates, specified via zero or more [`NetworkAdapter`](automerge.org/TODO)s
+- Where its documents should be saved, specified via a [`StorageAdapter`](../repositories/storage/)
+- How/Where to send, retrieve, and synchronize doc updates, specified via zero or more [`NetworkAdapter`](../repositories/networking/)s
 
 For this app, you can store documents in an IndexedDB in the browser, and send changes over a Broadcast Channel to keep tabs within the same browser (origin) in sync. 
 
@@ -180,7 +180,7 @@ const repo = new Repo({
 
 <Admonition>
 
-If the Automerge project doesn't have a pre-built adapter that fits your needs, you can create [custom adapter(s)](./repositories/storage/#roll-your-own) as needed. 
+If the Automerge project doesn't have a pre-built adapter that fits your needs, you can create [custom adapter(s)](../repositories/storage/#roll-your-own) as needed. 
 
 </Admonition>
 
@@ -195,7 +195,7 @@ const counterHandle = repo.create<CounterDoc>({
 })
 ```
 
-This returns a [`DocHandle`](TODO) object, which provides an interface for working with the document. 
+This returns a [`DocHandle`](../repositories/dochandles/) object, which provides an interface for working with the document. 
 
 The `DocHandle` has a `.url` property with the document's unique ID: 
 
