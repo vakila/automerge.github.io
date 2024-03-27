@@ -7,7 +7,7 @@
 
 :root {
   --ifm-font-size-base: 1rem;
-  --ifm-code-font-size: 0.9rem;
+  --ifm-code-font-size: 0.9em;
   --ifm-font-family-base: 'Merriweather', serif;
   --ifm-heading-font-family: Overpass, sans-serif;
   --ifm-color-primary: #fbcc34;
@@ -124,4 +124,5 @@ code {
   display: inline-block;
   padding: 0 0.3rem;
   margin: 0 0.1rem;
+  vertical-align: baseline;
 }
