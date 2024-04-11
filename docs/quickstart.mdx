@@ -70,14 +70,14 @@ $ yarn dev
 
 [Documents](../concepts/#documents) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, aka a Conflict-free Replicated Data Type, or [CRDT](http://crdt.tech).
 
-Each document is identified by a [Document URL](../concepts/#document-urls) that serves as its unique ID, e.g.: 
+Each document is identified by a [Document URL](../concepts/#document-urls) that serves as its unique identifier, e.g.:
 
 `automerge:45NuQi1e45PKsemx8GhSCu62gyag`
 
  Automerge documents support various [data types](../documents/), including builtin JS datatypes and `Date`, as well as Automerge-specific types including an incrementing integer known as a `Counter`.
  
  
- You'll use the `@automerge/automerge` package to define document(s) that [model the data](../cookbook/modeling-data/) your app needs. 
+ You'll use the `@automerge/automerge` package to define document(s) that [model the data](../cookbook/modeling-data/) your app needs.
 
  ### Defining a Document's Shape
 
@@ -158,8 +158,8 @@ Repos are the second core concept you need to build apps with Automerge. The `@a
 ### Initialize a repository
 
 Each Repo needs to know:
-- Where its documents should be saved, specified via a [`StorageAdapter`](../repositories/storage/)
-- How/Where to send, retrieve, and synchronize doc updates, specified via zero or more [`NetworkAdapter`](../repositories/networking/)s
+  - Where its documents should be saved, specified via a [`StorageAdapter`](/docs/repositories/storage/)
+  - How/Where to send, retrieve, and synchronize doc updates, specified via zero or more [`NetworkAdapter`](/docs/repositories/networking/)s
 
 For this app, you can store documents in an IndexedDB in the browser, and send changes over a Broadcast Channel to keep tabs within the same browser (origin) in sync. 
 
@@ -201,7 +201,7 @@ const counterHandle = repo.create<CounterDoc>({
 
 This returns a [`DocHandle`](../repositories/dochandles/) object, which provides an interface for working with the document. 
 
-The `DocHandle` has a `.url` property with the document's unique ID: 
+The `DocHandle` has a `.url` property with the document's unique URL:
 
 ```ts
 counterHandle.url // automerge:1234...
@@ -209,7 +209,7 @@ counterHandle.url // automerge:1234...
 
 For this counter app, we want to either retrieve the existing counter document if it exists, or create a new document if we don't have one already. 
 
-It's common practice to pass document IDs around as URL hashes. In this case, you can check the URL hash for a document ID, and if none exists, we'll create a new document and set its ID in the URL hash. (In a production app you'd probably handle routing differently, but this is enough for our example.)
+It's common practice to pass document IDs around as URL hashes. In this case, you can check the URL hash for a document URL, and if none exists, we'll create a new document and set its ID in the URL hash. (In a production app you'd probably handle routing differently, but this is enough for our example.)
 
 
 ```typescript
