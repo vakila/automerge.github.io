@@ -14,9 +14,9 @@ Automerge is a suite of tools for building [local-first](https://www.inkandswitc
 
 In this tutorial, you'll build a local-first multiplayer app with TypeScript, React, [Vite](https://vite.dev), and Automerge. You'll discover how to:
 
-- Represent data as Automerge [Documents](../concepts/#documents)
-- [Change](../documents/conflicts/) documents' data and [merge](../documents/conflicts/) changes from different peers
-- Store & synchronize a set of documents in an Automerge [Repository](../concepts/#repositories) 
+- Represent data as Automerge [Documents](/docs/concepts/#documents)
+- [Change](/docs/documents/conflicts/) documents' data and [merge](/docs/documents/conflicts/) changes from different peers
+- Store & synchronize a set of documents in an Automerge [Repository](/docs/concepts/#repositories) 
 - Build a multiplayer realtime web app client with Automerge's [React library](https://github.com/automerge/automerge-repo/tree/main/packages/automerge-repo-react-hooks)
 
 <figure style={ {margin: '0px auto', textAlign: 'center'} } >
@@ -148,9 +148,9 @@ When merging two different changes to the same property, Automerge uses various 
 
 ## Manage Docs with a `Repo`
 
-As shown above, you can manipulate documents directly with `A`, which is useful for understanding Automerge and taking it for a spin. However, in a real app you will almost always interact with Documents within an Automerge [Repository](concepts/#repositories). 
+As shown above, you can manipulate documents directly with `A`, which is useful for understanding Automerge and taking it for a spin. However, in a real app you will almost always interact with Documents within an Automerge [Repository](/docs/concepts/#repositories). 
 
-A Repository, or [Repo](../docs/repositories/), keeps track of all the documents you load and makes sure they're properly synchronized and stored. It provides an interface to create, modify, and manage documents locally, send & receive changes to/from others, and merge those changes as needed. 
+A Repository, or [Repo](/docs/repositories/), keeps track of all the documents you load and makes sure they're properly synchronized and stored. It provides an interface to create, modify, and manage documents locally, send & receive changes to/from others, and merge those changes as needed. 
 
 Repos are the second core concept you need to build apps with Automerge. The `@automerge/automerge-repo` package lets you create & configure a Repo for documents created with `@automerge/automerge`.
 
