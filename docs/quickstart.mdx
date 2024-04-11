@@ -15,9 +15,9 @@ Automerge is a suite of tools for building [local-first](https://www.inkandswitc
 In this tutorial, you'll build a local-first multiplayer app with TypeScript, React, [Vite](https://vite.dev), and Automerge. You'll discover how to:
 
 - Represent data as Automerge [Documents](/docs/concepts/#documents)
-- [Change](/docs/documents/conflicts/) documents' data and [merge](/docs/documents/conflicts/) changes from different peers
+- [Change](/docs/documents/conflicts/) documents' data and [merge](/docs/under-the-hood/merge_rules/) changes from different peers
 - Store & synchronize a set of documents in an Automerge [Repository](/docs/concepts/#repositories) 
-- Build a multiplayer realtime web app client with Automerge's [React library](https://github.com/automerge/automerge-repo/tree/main/packages/automerge-repo-react-hooks)
+- Build a multiplayer realtime web app with the Automerge [React client](https://github.com/automerge/automerge-repo/tree/main/packages/automerge-repo-react-hooks)
 
 <figure style={ {margin: '0px auto', textAlign: 'center'} } >
 <video src={ require('../static/img/counter-sync-sm.mov').default } width={600} autoPlay loop />
@@ -45,7 +45,7 @@ To get started:
 $ git clone https://github.com/automerge/automerge-repo-quickstart
 # Cloning into 'automerge-repo-quickstart'...
 $ cd automerge-repo-quickstart
-$ npm i
+$ npm install
 # ...installing dependencies...
 $ npm run dev
 ```
@@ -68,100 +68,123 @@ $ yarn dev
 
 ## Model Data as `Document`s
 
-[Documents](../concepts/#documents) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, aka a Conflict-free Replicated Data Type, or [CRDT](http://crdt.tech).
+[Documents](/docs/concepts/#documents) are the central concept of Automerge. An Automerge document is a JSON-like data structure with superpowers, aka a Conflict-free Replicated Data Type, or [CRDT](http://crdt.tech).
 
-Each document is identified by a [Document URL](../concepts/#document-urls) that serves as its unique identifier, e.g.:
+Each document is identified by a [Document URL](/docs/concepts/#document-urls) that serves as its unique identifier, e.g.:
 
 `automerge:45NuQi1e45PKsemx8GhSCu62gyag`
 
- Automerge documents support various [data types](../documents/), including builtin JS datatypes and `Date`, as well as Automerge-specific types including an incrementing integer known as a `Counter`.
+ Automerge documents support various [data types](/docs/documents/), including builtin JS datatypes like numbers, strings, arrays, and `Date`, as well as Automerge-specific types such as an incrementing `Counter`.
+
+ <Admonition type="info" title="Text in Automerge">
+
+ When working with string values in Automerge apps, keep in mind that [text in Automerge](/docs/documents/text/) is a bit more magical than strings in JS/TS. We'll revisit this point later in the tutorial.
+
+ </Admonition>
  
+
  
- You'll use the `@automerge/automerge` package to define document(s) that [model the data](../cookbook/modeling-data/) your app needs.
+### Defining a Document's Shape
 
- ### Defining a Document's Shape
+In App.tsx, declare types that define the [data model](/docs/cookbook/modeling-data/) for your app.
 
-In App.tsx, import the `@automerge/automerge` package, then use builtin JS data types combined with a few Automerge-specific data types exposed by this package to define the shape of the document(s) your app will need. 
-
-For example, for a simple app that counts how many times a button has been clicked, you might have a `CounterDoc` with a `counter` property storing a special numeric value `A.Counter`.
+For example, for a simple task-tracking app, you might define a single `TaskList` document with a `tasks` array, where each `Task` object in the array has a `title` string and `done` boolean. You can describe this schema with TypeScript interfaces like so:
 
 
 ```ts
 // App.tsx
-import { next as A } from '@automerge/automerge';
 
-interface CounterDoc {
-  counter: A.Counter;
-} 
+export interface Task {
+  title: string;
+  done: boolean;
+}
+
+// TaskList will be our first Automerge document schema
+export interface TaskList {
+  tasks: Task[];
+}
 ```
+
 
 ### Changing Documents
 
-Although they might look like JSON objects, Automerge Documents are much more powerful.
+Although they look as simple as Plain Old JavaScript Objects (POJOs), Automerge Documents are secretly much more powerful.
  
 As changes are made to a Document's data, those changes are stored along with the data itself, and can be "undone", "replayed", and synchronized with other changes made to the same document.
 
-Instead of manipulating a `Document`'s values directly, in Automerge you'll write a callback function with the transformation you want to apply to the given doc. Pass the document & the callback function to the `A.change` method, and Automerge will return a new copy of the document with the callback's changes applied. 
+Instead of manipulating a `Document`'s values directly, in Automerge you'll write a callback function with the transformation you want to apply to the given doc. 
+
+Pass the document & the callback function to the `A.change` method, and Automerge will return a new copy of the document with the callback's changes applied.
 
 
-For example, to rename our counter doc we can set its `.name` property:
-
-```ts
-const renamedCounter = A.change(counter, d => d.name = 'button clicks');
-```
-
-And to increment the counter itself we can call `.counter.increment(1)`: 
+For example, to check off a task in your list you can update the value of its `.done` property like so:
 
 ```ts
-const incrementedCounter = A.change(counter, d => d.counter.increment(1));
+// TODO @vakila show the list creation
+const list: TaskList = {
+  tasks: [
+    { title: 'Learn Automerge', done: false },
+  ],
+};
+const done = A.change(list, (d) => { d.tasks[0].done = true; });
 ```
+
+This type of reassignment in the change handler works well for [simple values](/docs/documents/values/) like a `boolean`, but when working with text - e.g. to change the `.title` of the task - you'll use `A.updateText()` to [more efficiently change string values](/docs/documents/text/) than would be the case with a simple string reassignment.
 
 
 <Admonition type="info">
 
-Documents are [immutable](../hello/#design-principles), so each change creates a new document while the original document remains unaltered.
-
+Automerge Documents are [immutable](/docs/hello/#design-principles), so each change creates a new document while the original document remains unaltered.
 
 ```ts
-const renamedCounter = A.change(counter, d => d.name = 'button clicks');
-renamedCounter.name // 'button clicks'
-counter.name // 'clicks'
+// TODO @vakila check syntax
+const renamed = A.updateText(list.tasks[0], ['title'], 'Learn more Automerge');
+console.log(renamed.tasks[0].title) // 'Learn more Automerge'
+console.log(renamed.tasks[0].title) // 'Learn Automerge'
 ```
 
 </Admonition>
 
 ### Merging Changes
 
-As the name implies, one of the key powers of Automerge is its ability to [merge](../under-the-hood/merge_rules/) different changes to a given document, much like git lets you merge multiple edits to a given file. 
+As the name implies, one of the key powers of Automerge is its ability to [merge](/docs/under-the-hood/merge_rules/) different changes to a given document, much like git lets you merge multiple edits to a given file.
 
 Pass two documents with different changes to `A.merge`, and Automerge will return a new document that includes the changes from both:
 
 ```ts
-const increased = A.change(A.clone(counter), d => d.counter.increment(10));
-const renamed = A.change(A.clone(counter), d => d.name = 'button clicks');
-const merged = A.merge(increased, renamed);
-console.log(merged.name); // 'button clicks'
-console.log(merged.counter.value) // 10
+const renamedMore = A.updateText(list.tasks[0], ['title'], 'Learn more Automerge');
+const renamedWrite = A.updateText(list.tasks[0], ['title'], 'Write Automerge')
+
+// TODO @vakila syntax
+const merged = A.merge([renamedMore, renamedWrite]); 
+// TODO @vakila fact check
+console.log(merged.tasks[0].title); // 'Write more Automerge'  
 ```
 
 When merging two different changes to the same property, Automerge uses various strategies to avoid [conflicts](https://automerge.org/docs/documents/conflicts/) and ensure that the merged document will be identical for every user.
 
-## Manage Docs with a `Repo`
 
-As shown above, you can manipulate documents directly with `A`, which is useful for understanding Automerge and taking it for a spin. However, in a real app you will almost always interact with Documents within an Automerge [Repository](/docs/concepts/#repositories). 
+## Managing Docs with a `Repo` 
 
-A Repository, or [Repo](/docs/repositories/), keeps track of all the documents you load and makes sure they're properly synchronized and stored. It provides an interface to create, modify, and manage documents locally, send & receive changes to/from others, and merge those changes as needed. 
+In Automerge apps, you will almost always interact with Documents within an Automerge [Repository](/docs/concepts/#repositories), rather than manipulating them directly with `A.change`. 
+
+An Automerge Repository, or [Repo](/docs/repositories/), keeps track of all the documents you load and makes sure they're properly synchronized and stored. It provides an interface to: 
+- create, modify, and manage documents locally
+- send & receive changes to/from others, and 
+- merge multiple changes as needed.
 
 Repos are the second core concept you need to build apps with Automerge. The `@automerge/automerge-repo` package lets you create & configure a Repo for documents created with `@automerge/automerge`.
 
-
-### Initialize a repository
 
 Each Repo needs to know:
   - Where its documents should be saved, specified via a [`StorageAdapter`](/docs/repositories/storage/)
   - How/Where to send, retrieve, and synchronize doc updates, specified via zero or more [`NetworkAdapter`](/docs/repositories/networking/)s
 
-For this app, you can store documents in an IndexedDB in the browser, and send changes over a Broadcast Channel to keep tabs within the same browser (origin) in sync. 
+You'll specify the `StorageAdapter` and `NetworkAdapter`(s) you need when you initialize a new Repo. Let's try it out.
+
+### Initialize a repository
+
+For this task list app, you'll store documents in an IndexedDB in the browser, and send changes over a Broadcast Channel to keep tabs within the same browser (origin) in sync. 
 
 In `src/main.tsx`, import and instantiate the IndexedDB `StorageAdapter` and BroadcastChannel `NetworkAdapter` from their `@automerge` packages, which have already been included in the project dependencies:
 
@@ -182,32 +205,38 @@ const repo = new Repo({
 })
 ```
 
-<Admonition>
+<Admonition type='info'>
 
-If the Automerge project doesn't have a pre-built adapter that fits your needs, you can create [custom adapter(s)](../repositories/storage/#roll-your-own) as needed. 
+If the Automerge project doesn't have a pre-built adapter that fits your needs, you can create [custom adapter(s)](/docs/repositories/storage/#roll-your-own) as needed.
 
 </Admonition>
 
 ### Create or Find a Document
 
-To create a new document in a repo, you can call `repo.create()` and pass in the initial values of the document:
+A Repo isn't very useful without any documents in it! To create a document, call `repo.create()` and pass in the initial values of the document:
 
 ```ts
-const counterHandle = repo.create<CounterDoc>({
-  name: 'clicks',
-  counter: new A.Counter(),
-})
+const listHandle = repo.create<TaskList>({
+  tasks: [
+    {
+      title: 'Learn Automerge',
+      done: false
+    }
+  ],
+});
 ```
 
-This returns a [`DocHandle`](../repositories/dochandles/) object, which provides an interface for working with the document. 
+This returns a [`DocHandle`](/docs/repositories/dochandles/) object, which provides an interface for working with the document.
 
 The `DocHandle` has a `.url` property with the document's unique URL:
 
 ```ts
-counterHandle.url // automerge:1234...
+listHandle.url // automerge:123abc...
 ``` 
 
-For this counter app, we want to either retrieve the existing counter document if it exists, or create a new document if we don't have one already. 
+For this app, we want to either: 
+- retrieve the existing document if it exists, or 
+- create a new document if we don't have one already. 
 
 It's common practice to pass document IDs around as URL hashes. In this case, you can check the URL hash for a document URL, and if none exists, we'll create a new document and set its ID in the URL hash. (In a production app you'd probably handle routing differently, but this is enough for our example.)
 
@@ -218,10 +247,14 @@ let handle
 if (isValidAutomergeUrl(rootDocUrl)) {
     handle = repo.find(rootDocUrl)
 } else {
-    handle = repo.create<CounterDoc>({
-      name: 'clicks',
-      counter: new A.Counter();
-    })
+    handle = repo.create<TaskList>({
+      tasks: [
+        {
+          title: 'Learn Automerge',
+          done: false
+        }
+      ],
+    });
 }
 const docUrl = document.location.hash = handle.url
 ```
@@ -232,7 +265,7 @@ const docUrl = document.location.hash = handle.url
 The handle's `doc` method asynchronously loads & returns the document's data from the `Repo`'s storage:
 
 ```ts
-await counterHandle.doc()
+await listHandle.doc()
 ```
 
 (There is also a synchronous `.docSync()` method which returns undefined if the document is unavailable either because it is still loading, or because it can't be found.)
@@ -250,10 +283,12 @@ If you want to render loading states differently from an unavailable state, you 
 A `DocHandle` also exposes a `.change` method allows you to modify the document. It accepts a callback function for updating the document's data, as we saw before:  
 
 ```ts
-counterHandle.change(d => { d.counter.increment(10) })
+listHandle.change((d) => { 
+  d.tasks.push({ title: 'Create a Repo', done: true })
+});
 ```
 
-The `.change` method takes care of storing new changes, and notifies any peers of new changes by emitting `"change"` events whenever the document changes -- either through local actions or over the network, as determined by the configuration of your `Repo`.
+The `.change` method takes care of storing new changes, and notifies any peers of new changes by emitting `"change"` events whenever the document changes -- either through local actions or over the network, as determined by the configuration of your Repo's `NetworkAdapter`(s).
 
 
 ## Automerge in React
@@ -292,7 +327,7 @@ import type {AutomergeUrl} from '@automerge/automerge-repo'
 import {useDocument} from '@automerge/automerge-repo-react-hooks'
 
 function App({ docUrl }: { docUrl: AutomergeUrl }) {
-  const [doc, changeDoc] = useDocument<CounterDoc>(docUrl);
+  const [doc, changeDoc] = useDocument<TaskList>(docUrl);
 
   // ...
 }
@@ -300,32 +335,41 @@ function App({ docUrl }: { docUrl: AutomergeUrl }) {
 
 The `doc` value returned by the hook will initially be `undefined` while the document is loading. Once loaded, `doc` will have the shape of the Document you specified, and will update reactively every time the document changes.
 
-To display the current count, you can render `doc.counter.value` (just make sure to handle the `undefined` loading case):
+To display the current tasks, you can render `doc.tasks` (just make sure to handle the `undefined` loading case):
 
 ```tsx
 // App.tsx
 
 function App({ docUrl }: { docUrl: AutomergeUrl }) {
-  const [doc, changeDoc] = useDocument<CounterDoc>(docUrl);
+  const [doc, changeDoc] = useDocument<TaskList>(docUrl);
 
   return (//...
   
     <button>
-      count is {doc && doc.counter.value}
+      { 
+        doc && doc.tasks 
+          ? `You have ${doc.tasks.length} tasks to do` 
+          : 'Loading tasks...' 
+      }
     </button>
 
     //...
   )
+}
 ```  
 
 As you might expect, the `changeDoc` function returned by the `useDoc` hook allows us to change the given document as needed, usually in response to user action. Powered by `A.change` under the hood, `changeDoc` accepts an update callback representing the change to be applied to the existing document.
 
-To increment the counter every time a user clicks a button, we can use `changeDoc` in the button's `onClick` handler to increment the counter's value, like so:
+To check off a task as completed, we can use `changeDoc` in an input's event handler to change the `.done` value, like so:
 
-```tsx
-    <button onClick={() => changeDoc((d) => d.counter.increment(1))}>
-      count is {doc && doc.counter.value}
-    </button>
+```tsx 
+// TODO @vakila fact check 
+    <input type='checkbox' value={doc.tasks[0].done}
+      onChange={
+        (e) => changeDoc((d) => {
+          d.tasks[0].done = e.target.checked;
+        })
+      } />   
 ```
 
 ## Collaboration in Automerge
@@ -334,9 +378,9 @@ To increment the counter every time a user clicks a button, we can use `changeDo
 
 Since the Repo in this app uses a `BroadcastChannelNetworkAdapter`, any changes made to documents in that Repo immediately appear in any other clients with the same origin (i.e. tabs within the same browser).
 
-Go ahead and try this out. Open a second (or third) tab with the same URL and see how as you click the counter in any tab, the others update.
+Go ahead and try this out. Open a second (or third) tab with the same URL and edit the list, observing how other clients' lists are updated accordingly.
 
-If you close all the tabs and reopen them, the counter value is preserved.
+If you close all the tabs and reopen them, the document is preserved, as it is stored in your browser's IndexedDB.
 
 Congratulations! You have a working Automerge-backed React app with live local synchronization.
 
@@ -392,7 +436,7 @@ The Automerge project provides a public sync server for you to experiment with, 
 
 :::
 
-To see this in action, open the same URL (including the document ID) in a different browser, or on a different device. Unlike the local-only version, you'll now see the counter updates synced across _all_ open clients.
+To see this in action, open the same URL (including the document ID) in a different browser, or on a different device. Unlike the local-only version, you'll now see the data updates synced across _all_ open clients.
 
 ###  Network Not Required
 
