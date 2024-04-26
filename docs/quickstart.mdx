@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-
+title: "A Builder's Tour of Automerge"
 
 ---
 
@@ -24,23 +24,47 @@ export function Solution({ children }) {
   </details>);
 }
 
+export function Figure({ src, alt, caption }) {
+  return (<figure style={{
+    margin: '1em auto',
+    textAlign: 'center',
+    border: "1px solid var(--ifm-color-primary)",
+    borderRadius: 20,
+    maxWidth: 720
+  }} >
+    <img src={src} style={{
+      objectFit: 'contain',
+      padding: '1em',
+      backgroundColor: 'inherit',
+    }} alt={alt || caption} />
+    <figcaption style={{
+      padding: '1em'
+    }}>{caption}</figcaption>
+  </figure>)
+}
 
 
-# Meet Automerge: A Builder's Tour
+import taskListSync from '../static/img/task-list-sync.gif'
+import textMerge from '../static/img/text-merge-KleppmannStrangeLoop2023.png'
+import architecture from '../static/img/automerge-arch-KleppmannStrangeLoop2023.png'
+
+
+
 
 Automerge is a suite of tools for building [local-first](https://www.inkandswitch.com/local-first) web applications with real-time synchronization that works on and offline. 
 
 In this tutorial, you'll build a local-first multiplayer app with TypeScript, React, [Vite](https://vite.dev), and Automerge. You'll discover how to:
 
-- Represent data as Automerge [Documents](/docs/concepts/#documents)
-- [Change](/docs/documents/conflicts/) documents' data and [merge](/docs/under-the-hood/merge_rules/) changes from different peers
+- Represent data as Automerge [Documents](../docs/concepts/#documents)
+- [Change](../docs/documents/conflicts/) documents' data and [merge](/docs/under-the-hood/merge_rules/) changes from different peers
 - Store & synchronize a set of documents in an Automerge [Repository](/docs/concepts/#repositories) 
 - Build a multiplayer realtime web app with the Automerge [React client](https://github.com/automerge/automerge-repo/tree/main/packages/automerge-repo-react-hooks)
 
-<figure style={ {margin: '0px auto', textAlign: 'center'} } >
-<img src={ require('../static/img/task-list-sync.gif').default} width={720} style={{ objectFit: 'contain' }} />
-<figcaption>The app in action. Data is stored locally, and Automerge syncs changes between users automatically.</figcaption>
-</figure>
+
+<Figure 
+  src={taskListSync}
+  alt='Screen capture of two browser windows side-by-side showing the same app titled "Automerge Task List". As the user clicks buttons, enters text or checks boxes in one window, their changes show up immediately in the other window.' 
+  caption="The app in action. Data is stored locally, and Automerge syncs changes between users automatically." />
 
 ## Setup
 
@@ -85,13 +109,9 @@ $ yarn dev
 
 Visit [localhost:5173/automerge-repo-quickstart/](http://localhost:5173/automerge-repo-quickstart/) to see the app in its "starter" state, as a basic React app not yet using Automerge: the task list can be edited, but changes are not synced between users, and all local changes are lost when the page is closed or reloaded. 
 
+<Figure alt="Screen capture of the non-syncing app" caption="The (unimpressive) app in its starting state, before you give it superpowers with Automerge" />
+
 Let's fix all that with Automerge!
-
-## Architecture of an Automerge App
-
-Automerge apps rely on two key concepts: 
-- An Automerge [Document](/docs/concepts/#documents) (Doc) models app data using a specialized data structure that supports conflict-free collaboration
-- An Automerge [Repository](/docs/concepts/#repositories) (Repo) determines how/where the app stores and synchronizes those documents, locally and/or over the network.
 
 In the exercises that follow, you'll modify the source code to:
 
@@ -99,6 +119,28 @@ In the exercises that follow, you'll modify the source code to:
 1. Create/retrieve a task list Document by its Document URL
 1. Use the Automerge React client to update the Doc's data on user input
 1. Update the Repo to also sync changes over the network (when available)
+
+
+## Architecture of an Automerge App
+
+Building apps with Automerge requires familiarity with two key concepts: **Documents** and **Repositories**.
+
+- An Automerge [Document](/docs/concepts/#documents) (Doc) models app data using a specialized data structure that supports conflict-free collaboration via git-like merges.
+- An Automerge [Repository](/docs/concepts/#repositories) (Repo) determines how/where the app stores and synchronizes those documents, locally and/or over the network.
+
+Automerge is built in Rust, but stack-agnostic and useful for building apps on any platform, with client libraries for many popular languages/frameworks.  
+
+<a href="https://www.youtube.com/watch?v=Mr0a5KyD6BU" title='Watch "New algorithms for collaborative text editing" by Martin Kleppmann (Strange Loop 2023) on YouTube'>
+<Figure  
+  src={architecture}
+  alt='TODO diagram of automerge project components'
+  caption='TODO Placeholder - Automerge system diagram from  "New algorithms for collaborative text editing" by Martin Kleppmann (Strange Loop 2023)'
+  
+/>
+</a>
+
+The foundational `Document` data structure & related algorithms are defined in the [`@automerge/automerge`](https://github.com/automerge/automerge) core library, which used under the hood by the [`@automerge/automerge-repo`](https://github.com/automerge/automerge-repo) library, which exposes the practical conveniences for managing documents via a `Repo`.
+
 
 ## Manage docs with a `Repo`
 
@@ -112,9 +154,7 @@ Each Repo needs to know:
   - How/Where to send, retrieve, and synchronize doc updates, specified via zero or more [`NetworkAdapter`](/docs/repositories/networking/)s
 
 
-### Repo-related `@automerge` packages
-
-The [`@automerge/automerge-repo` package](https://github.com/automerge/automerge-repo) lets you create & configure a Repo, specifying the `StorageAdapter` and `NetworkAdapter`(s) you need.
+The `Repo` constructor from [`@automerge/automerge-repo`](https://github.com/automerge/automerge-repo) lets you create & configure a Repository, specifying the `StorageAdapter` and `NetworkAdapter`(s) you need.
 
 Those adapters can be imported from their respective `@automerge/automerge-repo-storage-*` and `@automerge/automerge-repo-network-*` packages.
 
@@ -131,7 +171,7 @@ If none of the pre-built adapters fit your needs, you can create [custom adapter
 
 Currently, the task list app doesn't persist or sync any changes, even locally.
 
-To add local multiplayer capabilities to the app, you'll initialize a local-first Repo to:
+To prepare to add local multiplayer capabilities to the app, you'll initialize a local-first Repo to:
 - save Docs client-side in the browser's [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API), using the `IndexedDBStorageAdapter` from `@automerge/automerge-repo-storage-indexeddb`
 - keep local users (i.e. tabs within the same browser/origin) in sync via a [Broadcast Channel](https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API), using the `BroadcastChannelNetworkAdapter`. 
 
@@ -257,11 +297,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 </Exercise>
 
 
-## Working with `Document`s
-
 ### Doc Handles & URLs
 
-To create a new document, pass its initial value to `repo.create()`, which accepts a type parameter with the expected document schema:
+A `Repo` isn't very useful until it has some documents in it! To create a new document, pass its initial value to `repo.create()`, which accepts a type parameter with the expected document schema:
 
 ```ts
 const listHandle = repo.create<TaskList>({
@@ -359,6 +397,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 </Solution>
 </Exercise>
+
+## Read & edit a `Document`
+
 
 ### Automerge in React: `useDocument`
 
@@ -476,6 +517,15 @@ function App({ docUrl }: { docUrl: AutomergeUrl }) {
 ```
 
 
+### Documents vs. JS Objects
+
+Although they look as simple as Plain Old JavaScript Objects (POJOs), Automerge Documents are much more powerful.
+ 
+As changes are made to a Document's data, those changes are stored along with the data itself, and can be "undone", "replayed", and synchronized with other changes made to the same document.
+
+The `useDocument` hook is aware of the `repo` in use (thanks, `RepoContext!`), so whenever a document is changed, its new value will be saved in the given `StorageAdapter`(s) and synced to other users via the given `NetworkAdapter`(s).
+
+
 ### Edit a document
 
 The `changeDoc` function returned by the `useDoc` hook allows us to update the given document as needed, usually in response to user action. 
@@ -490,45 +540,52 @@ changeDoc(d => d.tasks[0].done = true)
 changeDoc(d => d.tasks = [])
 ```
 
-The `useDocument` hook is aware of the `repo` in use (thanks, `RepoContext!`), so whenever a document is changed, its new value will be saved in the given StorageAdapter(s) and synced to other users via the given NetworkAdapter(s).
+This type of reassignment in the change handler works well for [simple values](/docs/documents/values/) like a `boolean`, but not so well for changing text - e.g. to update the `.title` of the task. 
 
-
-### Documents vs. JS Objects
-
-Although they look as simple as Plain Old JavaScript Objects (POJOs), Automerge Documents are secretly much more powerful.
- 
-As changes are made to a Document's data, those changes are stored along with the data itself, and can be "undone", "replayed", and synchronized with other changes made to the same document.
-
-This type of reassignment in the change handler works well for [simple values](/docs/documents/values/) like a `boolean`, but when working with text - e.g. to change the `.title` of the task - you'll use `A.updateText()` to [more efficiently change string values](/docs/documents/text/) than would be the case with a simple string reassignment.
+So instead of reassigning string values, use the `updateText()` function from `@automerge/automerge` to [change string values more efficiently](/docs/documents/text/), with additional advantages such as the ability to merge substring-level edits.
 
 
 <Admonition type="info">
 
 Automerge Documents are [immutable](/docs/hello/#design-principles), so each change creates a new document while the original document remains unaltered.
 
-</Admonition>
-
 ```ts
 import {updateText} from '@automerge/automerge/next'
 
-const renamed = A.updateText(list.tasks[0], ['title'], 'Learn more Automerge');
-console.log(renamed.tasks[0].title) // 'Learn more Automerge'
-console.log(renamed.tasks[0].title) // 'Learn Automerge'
+// updateText() is Automerge's efficient way to track string edits
+const renamed = updateText( 
+  list.tasks[0], // the (sub) document to update - TODO 
+  ['title'], // array representing the path to the text to update - TODO
+  'Learn more Automerge' // the new text value
+);
+
+console.log(renamed.tasks[0].title) 
+// 'Learn more Automerge'
+
+console.log(list.tasks[0].title)
+// 'Learn Automerge' (original doc not modified)
 ```
+
+</Admonition>
+
+
+## Collaboration in Automerge
 
 
 ### Merging Changes
 
 As the name implies, one of the key powers of Automerge is its ability to [merge](/docs/under-the-hood/merge_rules/) different changes to a given document, much like git lets you merge multiple edits to a given file.
 
-Pass two documents with different changes to `A.merge`, and Automerge will return a new document that includes the changes from both:
+Pass Automerge two documents with different changes, and it will return a new document that includes the changes from both:
 
 ```ts
-const renamedMore = A.updateText(list.tasks[0], ['title'], 'Learn more Automerge');
-const renamedWrite = A.updateText(list.tasks[0], ['title'], 'Write Automerge')
+import { updateText, merge } from '@automerge/automerge/next'
+
+const more = updateText(list.tasks[0], ['title'], 'Learn more Automerge');
+const write = updateText(list.tasks[0], ['title'], 'Write Automerge')
 
 // TODO @vakila syntax
-const merged = A.merge([renamedMore, renamedWrite]); 
+const merged = merge([more, write]); 
 // TODO @vakila fact check
 console.log(merged.tasks[0].title); // 'Write more Automerge'  
 ```
@@ -536,8 +593,6 @@ console.log(merged.tasks[0].title); // 'Write more Automerge'
 When merging two different changes to the same property, Automerge uses various strategies to avoid [conflicts](https://automerge.org/docs/documents/conflicts/) and ensure that the merged document will be identical for every user.
 
 
-
-## Collaboration in Automerge
 
 ### Collaborating Locally
 
