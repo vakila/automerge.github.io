@@ -12,7 +12,7 @@ This documentation is mostly focused on the javascript implementation of automer
 
 ## Core concepts
 
-Using automerge means storing your data in automerge [documents](#Documents). Documents have a [URL](#Document-URLs)s which you can use to share or request documents with/from other peers using a [repository](#Repositories). Repositories give you [`DocHandle`](#dochandles)s which you use to make changes to the document and listen for changes from other peers.
+Using automerge means storing your data in automerge [documents](#Documents). Documents have [URL](#Document-URLs)s which you can use to share or request documents with/from other peers using a [repository](#Repositories). Repositories give you [`DocHandle`](#dochandles)s which you use to make changes to the document and listen for changes from other peers.
 
 Automerge as used in javascript applications is actually a composition of two libraries. [`automerge-repo`](https://www.npmjs.com/package/@automerge/automerge-repo) which provides the networking and storage plumbing, and [`automerge`](https://www.npmjs.com/package/@automerge/automerge) which provides the CRDT implementation, a transport agnostic [sync protocol](#sync-protocol), and a compressed [storage format](#storage-format) which `automerge-repo` uses to implement various networking and storage plugins.
 
@@ -20,15 +20,15 @@ Automerge as used in javascript applications is actually a composition of two li
 
 A document is the "unit of change" in automerge. It's like a combination of a JSON object and a git repository. What does that mean?
 
-Like a JSON object an automerge document is a map from strings to values, where the values can themselves be maps, arrays, or simple types like strings or numbers. See the [data model](/docs/documents/) section for more details.
+Like a JSON object, an automerge document is a map from strings to values, where the values can be maps, arrays, or simple types like strings or numbers. See the [data model](/docs/documents/) section for more details.
 
-Like a git repository an automerge document has a history made up of commits. Every time you make a change to a document you are adding to the history of the document. The combination of this history and some rules about how to handle conflicts means that any two automerge documents can always be merged. See [merging](/docs/under-the-hood/merge_rules.md) for the gory details.
+Like a git repository, an automerge document has a history made up of commits. Every time you make a change to a document you are adding to the history of the document. The combination of this history and some rules about how to handle conflicts means that any two automerge documents can always be merged. See [merging](/docs/under-the-hood/merge_rules.md) for the gory details.
 
 ### Repositories
 
 A repository manages connections to remote peers and access to some kind of local storage. Typically you create a repository at application startup and then inject it into the parts of your application which need it. The repository gives out `DocHandle`s, which allow you to access the current state of a document and make changes to it without thinking about how to store those changes, transmit them to others, or fetch changes from others.
 
-Networking and storage for a repository is pluggable. There are various ready made network transports and storage implementations but it is also easy to build your own.
+Networking and storage for a repository are pluggable. There are various ready-made network transports and storage implementations but it is also easy to build your own.
 
 ### DocHandles
 
