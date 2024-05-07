@@ -98,6 +98,6 @@ The second child is a parent of the first, while the final block is a sibling of
 
 ### Embeds
 
-Blocks with `isEmbed: true` are blocks which are not part of the flow of text and represent some non-textual content such as an image. Embed block markers should _not_ break up the flow of text. I.e. the text following an `isEmbed: true` block marker belongs  to the block marker immediately
+Blocks with `isEmbed: true` are blocks which are not part of the flow of text and represent some non-textual content such as an image. Embed block markers should _not_ break up the flow of text. I.e. the text following an `isEmbed: true` block marker belongs to the first non embed block preceding the embed block marker.
 
 If an application encounters an unknown embed block it should render the block using some sort of generic UI and round trip the block through the editor. The editor **SHOULD** allow the user to delete the embedded block marker in some manner.
