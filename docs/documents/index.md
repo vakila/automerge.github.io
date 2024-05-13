@@ -36,7 +36,7 @@ Text is an implementation of the [peritext](https://www.inkandswitch.com/peritex
 - `name` - the name of the mark
 - `value` - any scalar (as in automerge scalar) value
 
-For example, a bold mark from charaters 1 to 5 might be represented as `(1, 5, "bold", true)`.
+For example, a bold mark from characters 1 to 5 might be represented as `(1, 5, "bold", true)`.
 
 Note that the restriction to scalar values for the value of a mark will be lifted in future, although mark values will never be mutable - instead you should always create a new mark when updating a value. For now, if you need complex values in a mark you should serialize the value to a string.
 
@@ -73,7 +73,7 @@ let doc = A.from({
   // Note we are using the `next` API for text, so text sequences are strings
   text: "some text",
   // In the `next` API non mergable strings are instances of `RawString`.
-  // You should generally not need to use these. They are retained for backwards
+  // You should generally not need to use these. They are retained for backward
   // compatibility
   raw_string: new A.RawString("rawstring"),
   integer: 1,
@@ -86,7 +86,7 @@ let doc = A.from({
 });
 
 doc = A.change(doc, (d) => {
-  // Insert 'Hello' at the begnning of the string
+  // Insert 'Hello' at the beginning of the string
   A.splice(d, ["text"], 0, 0, "Hello ");
   d.counter.increment(20);
   d.map.key = "new value";
