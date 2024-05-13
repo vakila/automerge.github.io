@@ -25,7 +25,7 @@ To receive you listen to the `"ephemeral-message"` event on the `DocHandle`
 
 ```typescript
 const handle = Repo.find("<some url>")
-handle.on("ephemeral-message", (message: any) {
+handle.on("ephemeral-message", (message: any) => {
     console.log("got an ephemeral message: ", message)
 })
 ```
