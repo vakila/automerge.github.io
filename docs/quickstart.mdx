@@ -59,8 +59,8 @@ Automerge is a suite of tools for building [local-first](https://www.inkandswitc
 
 In this tutorial, you'll build a local-first multiplayer app with TypeScript, React, [Vite](https://vite.dev), and Automerge. You'll discover how to:
 
-- Represent data as Automerge [Documents](../docs/concepts/#documents)
-- [Change](../docs/documents/conflicts/) documents' data and [merge](/docs/under-the-hood/merge_rules/) changes from different peers
+- Represent data as Automerge [Documents](/docs/concepts/#documents)
+- [Change](/docs/documents/conflicts/) documents' data and [merge](/docs/under-the-hood/merge_rules/) changes from different peers
 - Store & synchronize a set of documents in an Automerge [Repository](/docs/concepts/#repositories) 
 - Build a multiplayer realtime web app with the Automerge [React client](https://github.com/automerge/automerge-repo/tree/main/packages/automerge-repo-react-hooks)
 
@@ -139,12 +139,13 @@ Building apps with Automerge requires familiarity with two key concepts: **Docum
 Automerge is built in Rust, but stack-agnostic and useful for building apps on any platform, with client libraries for many popular languages/frameworks.  
 
 <a href="https://www.youtube.com/watch?v=Mr0a5KyD6BU" title='Watch "New algorithms for collaborative text editing" by Martin Kleppmann (Strange Loop 2023) on YouTube'>
+
 <Figure  
   src={architecture}
-  alt='TODO diagram of automerge project components'
-  caption='TODO Placeholder - Automerge system diagram from  "New algorithms for collaborative text editing" by Martin Kleppmann (Strange Loop 2023)'
-  
+  alt='Diagram of automerge project components, including automerge and automerge-repo'
+  caption='Automerge system diagram from  "New algorithms for collaborative text editing" by Martin Kleppmann (Strange Loop 2023)'
 />
+
 </a>
 
 The foundational `Document` data structure & related algorithms are defined in the [`@automerge/automerge`](https://github.com/automerge/automerge) core library, which used under the hood by the [`@automerge/automerge-repo`](https://github.com/automerge/automerge-repo) library, which exposes the practical conveniences for managing documents via a `Repo`.
@@ -562,8 +563,8 @@ import {updateText} from '@automerge/automerge/next'
 
 // updateText() is Automerge's efficient way to track string edits
 const renamed = updateText( 
-  list.tasks[0], // the (sub) document to update - TODO 
-  ['title'], // array representing the path to the text to update - TODO
+  list.tasks[0], // the (sub) document to update 
+  ['title'], // array representing the path to the text to update
   'Learn more Automerge' // the new text value
 );
 
