@@ -14,24 +14,23 @@
     "write-heading-ids": "docusaurus write-heading-ids"
   },
   "dependencies": {
-    "@docusaurus/core": "2.4.3",
-    "@docusaurus/preset-classic": "2.4.3",
-    "@docusaurus/theme-mermaid": "2.4.3",
+    "@docusaurus/core": "3.2.1",
+    "@docusaurus/preset-classic": "3.2.1",
+    "@docusaurus/theme-mermaid": "3.2.1",
     "@fontsource/merriweather": "^5.0.12",
     "@fontsource/overpass": "^5.0.17",
-    "@mdx-js/react": "^1.6.21",
-    "@svgr/webpack": "^5.5.0",
+    "@mdx-js/react": "^3.0.1",
+    "@svgr/webpack": "^8.1.0",
     "@types/chai": "^4.3.5",
     "@types/debug": "^4.1.8",
     "@types/mocha": "^10.0.1",
     "@types/uuid": "^9.0.2",
     "automerge": "^1.0.1-preview.7",
     "clsx": "^1.1.1",
-    "file-loader": "^6.2.0",
     "hast-util-is-element": "1.1.0",
     "prism-react-renderer": "^1.2.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "rehype-katex": "5",
     "remark-math": "3",
     "url-loader": "^4.1.1"
@@ -49,10 +48,10 @@
     ]
   },
   "devDependencies": {
-    "docusaurus-plugin-typedoc": "^0.17.5",
+    "docusaurus-plugin-typedoc": "^0.22.0",
     "prettier": "^3.2.5",
-    "typedoc": "^0.23.16",
-    "typedoc-plugin-markdown": "^3.13.6",
-    "typescript": "^4.8.4"
+    "typedoc": "^0.25.13",
+    "typedoc-plugin-markdown": "^3.17.1",
+    "typescript": "^5.4.5"
   }
 }

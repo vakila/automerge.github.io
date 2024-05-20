@@ -22,5 +22,11 @@ newDoc = Automerge.change(currentDoc, (doc) => {
   doc.nestedObject.property = "value";
   // you can also assign an object that already has some properties
   doc.otherObject = { key: "value", number: 42 };
+
+  // By default, strings are collaborative sequences of characters. There are
+  // cases where you want a string which is not collaborative - URLs for example
+  // should generally be updated in one go. In this case you can use `RawString`,
+  // which does not allow concurrent updates.
+  doc.atomicStringValue = new Automerge.RawString("")
 });
 ```

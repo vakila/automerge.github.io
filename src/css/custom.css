@@ -27,22 +27,18 @@
   --ifm-navbar-link-hover-color: inherit;
   --ifm-hero-background-color: #efefef;
   --ifm-hero-text-color: inherit;
+  --docusaurus-highlighted-code-line-bg: rgb(226, 231, 244);
 }
 
 :root[data-theme='dark'] {
   --ifm-color-content: #e3e3e3;
   --ifm-hero-background-color: #2e2e2e;
-}
-
-.docusaurus-highlight-code-line {
-  background-color: rgba(0, 0, 0, 0.1);
-  display: block;
-  margin: 0 calc(-1 * var(--ifm-pre-padding));
-  padding: 0 var(--ifm-pre-padding);
+  --docusaurus-highlighted-code-line-bg: rgb(100, 100, 100);
 }
 
 html[data-theme='dark'] .docusaurus-highlight-code-line {
-  background-color: rgba(0, 0, 0, 0.3);
+  /* Color which works with dark mode syntax highlighting theme */
+  --docusaurus-highlighted-code-line-bg: rgb(100, 100, 100);
 }
 
 .footer {
