@@ -25,6 +25,12 @@ export function Solution({ children }) {
 }
 
 export function Figure({ src, alt, caption }) {
+  const imgStyle = {
+    width: '100%',
+    objectFit: 'contain',
+    padding: '1em',
+    backgroundColor: 'inherit',
+  };
   return (<figure style={{
     margin: '1em auto',
     textAlign: 'center',
@@ -32,21 +38,19 @@ export function Figure({ src, alt, caption }) {
     borderRadius: 20,
     maxWidth: 720
   }} >
-    <img src={src} style={{
-      objectFit: 'contain',
-      padding: '1em',
-      backgroundColor: 'inherit',
-    }} alt={alt || caption} />
+    {src.endsWith('.webm')
+      ? <video src={src} type="video/webm" style={imgStyle} alt={alt || caption} autoPlay loop muted />
+      : <img src={src} type="img/webp" style={imgStyle} alt={alt || caption} />}
     <figcaption style={{
       padding: '1em'
     }}>{caption}</figcaption>
   </figure>)
 }
 
-
-import taskListSync from '../static/img/task-list-sync.gif'
-import textMerge from '../static/img/text-merge-KleppmannStrangeLoop2023.png'
-import architecture from '../static/img/automerge-arch-KleppmannStrangeLoop2023.png'
+import taskListSync from '../static/img/quickstart/task-list-sync.webm'
+import taskListPreAmg from '../static/img/quickstart/task-list-pre-automerge.webm'
+import textMerge from '../static/img/quickstart/text-merge-KleppmannStrangeLoop2023.webp'
+import architecture from '../static/img/quickstart/amg-arch-KleppmannStrangeLoop2023.webp'
 
 
 
@@ -109,7 +113,11 @@ $ yarn dev
 
 Visit [localhost:5173/automerge-repo-quickstart/](http://localhost:5173/automerge-repo-quickstart/) to see the app in its "starter" state, as a basic React app not yet using Automerge: the task list can be edited, but changes are not synced between users, and all local changes are lost when the page is closed or reloaded. 
 
-<Figure alt="Screen capture of the non-syncing app" caption="The (unimpressive) app in its starting state, before you give it superpowers with Automerge" />
+<Figure 
+  src={taskListPreAmg}
+  alt="Screen capture of the non-syncing app" 
+  caption="The (unimpressive) app before you give it superpowers with Automerge" 
+/>
 
 Let's fix all that with Automerge!
 
@@ -167,7 +175,7 @@ If none of the pre-built adapters fit your needs, you can create [custom adapter
 </Admonition>
 
 
-### Create a local-first Repo
+### Storage & Network Adapters
 
 Currently, the task list app doesn't persist or sync any changes, even locally.
 
@@ -247,7 +255,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 </Exercise>
 
-### Automerge in React: the `RepoContext`
+### Repos in React: `RepoContext`
 
 The [`@automerge/automerge-repo-react-hooks` package](https://github.com/automerge/automerge-repo-react-hooks) provides some React-specific conveniences for working with Automerge repositories.
 
@@ -339,11 +347,11 @@ In your task list app, you'll check the page's hash and:
 
 <Exercise>
 
-### Create or Find a Document
+### Create/Find a Document
 
 - Check the page's URL hash (`document.location.hash`), if any, to see if it contains a valid Automerge document URL. (You'll need to strip off the leading `#` first.)
 - If so, pass the doc URL to `repo.find()` to retrieve the document's handle.
-- Otherwise, create a new document with `repo.create` and set its document URL in the page's URL hash. 
+- Otherwise, create a new document with `repo.create()` and set its document URL in the page's URL hash. 
 
 (Note: In a production app you'd probably handle routing differently, but this is enough for our example.)
 
@@ -401,7 +409,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 ## Read & edit a `Document`
 
 
-### Automerge in React: `useDocument`
+### Docs in React: `useDocument`
 
 Once you have the URL of the document you want to work with, you can access & modify it from your components with the `useDocument` hook from `automerge-repo-react-hooks`.
 
@@ -542,7 +550,7 @@ changeDoc(d => d.tasks = [])
 
 This type of reassignment in the change handler works well for [simple values](/docs/documents/values/) like a `boolean`, but not so well for changing text - e.g. to update the `.title` of the task. 
 
-So instead of reassigning string values, use the `updateText()` function from `@automerge/automerge` to [change string values more efficiently](/docs/documents/text/), with additional advantages such as the ability to merge substring-level edits.
+Instead of reassigning string values, use the `updateText()` function from `@automerge/automerge` to [change string values more efficiently](/docs/documents/text/), with additional advantages such as the ability to merge substring-level edits.
 
 
 <Admonition type="info">
@@ -571,46 +579,36 @@ console.log(list.tasks[0].title)
 
 ## Collaboration in Automerge
 
+As the name implies, one of the key powers of Automerge is its ability to [merge](/docs/under-the-hood/merge_rules/) different changes to a given document, much like git lets you merge multiple edits to a given file. 
 
-### Merging Changes
+When merging different changes to the same property, Automerge uses various strategies to avoid [conflicts](https://automerge.org/docs/documents/conflicts/) and ensure that the merged document will be identical for every user.
 
-As the name implies, one of the key powers of Automerge is its ability to [merge](/docs/under-the-hood/merge_rules/) different changes to a given document, much like git lets you merge multiple edits to a given file.
-
-Pass Automerge two documents with different changes, and it will return a new document that includes the changes from both:
-
-```ts
-import { updateText, merge } from '@automerge/automerge/next'
-
-const more = updateText(list.tasks[0], ['title'], 'Learn more Automerge');
-const write = updateText(list.tasks[0], ['title'], 'Write Automerge')
-
-// TODO @vakila syntax
-const merged = merge([more, write]); 
-// TODO @vakila fact check
-console.log(merged.tasks[0].title); // 'Write more Automerge'  
-```
-
-When merging two different changes to the same property, Automerge uses various strategies to avoid [conflicts](https://automerge.org/docs/documents/conflicts/) and ensure that the merged document will be identical for every user.
-
-
+This makes Automerge an ideal tool for building collaborative apps that let multiple users work together on the same documents (with or without a network connection). 
 
 ### Collaborating Locally
 
-Since the Repo in this app uses a `BroadcastChannelNetworkAdapter`, any changes made to documents in that Repo immediately appear in any other clients with the same origin (i.e. tabs within the same browser).
+Since the Repo in this app uses a `BroadcastChannelNetworkAdapter`, any changes made to documents in that Repo sync automatically to all other clients with the same origin (i.e. tabs within the same browser) who know the given document's URL (its unique identifier). 
 
-Go ahead and try this out. Open a second (or third) tab with the same URL and edit the list, observing how other clients' lists are updated accordingly.
+Open a second tab with the same URL and edit the list, and you'll see the first tab's list updated accordingly. If you close all the tabs and reopen them, the document is preserved, as it is stored in your browser's IndexedDB.
 
-If you close all the tabs and reopen them, the document is preserved, as it is stored in your browser's IndexedDB.
+<Figure 
+  src={taskListSync}
+  alt='Screen capture of two browser windows side-by-side showing the same app titled "Automerge Task List". As the user clicks buttons, enters text or checks boxes in one window, their changes show up immediately in the other window.' 
+  caption="Local collaboration via the BroadcastChannelNetworkAdapter" />
 
-Congratulations! You have a working Automerge-backed React app with live local synchronization.
+That's right, you've already built a working Automerge-backed React app with live local synchronization! Congrats!
 
 ### Collaborating over the internet
 
-In addition to syncing changes locally, changes to your Automerge Repo can be synced with any other user(s) of the same app. 
+In addition to syncing changes locally, changes to an Automerge Repo can be synced with other remote users by configuring a suitable NetworkAdapter, e.g. `BrowserWebSocketClientAdapter`. Mutliple network adapters can be configured for the same Repo, so that e.g. local sync will continue working even if the network is unavailable. 
 
-A document's URL is the unique identifier that allows the Repo to sync the document with any peer who knows that URL. 
+<Exercise>
 
-Add a network adapter to the `Repo` which syncs to a sync server via a websocket. Add the following dependency to the web app we've been building:
+#### Add a `BrowserWebSocketClientAdapter`
+
+To add a websocket network adapter to the `Repo`, first install the `@automerge/automerge-repo-network-websocket` package to the project dependencies. 
+
+<Solution>
 
 
 <Tabs>
@@ -630,29 +628,39 @@ $ yarn add @automerge/automerge-repo-network-websocket
 </TabItem>
 </Tabs>
 
-Then add a network adapter connecting the repo to `sync.automerge.org`
+</Solution>
 
-```tsx
-// main.tsx
+Then, import and initialize the `BrowserWebSocketClientAdapter`, telling it to sync the repo to `sync.automerge.org` by passing in that URL to the adapter's constructor.
 
-// Add this import:
+Finally, add the initialized network adapter to the list of `network` adapters in the Repo's initialization, alongside the existing `BroadcastChannelNetworkAdapter`. 
+
+<Solution>
+
+
+```tsx title="src/main.tsx"
+//...
+// highlight-next-line
 import { BrowserWebSocketClientAdapter } from "@automerge/automerge-repo-network-websocket";
 
 const repo = new Repo({
     network: [
         new BroadcastChannelNetworkAdapter(),
-        // Add this line:
+        // highlight-next-line
         new BrowserWebSocketClientAdapter('wss://sync.automerge.org')
     ],
     storage: new IndexedDBStorageAdapter(),
 })
 ```
 
+</Solution>
+
+</Exercise>
+
 Now, when the Repo sees any changes it will sync them not only locally via the BroadcastChannel, but also over a websocket connection to `sync.automerge.org`, and any other process can connect to that server and use the URL to get the changes we've made. 
 
-<Admonition type="note">
+<Admonition type="caution">
 
-The Automerge project provides a public sync server for you to experiment with, at `sync.automerge.org`. This is not a private instance, and as an experimental service has no reliability or data safety guarantees. Basically, it's good for demos and prototyping, but run your own sync server for production uses.
+The Automerge project provides a public sync server for you to experiment with, at `sync.automerge.org`. This is not a private instance, and as an experimental service has no reliability or data safety guarantees. Feel free to use it for demos and prototyping, but run your own sync server for production apps.
 
 </Admonition>
 
