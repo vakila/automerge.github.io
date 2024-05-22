@@ -14,7 +14,7 @@ If you've been intimidated by the effort of integrating Automerge into your appl
 
 Let's start by taking a look at a simple example of how `automerge-repo` works. To begin, create and configure a repository for Automerge documents.
 
-```
+```typescript
 const repo = new Repo({
   storage: new IndexedDBStorageAdapter("automerge-demo"),
   network: [new WebsocketClientNetworkAdapter("wss://sync.automerge.org")]
@@ -33,7 +33,7 @@ The Automerge project provides a public sync server for you to experiment with `
 
 Next, create a document and make some changes to it:
 
-```
+```typescript
    > const handle = repo.create()
    > handle.change(doc => { doc.hello = "World." })
    > console.log(handle.url)
@@ -42,7 +42,7 @@ Next, create a document and make some changes to it:
 
 The code logs a URL to the document you created. On another computer, or in another browser, you could load this document using the same URL, as shown below:
 
-```
+```typescript
    > const handle = repo.find("automerge:2j9knpCseyhnK8izDmLpGP5WMdZQ")
    > console.log(await handle.doc())
    // why don't you try it and find out?
@@ -58,7 +58,7 @@ Let's go into a bit more detail. For full documentation please see [the docs](ht
 
 Create a repo by initializing it with an optional storage plugin and any number of network adapters. These are the options for initializing a repo:
 
-```
+```typescript
 export interface RepoConfig {
   // A unique identifier for this peer, the default is a random id
   peerId?: PeerId
@@ -86,7 +86,7 @@ Each `DocHandle` has a `.url` property. This is a string which uniquely identifi
 These two methods return the current state of the document. `doc()` is an asynchronous method that resolves when a repository loads the document from storage or retrieves it from a peer (whichever happens first), and `docSync()` is a synchronous method that assumes the document is already available.
 The examples below illustrate asynchronously loading a document or synchronously loading a document and then interacting with it:
 
-```
+```typescript
 > const handle = repo.find("automerge:2j9knpCseyhnK8izDmLpGP5WMdZQ")
 > const doc = await handle.doc()
 > console.log(doc)
@@ -94,7 +94,7 @@ The examples below illustrate asynchronously loading a document or synchronously
 
 Or
 
-```
+```typescript
 > const handle = repo.find("automerge:2j9knpCseyhnK8izDmLpGP5WMdZQ")
 > handle.whenReady().then(() => {
   console.log(handle.docSync())
@@ -107,7 +107,7 @@ In this latter example we use `DocHandle.whenReady`, which returns a promise tha
 
 Use `DocHandle.change` when you modify a document.
 
-```
+```typescript
 > const handle = repo.find("automerge:2j9knpCseyhnK8izDmLpGP5WMdZQ")
 > await handle.doc()
 > handle.change(d => d.foo = "bar")
@@ -115,7 +115,7 @@ Use `DocHandle.change` when you modify a document.
 
 The `Repo` calls `DocHandle.on("change")` whenever the document is modified – either due to a local change or a sync message being received from another peer.
 
-```
+```typescript
 > const handle = repo.find("automerge:4CkUej7mAYnaFMfVnffDipc4Mtvn")
 > await handle.doc()
 > handle.on("change", ({doc}) => {
@@ -132,7 +132,7 @@ The `Repo` calls `DocHandle.on("change")` whenever the document is modified – 
 
 [`@automerge/automerge-repo-react-hooks`](https://www.npmjs.com/package/@automerge/automerge-repo-react-hooks) makes it easy to use `automerge-repo` in a React application. Once you've constructed a `Repo` you can make it available to your React application using [`RepoContext`](https://automerge.org/automerge-repo/variables/_automerge_automerge_repo_react_hooks.RepoContext.html). Once available, call `useHandle` to obtain a `DocHandle`:
 
-```
+```typescript
 function TodoList(listUrl: AutomergeUrl) {
     const handle = useHandle(listUrl)
     // render the todolist
@@ -145,7 +145,7 @@ Note that when `Repo` receives changes over the network or registers local chang
 
 [`@automerge/automerge-repo-svelte-store`](https://www.npmjs.com/package/@automerge/automerge-repo-svelte-store) provides `setContextRepo` to set the `Repo` which is used by the `document` store:
 
-```
+```html
 <script lang="ts">
   import { document } from "@automerge/automerge-repo-svelte-store"
   import { type AutomergeUrl } from "@automerge/automerge-repo"
