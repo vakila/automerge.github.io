@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: "18"
       - run: "git submodule init && git submodule update"
-      - run: npm install
-      - run: npm run build
+      - run: yarn
+      - run: yarn build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

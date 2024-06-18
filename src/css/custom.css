@@ -28,6 +28,9 @@
   --ifm-hero-background-color: #efefef;
   --ifm-hero-text-color: inherit;
   --docusaurus-highlighted-code-line-bg: rgb(226, 231, 244);
+  --ifm-tabs-color-active: var(--ifm-color-content);
+  --ifm-tabs-color-active-border: var(--ifm-color-primary);
+
 }
 
 :root[data-theme='dark'] {
@@ -109,10 +112,9 @@ article div {
 
 h1,
 h2,
-h3 {
-}
+h3 {}
 
-.hero > .container {
+.hero>.container {
   max-width: 700px;
 }
 
