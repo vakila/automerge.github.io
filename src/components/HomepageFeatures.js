@@ -4,7 +4,7 @@ import styles from './HomepageFeatures.module.css'
 
 const FeatureList = [
   {
-    title: 'Automatic merging',
+    title: 'Conflicts are obsolete',
     Svg: require('../../static/img/merge.svg').default,
     description: (
       <>
@@ -14,7 +14,7 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Network-agnostic',
+    title: 'Clouds are optional',
     Svg: require('../../static/img/network.svg').default,
     description: (
       <>
@@ -24,7 +24,7 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Portable',
+    title: 'Collaboration is cross-platform',
     Svg: require('../../static/img/portable.svg').default,
     description: (
       <>
@@ -54,6 +54,7 @@ export default function HomepageFeatures() {
   return (
     <section className={styles.features}>
       <div className="container">
+        <h2 className="text--center">The Automerge Advantage</h2>
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />
