@@ -23,7 +23,7 @@ const config = {
   markdown: {
     mermaid: true,
   },
-  themes: ["@docusaurus/theme-mermaid"],
+  themes: ["@docusaurus/theme-mermaid", "@docusaurus/theme-live-codeblock"],
 
   presets: [
     [
@@ -151,7 +151,7 @@ const config = {
         {
           name: "description",
           content:
-            "Automerge is a library for building collaborative, local-first applications.",
+            "Automerge is a toolkit for building collaborative, local-first applications.",
         },
       ],
       prism: {
