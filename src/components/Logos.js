@@ -3,6 +3,7 @@ import GoodnotesBlack from '../../static/img/logos/GoodNotes-Black.svg';
 import GoodnotesWhite from '../../static/img/logos/GoodNotes-White.svg';
 import DxosBlack from "../../static/img/logos/dxos-logotype-black.svg";
 import DxosWhite from "../../static/img/logos/dxos-logotype-white.svg";
+import styles from "./Logos.module.css"
 
 export function GoodnotesLogo() {
   return <Logo name="Goodnotes" url="https://goodnotes.com" LightSVG={GoodnotesWhite} DarkSVG={GoodnotesBlack} />
@@ -19,14 +20,14 @@ export function DxosLogo() {
 export function Logo({ name, url, LightSVG, DarkSVG }) {
   const title = name + " logo";
   return (<a href={url} aria-label={name} target="_blank">
-    <DarkSVG height={"5em"} className="logo-dark" alt={title} />
-    <LightSVG height={"5em"} className="logo-light" alt={title} />
+    <DarkSVG height={"5em"} className="logo-dark" styles={styles[".logo-dark"]} alt={title} />
+    <LightSVG height={"5em"} className="logo-light" styles={styles[".logo-dark"]} alt={title} />
   </a>)
 }
 
 export default function Logos() {
   return (
-    <div className="container" id="logos">
+    <div className="container" id="logos" >
       <GoodnotesLogo />
       <DxosLogo />
     </div>

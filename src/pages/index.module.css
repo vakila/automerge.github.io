@@ -32,7 +32,7 @@ section {
   width: 100%;
 }
 
-section:nth-child(2) {
+section:nth-child(even) {
   background-color: var(--ifm-hero-background-color);
 }
 
