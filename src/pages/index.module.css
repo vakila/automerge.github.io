@@ -21,3 +21,30 @@
   align-items: center;
   justify-content: center;
 }
+
+section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  gap: 2rem;
+  padding: 2rem;
+  width: 100%;
+}
+
+section:nth-child(2) {
+  background-color: var(--ifm-hero-background-color);
+}
+
+section a {
+  text-decoration: underline 2px;
+  text-decoration-color: var(--ifm-color-primary);
+}
+
+section a:hover {
+  color: var(--ifm-color-primary-darkest);
+}
+
+section a:hover[data-theme="dark"] {
+  color: var(--ifm-color-primary-lightest);
+}

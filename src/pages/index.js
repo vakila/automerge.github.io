@@ -5,6 +5,7 @@ import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import styles from './index.module.css'
 import HomepageFeatures from '../components/HomepageFeatures'
+import Logos from '../components/Logos'
 import '@fontsource/merriweather'
 import '@fontsource/overpass'
 
@@ -25,15 +26,29 @@ function HomepageHeader() {
   )
 }
 
-function IntroVideo() {
-  const style = {
-    display: "flex",
-    alignItems: "center",
-    padding: "2rem 0",
-    width: "100%"
-  };
 
-  return (<section style={style}>
+function ResearchProduction() {
+  return (<section style={styles.section}>
+
+    <div className="container text--center" style={{ alignSelf: "flex-start" }}>
+      <h2>Rigorously researched</h2>
+      <p>Developed at <a href="https://inkandswitch.com">Ink & Switch</a> by the team who started the <a href="https://inkandswitch.com/local-first">local-first software</a> movement, Automerge features industry-leading technology based on years of research.</p>
+      <Link className="button button--primary button--lg" to="https://inkandswitch.com/local-first">
+        Read the white paper
+      </Link>
+    </div>
+    <div className="container text--center" style={{ alignSelf: "flex-start" }}>
+      <h2>Proven in production</h2>
+      <p>Automerge powers well-known collaboration apps, as well as other developer tools for building local-first apps.</p>
+      <Logos />
+
+    </div>
+  </section >)
+
+}
+
+function IntroVideo() {
+  return (<section style={styles.section}>
     <div className="container text--center">
       <h2>Automerge in Action</h2>
       <iframe width="560" height="315" src="https://www.youtube.com/embed/L9fdyDlhByM?si=skxe0RBRA_OXmXgD" title="YouTube video player" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
@@ -52,6 +67,7 @@ export default function Home() {
       <main>
         <HomepageFeatures />
         <IntroVideo />
+        <ResearchProduction />
       </main>
     </Layout>
   )
