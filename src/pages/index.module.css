@@ -22,7 +22,7 @@
   justify-content: center;
 }
 
-section {
+.homesection {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -32,19 +32,25 @@ section {
   width: 100%;
 }
 
-section:nth-child(even) {
+.homesection:nth-child(even) {
   background-color: var(--ifm-hero-background-color);
 }
 
-section a {
+.homesection a {
   text-decoration: underline 2px;
   text-decoration-color: var(--ifm-color-primary);
 }
 
-section a:hover {
+.homesection a:hover {
   color: var(--ifm-color-primary-darkest);
 }
 
-section a:hover[data-theme="dark"] {
+.homesection a:hover[data-theme="dark"] {
   color: var(--ifm-color-primary-lightest);
+}
+
+.twocolwrap {
+  display: "grid";
+  grid-template-columns: "1fr 1fr";
+  text-wrap: "wrap"
 }

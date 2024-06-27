@@ -29,7 +29,7 @@ function HomepageHeader() {
 
 
 function ResearchProduction() {
-  return (<section className={styles.section}>
+  return (<section className={styles.homesection}>
 
     <div className="container text--center" style={{ alignSelf: "flex-start" }}>
       <h2>Rigorously researched</h2>
@@ -49,9 +49,9 @@ function ResearchProduction() {
 }
 
 function IntroVideo() {
-  return (<section className={styles.section}>
+  return (<section className={styles.homesection}>
     <div className="container text--center">
-      <h2>Automerge in Action</h2>
+      <h2>See Automerge in Action</h2>
       <iframe width="560" height="315" src="https://www.youtube.com/embed/L9fdyDlhByM?si=skxe0RBRA_OXmXgD" title="YouTube video player" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
     </div>
   </section>)
@@ -64,15 +64,15 @@ function ExternalLinkIcon() {
 
 
 function Community() {
-  return (<section className={styles.section}>
+  return (<section className={styles.homesection}>
     <div className="container text--center">
-      <h2>Merge with us!</h2>
+      <h2>Merge with the community</h2>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", textWrap: "wrap" }}>
 
         <RecentPosts />
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textWrap: "nowrap" }}>
-          <h3>Connect with the community</h3>
+          <h3>Connect with us</h3>
           <p>Join the conversation on <Link to="https://discord.gg/zKGe4DCfgR">Discord<ExternalLinkIcon /></Link></p>
           <p>Follow&nbsp;
             <Link to="https://github.com/automerge">@automerge on Github<ExternalLinkIcon /></Link>

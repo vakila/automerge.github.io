@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('../../static/img/merge.svg').default,
     description: (
       <>
-        Automerge is a Conflict-Free Replicated Data Type (CRDT), which allows concurrent changes on different devices
+        The core of Automerge is a Conflict-Free Replicated Data Type (CRDT), which allows concurrent changes on different devices
         to be merged automatically without requiring any central server.
       </>
     ),
@@ -18,8 +18,7 @@ const FeatureList = [
     Svg: require('../../static/img/network.svg').default,
     description: (
       <>
-        Use any connection-oriented network protocol: client-server, peer-to-peer, or local. Or use unidirectional
-        messaging: send an Automerge file as an email attachment or store it on a file server.
+        Automerge's sync engine supports any connection-oriented network protocol: client-server, peer-to-peer, or local. You can even send an Automerge file as an email attachment or store it on a file server.
       </>
     ),
   },

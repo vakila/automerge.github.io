@@ -10,7 +10,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const config = {
   title: "Welcome to Automerge",
   tagline:
-    "A cross-platform toolkit for building local-first collaborative apps.",
+    "A cross-platform sync engine for building local-first collaborative apps.",
   url: "https://automerge.github.io",
   baseUrl: "/",
   trailingSlash: true,
