@@ -124,16 +124,3 @@ code {
   margin: 0 0.1rem;
   vertical-align: baseline;
 }
-
-/* Logo styling */
-#logos {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-html[data-theme="dark"] .logo-dark,
-html[data-theme="light"] .logo-light {
-  display: none;
-}

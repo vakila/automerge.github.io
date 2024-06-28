@@ -96,7 +96,7 @@ export default function Home() {
     >
       <HomepageHeader />
       <main>
-        <HomepageFeatures />
+        <HomepageFeatures className={styles.homesection} />
         <ResearchProduction />
         <IntroVideo />
         <Community />
